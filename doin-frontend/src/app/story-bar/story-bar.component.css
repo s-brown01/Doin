@@ -1,0 +1,50 @@
+.top-bar{
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    height: 20vh;
+}
+.story-wrapper{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.create{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20x;
+    margin-right: 20px;
+}
+.create button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 15px 20px;
+    font-size: 20px;
+}
+.story{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 20x;
+    margin-right: 20px;
+}
+
+a{
+    font-size: 14px;
+    text-decoration: none;
+    color: black;
+}
+.story img{
+    border-radius: 50%; 
+    width: 50px; 
+    height: 50px;
+}
+

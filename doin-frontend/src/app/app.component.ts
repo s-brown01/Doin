@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import { NotificationsBarComponent } from "./notifications-bar/notifications-bar.component";
+import { StoryBarComponent } from './story-bar/story-bar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, MenuBarComponent, NotificationsBarComponent],
+  imports: [CommonModule, RouterOutlet, MenuBarComponent, NotificationsBarComponent, StoryBarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -1,5 +1,13 @@
-<div>
+<div class="wrapper">
   <app-menu-bar></app-menu-bar>
-  <router-outlet></router-outlet>
-  <app-notifications-bar></app-notifications-bar>
+  <div class="middle-wrapper">
+    <app-story-bar></app-story-bar>
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <div class="right-bar">
+    <app-notifications-bar></app-notifications-bar>
+  </div>
 </div>
