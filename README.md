@@ -1,2 +1,3 @@
-# CS341-Final
-Final Project for CS-341
+# Doin
+
+Source code for the Doin Website
