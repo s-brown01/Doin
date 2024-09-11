@@ -1,0 +1,12 @@
+<div class="auth-container">
+    <h1>doin</h1>
+    <form (ngSubmit)="onLogin()">
+      <input type="text" placeholder="Username" [(ngModel)]="loginData.username" name="username" required>
+      <input type="password" placeholder="Password" [(ngModel)]="loginData.password" name="password" required>
+      <button type="submit">Login</button>
+    </form>
+    <div class="auth-links">
+      <a [routerLink]="['/forgot-password']">Forgot Password?</a>
+      <a [routerLink]="['/register']">Don't have an account? Register</a>
+    </div>
+  </div>

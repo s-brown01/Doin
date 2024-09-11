@@ -4,33 +4,10 @@
     <a href="#">Create</a>
   </div>
   <div class="story-wrapper">
-    <div class="story">
-      <img
-        src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
-        alt="@username"
-      />
-      <a href="">&commat;username</a>
-    </div>
-    <div class="story">
-      <img
-        src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
-        alt="@username"
-      />
-      <a href="">&commat;username</a>
-    </div>
-    <div class="story">
-      <img
-        src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
-        alt="@username"
-      />
-      <a href="">&commat;username</a>
-    </div>
-    <div class="story">
-      <img
-        src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
-        alt="@username"
-      />
+    <div class="story" (click)="openStory('https://helenamt.sfo3.digitaloceanspaces.com/2022/06/Couple-1400x600.jpg', '@username', 'https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png')">
+      <img src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png" alt="@username" />
       <a href="">&commat;username</a>
     </div>
   </div>
 </div>
+<app-story-popup (close)="togglePopup(false)" [isVisible]="isStoryVisible" [userAvatarUrl]="userAvatarUrl" [storyImageUrl]="storyImageUrl"></app-story-popup>

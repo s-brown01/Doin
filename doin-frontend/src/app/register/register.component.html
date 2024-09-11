@@ -1,0 +1,20 @@
+<div class="auth-container">
+    <h1>doin</h1>
+    <form (ngSubmit)="onRegister()">
+      <input type="text" placeholder="Username" [(ngModel)]="registerData.username" name="username" required>
+      <input type="email" placeholder="Email" [(ngModel)]="registerData.email" name="email" required>
+      <input type="password" placeholder="Password" [(ngModel)]="registerData.password" name="password" required>
+      <input type="password" placeholder="Confirm Password" [(ngModel)]="registerData.confirmPassword" name="confirmPassword" required>
+      <select [(ngModel)]="registerData.securityQuestion" name="securityQuestion" required>
+        <option value="" disabled selected>Select a security question</option>
+        <option value="pet">What was your first pet's name?</option>
+        <option value="school">What elementary school did you attend?</option>
+        <option value="city">In what city were you born?</option>
+      </select>
+      <input type="text" placeholder="Security Answer" [(ngModel)]="registerData.securityAnswer" name="securityAnswer" required>
+      <button type="submit">Register</button>
+    </form>
+    <div class="auth-links">
+      <a [routerLink]="['/login']">Already have an account? Login</a>
+    </div>
+  </div>
