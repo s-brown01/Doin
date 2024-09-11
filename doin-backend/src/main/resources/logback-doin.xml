@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <appender name = "Console" class ="ch.qos.logback.core.ConsoleAppender">
+  <appender name="Console" class ="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%date - [%level] - from $logger in %thread %n%message%xException</pattern>
     </encoder>
   </appender>
 
-  <property name = "LOGS" value = "./logs" />
+  <property name="LOGS" value = "./logs" />
 
-  <appender name = "LogFile" class = "ch.qos.logback.core.rolling.RollingFileAppender">
+  <appender name="LogFile" class = "ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOGS}/doin-logger.log</file>
     <encoder>
       <pattern>%date - [%level] - from $logger in %thread %n%message%xException</pattern>
     </encoder>
 
-    <rollingPolicy class = "ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- create a new log file every day or whenever the logfile reaches 10MB -->
       <fileNamePattern>${LOGS}/archived/doin-logger-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
       <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -26,7 +26,7 @@
   <!-- level = "TRACE" is TEMPORARY. This should be changed once logging is more verbose  -->
   <root level = "TRACE">
     <appender-ref ref = "Console" />
-    <!-- Comment out logginf to LogFile for now... -->
+    <!-- Comment out logging to LogFile for now... -->
     <!-- <appender-ref ref = "LogFile" /> -->
   </root>
 </configuration>

@@ -10,7 +10,7 @@ public class DoinBackendApplication {
 	static final Logger log = LoggerFactory.getLogger(DoinBackendApplication.class);
 
 	public static void main(String[] args) {
-		log.trace("Starting application");
+		log.info("Starting DoinBackendApplication");
 		SpringApplication.run(DoinBackendApplication.class, args);
 	}
 

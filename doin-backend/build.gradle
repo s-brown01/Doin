@@ -18,11 +18,17 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// // SLF4J and Logback
+	implementation 'org.slf4j:slf4j-api:2.0.0'  // Use the latest version of SLF4J
+	implementation 'ch.qos.logback:logback-classic:1.4.0'  // Ensure Logback is the actual implementation
+
 }
 
 tasks.named('test') {
