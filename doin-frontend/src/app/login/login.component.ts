@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ApiService } from '../api.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -18,13 +19,20 @@ export class LoginComponent {
     password: ''
   };
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private apiService : ApiService) { }
 
   onLogin() {
     const { username, password } = this.loginData;
     if (username && password) {
-      console.log('Login attempt:', this.loginData);
-      this.router.navigate(['/home']);
+      this.apiService.post('login', this.loginData).subscribe(
+        response => {
+          console.log('Login successful', response);
+          this.router.navigate(['/home']);
+        },
+        error => {
+          console.error('Login failed:', error);
+        }
+      );
     } else {
       console.error('Please provide both username and password.');
     }
