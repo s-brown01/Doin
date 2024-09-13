@@ -10,7 +10,6 @@ import { HttpClient } from '@angular/common/http'; // Import HttpClient
 })
 export class MenuBarComponent {
   
-  // TEST CONNECTION - NOT GOOD PRACTICE
   message: string = '';
 
   constructor(private http: HttpClient) {}
