@@ -18,5 +18,5 @@ public class IndexController {
     response.put("message", "Hello from the backend");
     return response;
   }
-  
+
 }

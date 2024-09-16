@@ -14,17 +14,28 @@ import java.io.Console;
 public class LoginController {
   static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
-
+  /**
+   * Handles GET requests to the /login endpoint.
+   * 
+   * @param model Spring model for adding attributes to the view.
+   * @return A view name (e.g., "loginGet") to be resolved.
+   */
   @GetMapping("/login")
   public String loginGet(Model model) {
     log.info("LOGIN GETTING");
     return "loginGet";
   }
 
+  /**
+   * Handles POST requests to the /api/login endpoint.
+   * 
+   * @param login A DTO object containing username and password fields.
+   * @return A token or success message (e.g., "token").
+   */
   @PostMapping("api/login")
   public String loginPost(LoginDTO login) {
     System.out.println(login.getUsername());
     return "token";
   }
-  
+
 }
