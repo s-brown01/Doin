@@ -25,11 +25,27 @@ public class User {
     @JoinColumn(name = "security_question_id")
     private SecurityQuestion securityQuestionId;
     @Column(name = "security_question_answer")
-    private  String securityQuestionAnswer;
+    private String securityQuestionAnswer;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+
+    /**
+     * Getter for the User's ID
+     * @return - the user ID as an Integer
+     */
+    public Integer getID() {
+        return id;
+    }
+
+    /**
+     * Getter for the User's Hashed Password.
+     * @return - the String containing the hashing of the user's password.
+     */
+    public String getHashedPassword() {
+        return passwordHash;
     }
 
 }
