@@ -28,10 +28,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
 	implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
-	// // SLF4J and Logback
+	// SLF4J and Logback
 	implementation 'org.slf4j:slf4j-api:2.0.0'
 	implementation 'ch.qos.logback:logback-classic:1.4.12'  // Ensure Logback is the actual implementation
 
+	// Security and Hashing
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {

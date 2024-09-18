@@ -5,11 +5,14 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import edu.carroll.doin_backend.repo.LoginRepository;
 import edu.carroll.doin_backend.web.model.User;
+import edu.carroll.doin_backend.utils.PasswordHandler;
 
 public class LoginServiceImpl implements LoginService {
 
+  // create a logger just for this class
   private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
+  // create a LoginRepository to get the findByUsername method
   private final LoginRepository loginRepo;
 
   public LoginServiceImpl(LoginRepository loginRepo){
@@ -46,10 +49,10 @@ public class LoginServiceImpl implements LoginService {
     // made sure only 1 user, now grab it
     User user = foundUsers.get(0);
 
-    // CHANGE THIS BEFORE PRODUCTION PLEASE FOR THE LOVE OF ALL GOOD THINGS
-    final String userHash = Integer.toString(password.hashCode());
-    // TEST PASSWORDS HERE
-    // user.getHashedPassword.equals(userHash);
+    if (!PasswordHandler.validatePassword(password, user.getHashedPassword())) {
+      log.debug("validateUser: given password did not match with user's, {}, previously stored password", user);
+      return false;
+    }
 
 
     log.info("validateUser: User {} successfully validated", username);
