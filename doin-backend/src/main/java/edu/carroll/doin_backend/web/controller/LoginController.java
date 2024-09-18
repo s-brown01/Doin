@@ -24,7 +24,7 @@ public class LoginController {
   @PostMapping("api/login")
   public String loginPost(LoginDTO login) {
     System.out.println(login.getUsername());
-    return "token";
+    return "{}";
   }
   
 }
