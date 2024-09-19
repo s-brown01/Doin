@@ -7,13 +7,14 @@ import { StoryBarComponent } from './story-bar/story-bar.component';
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from './api.service';
+import { ImageService } from './image.service';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet, MenuBarComponent, NotificationsBarComponent, StoryBarComponent, HttpClientModule],
-  providers: [ApiService],
+  providers: [ApiService, ImageService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
