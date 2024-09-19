@@ -1,4 +1,4 @@
-package edu.carroll.doin_backend.service;
+package edu.carroll.doin_backend.web.service;
 
 /**
  * The {@code LoginService} interface provides methods for user authentication and login validation.

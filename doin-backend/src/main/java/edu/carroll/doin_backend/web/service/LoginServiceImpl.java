@@ -1,11 +1,11 @@
-package edu.carroll.doin_backend.service;
+package edu.carroll.doin_backend.web.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
-import edu.carroll.doin_backend.repo.LoginRepository;
+import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.model.User;
-import edu.carroll.doin_backend.utils.PasswordHandler;
+import edu.carroll.doin_backend.web.utils.PasswordHandler;
 
 public class LoginServiceImpl implements LoginService {
 
@@ -31,7 +31,7 @@ public class LoginServiceImpl implements LoginService {
   @Override
   public boolean validateUser(String username, String password) {
     log.debug("validateUser: user '{}' attemping login", username);
-    List<User> foundUsers = loginRepo.findbyUsernameIgnoreCase(username);
+    List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
     
     // we expect 1 user found per username. 
     // if we find less than 1 user...

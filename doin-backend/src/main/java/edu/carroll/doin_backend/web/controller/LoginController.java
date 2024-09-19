@@ -4,27 +4,15 @@ import edu.carroll.doin_backend.web.dto.LoginDTO;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Console;
-
 @RestController
+@RequestMapping("api/login")
 public class LoginController {
   static final Logger log = LoggerFactory.getLogger(LoginController.class);
-
-  /**
-   * Handles GET requests to the /login endpoint.
-   * 
-   * @param model Spring model for adding attributes to the view.
-   * @return A view name (e.g., "loginGet") to be resolved.
-   */
-  @GetMapping("/login")
-  public String loginGet(Model model) {
-    log.info("LOGIN GETTING");
-    return "loginGet";
-  }
 
   /**
    * Handles POST requests to the /api/login endpoint.
@@ -32,7 +20,7 @@ public class LoginController {
    * @param login A DTO object containing username and password fields.
    * @return A token or success message (e.g., "token").
    */
-  @PostMapping("api/login")
+  @PostMapping()
   public String loginPost(LoginDTO login) {
     System.out.println(login.getUsername());
     return "{}";
