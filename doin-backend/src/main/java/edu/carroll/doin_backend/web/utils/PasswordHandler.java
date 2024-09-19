@@ -1,4 +1,4 @@
-package edu.carroll.doin_backend.utils;
+package edu.carroll.doin_backend.web.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
