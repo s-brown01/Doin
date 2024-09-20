@@ -7,15 +7,22 @@ import org.springframework.stereotype.Service;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.model.User;
 
+@Service
 public class LoginServiceImpl implements LoginService {
 
   // create a logger just for this class
   private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
-  // create a LoginRepository to get the findByUsername method
+  // a LoginRepository to get the findByUsername method
   private final LoginRepository loginRepo;
+  // a password service to verify users
   private final PasswordService passwordService;
 
+  /**
+   * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order. The parameters in constructor allow Springboot to automatically inject dependancies.
+   * @param loginRepo - the LoginRepository which holds all registered Users
+   * @param passwordService - the PasswordService to verify user's password
+   */
   public LoginServiceImpl(LoginRepository loginRepo, PasswordService passwordService){
     this.loginRepo = loginRepo;
       this.passwordService = passwordService;
