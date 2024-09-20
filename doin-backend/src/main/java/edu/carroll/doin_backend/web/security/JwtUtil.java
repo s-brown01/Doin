@@ -1,4 +1,4 @@
-package edu.carroll.doin_backend.security;
+package edu.carroll.doin_backend.web.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

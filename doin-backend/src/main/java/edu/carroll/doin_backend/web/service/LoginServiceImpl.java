@@ -1,24 +1,24 @@
-package edu.carroll.doin_backend.service;
+package edu.carroll.doin_backend.web.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
-import edu.carroll.doin_backend.repo.LoginRepository;
-import edu.carroll.doin_backend.web.model.User;
 import org.springframework.stereotype.Service;
+import edu.carroll.doin_backend.web.repository.LoginRepository;
+import edu.carroll.doin_backend.web.model.User;
 
-@Service
 public class LoginServiceImpl implements LoginService {
 
   // create a logger just for this class
   private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
+  // create a LoginRepository to get the findByUsername method
   private final LoginRepository loginRepo;
   private final PasswordService passwordService;
 
   public LoginServiceImpl(LoginRepository loginRepo, PasswordService passwordService){
     this.loginRepo = loginRepo;
-    this.passwordService = passwordService;
+      this.passwordService = passwordService;
   }
 
   /**

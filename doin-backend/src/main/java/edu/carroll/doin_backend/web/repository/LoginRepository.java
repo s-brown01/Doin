@@ -1,4 +1,4 @@
-package edu.carroll.doin_backend.repo;
+package edu.carroll.doin_backend.web.repository;
 
 import java.util.List;
 

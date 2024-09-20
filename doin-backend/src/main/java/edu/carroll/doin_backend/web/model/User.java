@@ -24,8 +24,8 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "security_question_id")
     private SecurityQuestion securityQuestionId;
-    @Column(name = "security_question_answer")
-    private String securityQuestionAnswer;
+    @Column(name = "security_question_answer_hash")
+    private  String securityQuestionAnswer;
 
     @PrePersist
     protected void onCreate() {

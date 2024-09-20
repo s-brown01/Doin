@@ -1,4 +1,4 @@
-package edu.carroll.doin_backend.service;
+package edu.carroll.doin_backend.web.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

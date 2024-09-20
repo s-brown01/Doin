@@ -41,3 +41,16 @@ li {
   display: flex;
   align-items: center;
 }
+
+img.profile-img {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 50%; 
+}
+
+.profile-img-wrapper{
+  width: 50px;
+  height: 50px;
+  object-fit: cover; /* Ensures the image is scaled correctly without distortion */
+}

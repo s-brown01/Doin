@@ -23,10 +23,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	// runtimeOnly 'com.mysql:mysql-connector-j'
-	runtimeOnly 'mysql:mysql-connector-java:8.0.29' // Check for the latest version
-
-	// implementation 'org.hibernate:hibernate-core:6.2.6.Final'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+//	runtimeOnly 'mysql:mysql-connector-java:8.0.29' // Check for the latest version
+	implementation 'org.hibernate:hibernate-core:6.2.6.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
 	implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
@@ -36,10 +35,9 @@ dependencies {
 
 	// Security and Hashing
 	implementation 'org.springframework.security:spring-security-crypto'
-	
+
 	// JWT Token
 	implementation 'io.jsonwebtoken:jjwt:0.9.1' // replace with the latest version
-
 }
 
 tasks.named('test') {

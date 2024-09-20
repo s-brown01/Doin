@@ -11,6 +11,10 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
+  getString(endpoint: string, headers?: HttpHeaders): Observable<string> {
+    return (this.http.get(`${this.baseUrl}/${endpoint}`, { headers, responseType: 'string' as 'json' })) as Observable<string>;
+  }
+
   post(endpoint: string, data: any, headers?: HttpHeaders): Observable<any> {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data, { headers });
   }
