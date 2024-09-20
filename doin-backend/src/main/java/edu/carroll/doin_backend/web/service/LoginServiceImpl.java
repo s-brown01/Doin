@@ -3,20 +3,29 @@ package edu.carroll.doin_backend.web.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import org.springframework.stereotype.Service;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.model.User;
-import edu.carroll.doin_backend.web.utils.PasswordHandler;
 
+@Service
 public class LoginServiceImpl implements LoginService {
 
   // create a logger just for this class
   private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
-  // create a LoginRepository to get the findByUsername method
+  // a LoginRepository to get the findByUsername method
   private final LoginRepository loginRepo;
+  // a password service to verify users
+  private final PasswordService passwordService;
 
-  public LoginServiceImpl(LoginRepository loginRepo){
+  /**
+   * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order. The parameters in constructor allow Springboot to automatically inject dependancies.
+   * @param loginRepo - the LoginRepository which holds all registered Users
+   * @param passwordService - the PasswordService to verify user's password
+   */
+  public LoginServiceImpl(LoginRepository loginRepo, PasswordService passwordService){
     this.loginRepo = loginRepo;
+      this.passwordService = passwordService;
   }
 
   /**
@@ -35,8 +44,8 @@ public class LoginServiceImpl implements LoginService {
     
     // we expect 1 user found per username. 
     // if we find less than 1 user...
-    if (foundUsers.size() < 1) {
-      log.debug("validateUser: found less than 1 user ({})", foundUsers.size());
+    if (foundUsers.isEmpty()) {
+      log.debug("validateUser: found less than 1 user (0 total)");
       return false;
     }
 
@@ -49,12 +58,13 @@ public class LoginServiceImpl implements LoginService {
     // made sure only 1 user, now grab it
     User user = foundUsers.get(0);
 
-    if (!PasswordHandler.validatePassword(password, user.getHashedPassword())) {
+    // now validate the password using the Service's built in validator
+    if (!passwordService.validatePassword(password, user.getHashedPassword())) {
       log.debug("validateUser: given password did not match with user's, {}, previously stored password", user);
       return false;
     }
 
-
+    // if passed all checks, then finally return true
     log.info("validateUser: User {} successfully validated", username);
     return true;
   }

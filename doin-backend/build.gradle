@@ -35,8 +35,8 @@ dependencies {
 	// Security and Hashing
 	implementation 'org.springframework.security:spring-security-crypto'
 
-	//object mapper
-	implementation 'org.modelmapper:modelmapper:3.2.0'
+	// JWT Token
+	implementation 'io.jsonwebtoken:jjwt:0.9.1' // replace with the latest version
 }
 
 tasks.named('test') {
