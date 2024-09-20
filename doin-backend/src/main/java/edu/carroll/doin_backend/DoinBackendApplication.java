@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 @SpringBootApplication
 @EnableJpaRepositories
 public class DoinBackendApplication {
-	static final Logger log = LoggerFactory.getLogger(DoinBackendApplication.class);
+	private static final Logger log = LoggerFactory.getLogger(DoinBackendApplication.class);
 
 	public static void main(String[] args) {
 		log.info("Starting DoinBackendApplication");

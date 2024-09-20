@@ -16,7 +16,7 @@ import java.io.Console;
 @RestController
 @RequestMapping("api/login")
 public class LoginController {
-  static final Logger log = LoggerFactory.getLogger(LoginController.class);
+  private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
   private final JwtUtil jwtUtil;
   private final LoginService loginService;
