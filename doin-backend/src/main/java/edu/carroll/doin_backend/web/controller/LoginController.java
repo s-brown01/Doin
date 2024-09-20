@@ -1,6 +1,8 @@
 package edu.carroll.doin_backend.web.controller;
 
+import edu.carroll.doin_backend.service.LoginService;
 import edu.carroll.doin_backend.web.dto.LoginDTO;
+import edu.carroll.doin_backend.security.JwtUtil;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,14 @@ import java.io.Console;
 @RestController
 public class LoginController {
   static final Logger log = LoggerFactory.getLogger(LoginController.class);
+
+  private final JwtUtil jwtUtil;
+  private final LoginService loginService;
+
+  public LoginController(JwtUtil jwtUtil, LoginService loginService) {
+    this.jwtUtil = jwtUtil;
+    this.loginService = loginService;
+  }
 
   /**
    * Handles GET requests to the /login endpoint.
@@ -35,7 +45,14 @@ public class LoginController {
   @PostMapping("api/login")
   public String loginPost(LoginDTO login) {
     System.out.println(login.getUsername());
-    return "token";
+    boolean isValidUser = loginService.validateUser(login.getUsername(), login.getPassword());
+
+    if (isValidUser) {
+      final String token = jwtUtil.generateToken(login.getUsername());
+      return token; // Return the JWT token
+    } else {
+      return null;
+    }
   }
 
 }
