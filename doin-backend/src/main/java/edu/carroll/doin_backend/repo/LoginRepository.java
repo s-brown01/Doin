@@ -18,5 +18,5 @@ public interface LoginRepository extends JpaRepository<User, Integer> {
    * @param username the username to search for, case-insensitive.
    * @return a list of {@link User} objects that match the given username, ignoring case.
    */
-  List<User> findbyUsernameIgnoreCase(String username);
+  List<User> findByUsernameIgnoreCase(String username);
 }

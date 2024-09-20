@@ -33,7 +33,7 @@ dependencies {
 	implementation 'ch.qos.logback:logback-classic:1.4.12'  // Ensure Logback is the actual implementation
 
 	// Security and Hashing
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.security:spring-security-crypto'
 }
 
 tasks.named('test') {

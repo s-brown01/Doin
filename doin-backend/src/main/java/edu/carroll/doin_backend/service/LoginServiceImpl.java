@@ -5,18 +5,20 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import edu.carroll.doin_backend.repo.LoginRepository;
 import edu.carroll.doin_backend.web.model.User;
-import edu.carroll.doin_backend.utils.PasswordHandler;
+import org.springframework.stereotype.Service;
 
+@Service
 public class LoginServiceImpl implements LoginService {
 
   // create a logger just for this class
   private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
-  // create a LoginRepository to get the findByUsername method
   private final LoginRepository loginRepo;
+  private final PasswordService passwordService;
 
-  public LoginServiceImpl(LoginRepository loginRepo){
+  public LoginServiceImpl(LoginRepository loginRepo, PasswordService passwordService){
     this.loginRepo = loginRepo;
+    this.passwordService = passwordService;
   }
 
   /**
@@ -31,12 +33,12 @@ public class LoginServiceImpl implements LoginService {
   @Override
   public boolean validateUser(String username, String password) {
     log.debug("validateUser: user '{}' attemping login", username);
-    List<User> foundUsers = loginRepo.findbyUsernameIgnoreCase(username);
+    List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
     
     // we expect 1 user found per username. 
     // if we find less than 1 user...
-    if (foundUsers.size() < 1) {
-      log.debug("validateUser: found less than 1 user ({})", foundUsers.size());
+    if (foundUsers.isEmpty()) {
+      log.debug("validateUser: found less than 1 user (0 total)");
       return false;
     }
 
@@ -49,12 +51,13 @@ public class LoginServiceImpl implements LoginService {
     // made sure only 1 user, now grab it
     User user = foundUsers.get(0);
 
-    if (!PasswordHandler.validatePassword(password, user.getHashedPassword())) {
+    // now validate the password using the Service's built in validator
+    if (!passwordService.validatePassword(password, user.getHashedPassword())) {
       log.debug("validateUser: given password did not match with user's, {}, previously stored password", user);
       return false;
     }
 
-
+    // if passed all checks, then finally return true
     log.info("validateUser: User {} successfully validated", username);
     return true;
   }
