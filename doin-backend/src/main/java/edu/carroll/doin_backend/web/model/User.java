@@ -26,7 +26,22 @@ public class User {
     @JoinColumn(name = "security_question_id")
     private SecurityQuestion securityQuestionId;
     @Column(name = "security_question_answer_hash")
-    private  String securityQuestionAnswer;
+    private String securityQuestionAnswer;
+
+    public User(UserDTO user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.profilePictureId = user.getProfilePictureId();
+    }
+
+    public User() {
+    }
+
+    public User(String username, String hashedPassword) {
+        this.username = username;
+        this.passwordHash = hashedPassword;
+        this.email = "test-email@example.com";
+    }
 
     @PrePersist
     protected void onCreate() {
@@ -99,16 +114,10 @@ public class User {
 
     /**
      * Getter for the User's Hashed Password.
+     *
      * @return - the String containing the hashing of the user's password.
      */
     public String getHashedPassword() {
         return passwordHash;
     }
-
-    public User(UserDTO user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.profilePictureId = user.getProfilePictureId();
-    }
-    public User() {}
 }
