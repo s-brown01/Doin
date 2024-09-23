@@ -6,6 +6,8 @@ import edu.carroll.doin_backend.web.service.LoginService;
 import edu.carroll.doin_backend.web.service.PasswordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,6 +17,8 @@ import static org.springframework.test.util.AssertionErrors.*;
 
 @SpringBootTest
 public class LoginServiceImplTest {
+    private static final Logger log = LoggerFactory.getLogger(LoginServiceImplTest.class);
+
     private static final String username = "testUser";
     private static final String password = "testPassword";
 
@@ -31,12 +35,15 @@ public class LoginServiceImplTest {
 
     @BeforeEach
     public void beforeTest() {
+        log.info("beforeTest: verifying that dependencies are injected");
         assertNotNull("loginRespository must be injected", loginRepository);
         assertNotNull("loginService must be injected", loginService);
         assertNotNull("passwordService must be injected", passwordService);
 
+        log.info("beforeTest: making mock user");
         mockUser = new User(username, passwordService.hashPassword(password));
 
+        log.info("beforeTest: adding mock user to repository");
         final List<User> users = loginRepository.findByUsernameIgnoreCase(username);
         if (users.isEmpty()) {
             loginRepository.save(mockUser);
@@ -45,21 +52,25 @@ public class LoginServiceImplTest {
 
     @Test
     public void validateUserSuccess() {
+        log.info("validateUserSuccess: verifying that correct credentials work");
         assertTrue("validateUserSuccess: should be the same credentials and be validated", loginService.validateUser(username, password));
     }
 
     @Test
     public void validateUserFailureInvalidPassword() {
+        log.info("validateUserFailureInvalidPassword: verifying that incorrect password doesn't work");
         assertFalse("validateUserFailureInvalidPassword: should not be validated with incorrect password", loginService.validateUser(username, password + "FAKE"));
     }
 
     @Test
     public void validateUserFailureInvalidUsername() {
+        log.info("validateUserFailureInvalidUsername: verifying that incorrect username doesn't work");
         assertFalse("validateUserFailureInvalidUsername: should not be validated with incorrect username", loginService.validateUser(username + "FAKE", password));
     }
 
     @Test
     public void validateUserFailureInvalidUsernameAndPassword() {
+        log.info("validateUserFailureInvalidUsernameAndPassword: verifying that incorrect username and password doesn't work");
         assertFalse("validateUserFailureInvalidUsernameAndPassword: should not be validated with incorrect username and password", loginService.validateUser(username + "FAKE", password + "FAKE"));
     }
 }
