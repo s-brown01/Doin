@@ -15,8 +15,6 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String passwordHash;
-    @Column(nullable = false)
-    private String email;
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @OneToOne
@@ -37,11 +35,10 @@ public class User {
     public User() {
     }
 
-    public User(String username, String hashedPassword) {
-        this.username = username;
-        this.passwordHash = hashedPassword;
-        this.email = "test-email@example.com";
-    }
+//    public User(String username, String hashedPassword) {
+//        this.username = username;
+//        this.passwordHash = hashedPassword;
+//    }
 
     @PrePersist
     protected void onCreate() {
@@ -70,14 +67,6 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public LocalDateTime getCreatedAt() {
