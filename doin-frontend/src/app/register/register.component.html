@@ -2,7 +2,6 @@
     <h1>doin</h1>
     <form (ngSubmit)="onRegister()">
       <input type="text" placeholder="Username" [(ngModel)]="registerData.username" name="username" required>
-      <input type="email" placeholder="Email" [(ngModel)]="registerData.email" name="email" required>
       <input type="password" placeholder="Password" [(ngModel)]="registerData.password" name="password" required>
       <input type="password" placeholder="Confirm Password" [(ngModel)]="registerData.confirmPassword" name="confirmPassword" required>
       <select [(ngModel)]="registerData.securityQuestion" name="securityQuestion" required>

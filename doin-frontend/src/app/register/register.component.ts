@@ -17,7 +17,6 @@ export class RegisterComponent {
   constructor(private router: Router) {}
   registerData = {
     username: '',
-    email: '',
     password: '',
     confirmPassword: '',
     securityQuestion: '',
