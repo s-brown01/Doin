@@ -194,3 +194,7 @@
 .join-button:hover {
   background-color: #38a169;
 }
+
+.event-comp{
+  width: 50%;
+}
