@@ -1,5 +1,7 @@
 package edu.carroll.doin_backend.web.model;
 
+import edu.carroll.doin_backend.web.dto.EventDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.enums.Visibility;
 import jakarta.persistence.*;
 
@@ -132,4 +134,16 @@ public class Event {
     public void addJoiner(User user){
         this.joiners.add(user);
     }
+
+    public Event(EventDTO event) {
+        this.id = event.getId();
+        this.eventType = event.getEventType();
+        this.visibility = event.getVisibility();
+        this.creator = new User(event.getCreator());
+        this.location = event.getLocation();
+        this.time = event.getTime();
+        this.description = event.getDescription();
+        this.images = event.getImages();
+    }
+    public Event() {}
 }

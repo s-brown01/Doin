@@ -1,5 +1,6 @@
 package edu.carroll.doin_backend.web.controller;
 
+import edu.carroll.doin_backend.web.dto.EventDTO;
 import edu.carroll.doin_backend.web.model.Event;
 import edu.carroll.doin_backend.web.service.EventService;
 import org.springframework.web.bind.annotation.*;
@@ -15,18 +16,18 @@ public class EventController {
     }
 
     @GetMapping()
-    public List<Event> getAll(){
+    public List<EventDTO> getAll(){
         return eventService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Event getById(@PathVariable Integer id){
+    public EventDTO getById(@PathVariable Integer id){
         return eventService.getById(id);
     }
 
     @PostMapping()
-    public void create(@RequestBody Event event) {
-        eventService.add(event);
+    public EventDTO create(@RequestBody EventDTO event) {
+        return eventService.add(event);
     }
 
     @DeleteMapping("/{id}")
@@ -35,7 +36,7 @@ public class EventController {
     }
 
     @PutMapping
-    public void update(@RequestBody Event event) {
+    public void update(@RequestBody EventDTO event) {
         eventService.update(event);
     }
 }

@@ -1,5 +1,6 @@
 package edu.carroll.doin_backend.web.service;
 
+import edu.carroll.doin_backend.web.dto.EventDTO;
 import edu.carroll.doin_backend.web.exception.ResourceNotFoundException;
 import edu.carroll.doin_backend.web.model.Event;
 import edu.carroll.doin_backend.web.repository.EventRepository;
@@ -14,23 +15,25 @@ public class EventServiceImpl implements EventService {
         this.eventRepository = eventRepository;
     }
     @Override
-    public List<Event> getAll() {
-        return eventRepository.findAll();
+    public List<EventDTO> getAll() {
+        return eventRepository.findAll().stream().map(EventDTO::new).toList();
     }
 
     @Override
-    public Event getById(Integer id) {
-        return eventRepository.findById(id)
+    public EventDTO getById(Integer id) {
+        Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+        return new EventDTO(event);
     }
 
     @Override
-    public Event add(Event event) {
-        return eventRepository.save(event);
+    public EventDTO add(EventDTO event) {
+        Event newEvent = eventRepository.save(new Event(event));
+        return new EventDTO(newEvent);
     }
 
     @Override
-    public void update(Event event) {
+    public void update(EventDTO event) {
         Event existing = eventRepository.getById(event.getId());
 
         existing.setDescription(event.getDescription());
