@@ -3,6 +3,9 @@ package edu.carroll.doin_backend.web.controller;
 import edu.carroll.doin_backend.web.dto.LoginDTO;
 import edu.carroll.doin_backend.web.security.JwtUtil;
 import edu.carroll.doin_backend.web.service.LoginService;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,33 +30,25 @@ public class LoginController {
   }
 
   /**
-   * Handles GET requests to the /login endpoint.
-   *
-   * @param model Spring model for adding attributes to the view.
-   * @return A view name (e.g., "loginGet") to be resolved.
-   */
-  @GetMapping("/login")
-  public String loginGet(Model model) {
-    log.info("LOGIN GETTING");
-    return "loginGet";
-  }
-
-  /**
    * Handles POST requests to the /api/login endpoint.
    * 
    * @param login A DTO object containing username and password fields.
-   * @return A token or success message (e.g., "token").
+   * @return ResponseEntity with either the JWT-Token or a HttpStatus.Unauthorized
    */
   @PostMapping("api/login")
-  public String loginPost(LoginDTO login) {
+  public ResponseEntity<String> loginPost(LoginDTO login) {
     log.info("LoginController: user {} attemptig login", login.getUsername());
     boolean isValidUser = loginService.validateUser(login.getUsername(), login.getPassword());
 
+    // if the user is validated by our loginService...
     if (isValidUser) {
       final String token = jwtUtil.generateToken(login.getUsername());
-      return token; // Return the JWT token
+      // Return the JWT token
+      return ResponseEntity.ok(token);
+    // if NOT valid...
     } else {
-      return null;
+      // return that the username or password is invalid, no more specific than that to not reveal info
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
     }
   }
 

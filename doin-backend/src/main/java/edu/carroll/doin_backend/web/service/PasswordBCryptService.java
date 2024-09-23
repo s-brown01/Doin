@@ -16,11 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class PasswordBCryptService implements PasswordService {
 
-  // private final BCryptPasswordEncoder hasher = new BCryptPasswordEncoder();
-  private final BCryptPasswordEncoder hasher;
+  private final BCryptPasswordEncoder hasher = new BCryptPasswordEncoder();
 
-  public PasswordBCryptService(BCryptPasswordEncoder hasher) {
-    this.hasher = hasher;
+  public PasswordBCryptService() {
   }
 
   /**

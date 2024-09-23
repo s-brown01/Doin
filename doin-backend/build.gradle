@@ -21,10 +21,14 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// dependencies for testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.mockito:mockito-core'
+
+	// database 
 	runtimeOnly 'com.mysql:mysql-connector-j'
-//	runtimeOnly 'mysql:mysql-connector-java:8.0.29' // Check for the latest version
 	implementation 'org.hibernate:hibernate-core:6.2.6.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
