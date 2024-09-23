@@ -60,7 +60,7 @@ public class LoginServiceImpl implements LoginService {
 
     // now validate the password using the Service's built in validator
     if (!passwordService.validatePassword(password, user.getHashedPassword())) {
-      log.debug("validateUser: given password did not match with user's, {}, previously stored password", user);
+      log.debug("validateUser: given password did not match with user's, {}, previously stored password", username);
       return false;
     }
 
