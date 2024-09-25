@@ -4,12 +4,12 @@ import edu.carroll.doin_backend.web.model.Image;
 import edu.carroll.doin_backend.web.model.User;
 
 public class UserDTO {
-    public Image getProfilePictureId() {
-        return profilePictureId;
+    public Image getProfilePicture() {
+        return profilePicture;
     }
 
-    public void setProfilePictureId(Image profilePictureId) {
-        this.profilePictureId = profilePictureId;
+    public void setProfilePicture(Image profilePictureId) {
+        this.profilePicture = profilePictureId;
     }
 
     public String getUsername() {
@@ -30,12 +30,12 @@ public class UserDTO {
 
     private Integer id;
     private String username;
-    private Image profilePictureId;
+    private Image profilePicture;
 
     public UserDTO(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        this.profilePictureId = user.getProfilePictureId();
+        this.profilePicture = user.getProfilePicture();
     }
     public UserDTO() {}
 }

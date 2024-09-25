@@ -21,7 +21,7 @@ public class User {
     private LocalDateTime createdAt;
     @OneToOne
     @JoinColumn(name = "profile_picture_id")
-    private Image profilePictureId;
+    private Image profilePicture;
     @ManyToOne
     @JoinColumn(name = "security_question_id")
     private SecurityQuestion securityQuestionId;
@@ -73,12 +73,12 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public Image getProfilePictureId() {
-        return profilePictureId;
+    public Image getProfilePicture() {
+        return profilePicture;
     }
 
-    public void setProfilePictureId(Image profilePictureId) {
-        this.profilePictureId = profilePictureId;
+    public void setProfilePicture(Image profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public SecurityQuestion getSecurityQuestionId() {
@@ -108,7 +108,7 @@ public class User {
     public User(UserDTO user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        this.profilePictureId = user.getProfilePictureId();
+        this.profilePicture = user.getProfilePicture();
     }
     public User() {}
 }
