@@ -1,6 +1,6 @@
 <app-story-bar></app-story-bar>
 <div class="content-wrapper">
-  <app-event class="event-comp"></app-event>
-  <app-event class="event-comp"></app-event>
-  <app-event class="event-comp"></app-event>
+<div *ngFor="let event of events">
+  <app-event class="event-comp" [event]="event"></app-event>
+</div>
 </div>

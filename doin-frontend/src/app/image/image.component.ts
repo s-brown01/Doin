@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ImageService } from '../image.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { ImageService } from '../services/image.service';
 
 
 @Component({

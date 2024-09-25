@@ -82,7 +82,13 @@
   .more-button {
     justify-content: end;
   }
-  
+  .content{
+    width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
   .username {
     font-weight: 500;
   }
@@ -96,8 +102,7 @@
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 12px;
-    display: flex;
-    align-items: center;
+    width: 50%;
   }
   
   .location,
