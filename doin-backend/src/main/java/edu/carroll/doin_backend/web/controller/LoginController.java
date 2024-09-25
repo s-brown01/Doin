@@ -51,14 +51,14 @@ public class LoginController {
 
   @PostMapping("/register")
   public ResponseEntity<String> registerPost(RegisterDTO register) {
-    log.info("LoginController: user {} attemptig login", register.getUsername());
+    log.info("LoginController: new user {} registering", register.getUsername());
     boolean isValidUser = userService.validateCredentials(register.getUsername(), register.getPassword());
 
     // if the user is validated by our loginService...
     if (isValidUser) {
-      final String token = jwtUtil.generateToken(register.getUsername());
-      // Return the JWT token
-      return ResponseEntity.ok(token);
+//      final String token = jwtUtil.generateToken(register.getUsername());
+//       Return the JWT token
+      return ResponseEntity.ok("Registered");
       // if NOT valid...
     } else {
       // return that the username or password is invalid, no more specific than that to not reveal info

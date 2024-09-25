@@ -1,5 +1,6 @@
 package edu.carroll.doin_backend.web.service;
 
+import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.model.User;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
 //    @Override
-    public boolean createNewUser(String username, String password, String securityQuestionID, String securityAnswer) {
+    public boolean createNewUser(RegisterDTO registerDTO) {
         // HERE IS WHERE HASH
         return false;
     }

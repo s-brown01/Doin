@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { useAnimation } from '@angular/animations';
+import {ApiService} from "../api.service";
 
 
 
@@ -14,7 +15,7 @@ import { useAnimation } from '@angular/animations';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private apiService : ApiService) {}
   registerData = {
     username: '',
     password: '',
@@ -24,11 +25,11 @@ export class RegisterComponent {
   }
 
   onRegister(){
-    if (registerData.password != registerData.confirmPassword){
+    if (this.registerData.password != this.registerData.confirmPassword){
       console.error("Passwords need to match");
     }
-    if (registerData.username && registerData.password) {
-      this.apiService.post('login', this.loginData).subscribe(
+    if (this.registerData.username && this.registerData.password) {
+      this.apiService.post('login', this.registerData).subscribe(
         response => {
           console.log('Login successful', response);
           this.router.navigate(['/home']);
