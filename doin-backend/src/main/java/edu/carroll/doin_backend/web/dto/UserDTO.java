@@ -38,10 +38,5 @@ public class UserDTO {
         this.profilePictureId = user.getProfilePictureId();
     }
 
-    public UserDTO(Integer id, String username, Image profilePictureId) {
-        this.id = id;
-        this.username = username;
-        this.profilePictureId = profilePictureId;
-    }
     public UserDTO() {}
 }

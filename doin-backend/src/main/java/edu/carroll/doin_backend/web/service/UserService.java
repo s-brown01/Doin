@@ -12,7 +12,7 @@ public interface UserService {
      * @param userDTO - the DTO that contains the nessecary data to create a new user
      * @return - true if a new user has been created, false if not.
      */
-    boolean createNewUser(UserDTO userDTO);
+//    boolean createNewUser(UserDTO userDTO);
 
     /**
      * This method will ensure that the username inputted is in the database and

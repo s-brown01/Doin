@@ -41,7 +41,7 @@ public class UserServiceImplTest {
         assertNotNull("userService must be injected", userService);
         assertNotNull("passwordService must be injected", passwordService);
 
-        userService.createNewUser(mockUserDTO);
+//        userService.createNewUser(mockUserDTO);
 
 //        log.info("beforeTest: making mock user");
 //        mockUser = new User(username, passwordService.hashPassword(password));

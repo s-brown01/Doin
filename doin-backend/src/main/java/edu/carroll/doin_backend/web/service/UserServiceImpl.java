@@ -37,9 +37,9 @@ public class UserServiceImpl implements UserService {
         this.passwordService = passwordService;
     }
 
-
-    @Override
-    public boolean createNewUser(UserDTO userDTO) {
+//    @Override
+    public boolean createNewUser(String username, String password, String securityQuestionID, String securityAnswer) {
+        // HERE IS WHERE HASH
         return false;
     }
 
