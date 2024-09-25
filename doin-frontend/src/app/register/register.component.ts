@@ -23,5 +23,23 @@ export class RegisterComponent {
     securityAnswer: ''
   }
 
-  onRegister(){}
+  onRegister(){
+    if (registerData.password != registerData.confirmPassword){
+      console.error("Passwords need to match");
+    }
+    if (registerData.username && registerData.password) {
+      this.apiService.post('login', this.loginData).subscribe(
+        response => {
+          console.log('Login successful', response);
+          this.router.navigate(['/home']);
+        },
+        error => {
+          console.error('Login failed:', error);
+        }
+      );
+    } else {
+      console.error('Please provide both username and password.');
+    }
+
+  }
 }
