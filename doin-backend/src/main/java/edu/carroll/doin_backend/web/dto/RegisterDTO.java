@@ -1,20 +1,25 @@
 package edu.carroll.doin_backend.web.dto;
 
 public class RegisterDTO {
+
+    public RegisterDTO(String username, String password, Integer securityQuestionId, String securityAnswer) {
+        this.username = username;
+        this.password = password;
+        this.securityQuestionId = securityQuestionId;
+        this.securityAnswer = securityAnswer;
+    }
+
+    private String username;
+    private String password;
+    private Integer securityQuestionId;
+    private String securityAnswer;
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {
@@ -33,17 +38,11 @@ public class RegisterDTO {
         this.securityQuestionId = securityQuestionId;
     }
 
-    public String getSecurityQuestionAnswer() {
-        return securityQuestionAnswer;
+    public String getSecurityAnswer() {
+        return securityAnswer;
     }
 
-    public void setSecurityQuestionAnswer(String securityQuestionAnswer) {
-        this.securityQuestionAnswer = securityQuestionAnswer;
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
     }
-
-    private String username;
-    private String email;
-    private String password;
-    private Integer securityQuestionId;
-    private String securityQuestionAnswer;
 }

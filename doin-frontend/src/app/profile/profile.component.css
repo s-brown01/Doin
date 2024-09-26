@@ -3,12 +3,14 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    height: 100vh;
 }
 
 .profile-wrapper {
     display: flex;
     align-items: center;
-    margin-top: 20px;
+    margin-top: -10px;
+    height: 10%;
   }
 
   img.profile-img {
@@ -23,5 +25,25 @@
     height: 50px;
     object-fit: cover;
   }
-
+  .user-events{
+    height: 50%;
+  }
+  .user-friends{
+    height: 30%;
+  }
   
+  ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+  }
+  
+  ul > * {
+    margin: 5px 0;
+  }

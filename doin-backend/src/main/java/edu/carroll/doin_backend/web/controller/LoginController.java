@@ -3,8 +3,8 @@ package edu.carroll.doin_backend.web.controller;
 import edu.carroll.doin_backend.web.dto.LoginDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.security.JwtUtil;
-import edu.carroll.doin_backend.web.service.LoginService;
 
+import edu.carroll.doin_backend.web.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -23,11 +23,11 @@ public class LoginController {
   private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
   private final JwtUtil jwtUtil;
-  private final LoginService loginService;
+  private final UserService userService;
 
-  public LoginController(JwtUtil jwtUtil, LoginService loginService) {
+  public LoginController(JwtUtil jwtUtil, UserService userService) {
     this.jwtUtil = jwtUtil;
-    this.loginService = loginService;
+    this.userService = userService;
   }
 
   /**
@@ -39,7 +39,7 @@ public class LoginController {
   @PostMapping("/login")
   public ResponseEntity<String> loginUser(LoginDTO login) {
     log.info("LoginController: user {} attemptig login", login.getUsername());
-    boolean isValidUser = loginService.validateUser(login.getUsername(), login.getPassword());
+    boolean isValidUser = userService.validateCredentials(login.getUsername(), login.getPassword());
 
     // if the user is validated by our loginService...
     if (isValidUser) {
@@ -56,17 +56,14 @@ public class LoginController {
   @PostMapping("/register")
   public ResponseEntity<String> registerUser(RegisterDTO register) {
     log.info("LoginController: user {} attemptig register", register.getUsername());
-    boolean isValidUser = loginService.validateUser(register.getUsername(), register.getPassword());
+    boolean registered = userService.createNewUser(register);
 
     // if the user is validated by our loginService...
-    if (isValidUser) {
-      final String token = jwtUtil.generateToken(register.getUsername());
-      // Return the JWT token
-      return ResponseEntity.ok(token);
-      // if NOT valid...
+    if (registered) {
+      return ResponseEntity.ok("{}");
     } else {
       // return that the username or password is invalid, no more specific than that to not reveal info
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong");
     }
   }
 

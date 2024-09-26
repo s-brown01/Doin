@@ -1,49 +1,50 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.3'
-	id 'io.spring.dependency-management' version '1.1.6'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.3'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'edu.carroll'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// dependencies for testing
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'org.mockito:mockito-core'
+    // dependencies for testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'com.h2database:h2' // database for testing
 
-	// database 
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation 'org.hibernate:hibernate-core:6.2.6.Final'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // database
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'org.hibernate:hibernate-core:6.2.6.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
-	// SLF4J and Logback
-	implementation 'org.slf4j:slf4j-api:2.0.0'
-	implementation 'ch.qos.logback:logback-classic:1.4.12'  // Ensure Logback is the actual implementation
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+    // SLF4J and Logback
+    implementation 'org.slf4j:slf4j-api:2.0.0'
+    implementation 'ch.qos.logback:logback-classic:1.4.12'
 
-	// Security and Hashing
-	implementation 'org.springframework.security:spring-security-crypto'
+    // Security and Hashing
+    implementation 'org.springframework.security:spring-security-crypto'
 
-	// JWT Token
-	implementation 'io.jsonwebtoken:jjwt:0.9.1' // replace with the latest version
+    // JWT Token
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

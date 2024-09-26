@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { useAnimation } from '@angular/animations';
+import { ApiService } from '../services/api.service';
 
 
 
@@ -14,15 +14,28 @@ import { useAnimation } from '@angular/animations';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private apiService : ApiService) { }
   registerData = {
     username: '',
-    email: '',
     password: '',
     confirmPassword: '',
     securityQuestion: '',
     securityAnswer: ''
   }
 
-  onRegister(){}
+
+  onRegister() {
+    if (this.registerData.username && this.registerData.password && this.registerData.password == this.registerData.confirmPassword) {
+      this.apiService.post('register', this.registerData).subscribe(
+        response => {
+          this.router.navigate(['/login']);
+        },
+        error => {
+          console.error('Register failed:', error);
+        }
+      );
+    } else {
+      console.error('Please provide both username and password.');
+    }
+  }
 }

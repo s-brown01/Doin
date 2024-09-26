@@ -37,5 +37,6 @@ public class UserDTO {
         this.username = user.getUsername();
         this.profilePicture = user.getProfilePicture();
     }
+
     public UserDTO() {}
 }

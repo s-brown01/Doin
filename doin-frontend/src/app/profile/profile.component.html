@@ -4,14 +4,24 @@
           <app-image class="profile-img" [borderRadius]="'50%'"></app-image>
         </div>
         <div>&nbsp;Username</div>
-      </div>
-      <div class="user-events">
-        <h2>usernames's events</h2>
-      </div>
-      <div class="user-friends">
-        <h2>usernames's friends</h2>
-        <div>
+    </div>
+    <div class="user-events">
+        <h4>usernames's events</h4>
+        <div class="events">
             <ul>
+                <!-- <app-event></app-event>
+                <app-event></app-event>
+                <app-event></app-event> -->
+              </ul>
+        </div>
+    </div>
+      <div class="user-friends">
+        <h4>usernames's friends</h4>
+        <div class="friends">
+            <ul>
+                <app-friend-list></app-friend-list>
+                <app-friend-list></app-friend-list>
+                <app-friend-list></app-friend-list>
                 <app-friend-list></app-friend-list>
                 <app-friend-list></app-friend-list>
                 <app-friend-list></app-friend-list>
