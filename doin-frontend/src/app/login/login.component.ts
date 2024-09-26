@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ApiService } from '../api.service';
+import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
 
 

@@ -42,24 +42,23 @@ public class UserServiceImpl implements UserService {
         this.securityQuestionRepo = securityQuestionRepo;
     }
 
-    @Override
-    public String createNewUser(RegisterDTO registerDTO) {
+    //@Override
+    public String createNewUser2(RegisterDTO registerDTO) {
         // make sure there are no other users with this username
         if (!loginRepo.findByUsernameIgnoreCase(registerDTO.getUsername()).isEmpty()) {
             return "Username Taken";
         }
 
         // make sure Password and ConfirmPassword match
-        if (!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
-            return "Unmatched Password";
-        }
-
-
-
-        //UserDTO user
-
-
+//        if (!registerDTO.getPassword().equals(registerDTO())) {
+//            return "Unmatched Password";
+//        }
         return "Registered";
+    }
+
+    @Override
+    public boolean createNewUser(RegisterDTO registerDTO) {
+        return true;
     }
 
     /**

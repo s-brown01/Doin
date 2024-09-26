@@ -6,9 +6,11 @@ import { FriendsComponent } from './friends/friends.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
+  { path: 'user', component: ProfileComponent },
   { path: 'discover', component: DiscoverComponent },
   { path: 'friends', component: FriendsComponent },
   { path: 'login', component: LoginComponent },

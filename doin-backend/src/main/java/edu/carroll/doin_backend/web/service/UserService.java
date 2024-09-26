@@ -1,6 +1,7 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,7 +13,8 @@ public interface UserService {
      * @param registerDTO - the DTO that contains the nessecary data to create a new user
      * @return - true if a new user has been created, false if not.
      */
-    String createNewUser(RegisterDTO registerDTO);
+    boolean createNewUser(RegisterDTO registerDTO);
+    //String createNewUser(RegisterDTO registerDTO);
 
     /**
      * This method will ensure that the username inputted is in the database and

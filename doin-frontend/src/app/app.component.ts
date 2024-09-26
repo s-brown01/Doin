@@ -6,15 +6,16 @@ import { NotificationsBarComponent } from "./notifications-bar/notifications-bar
 import { StoryBarComponent } from './story-bar/story-bar.component';
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { ApiService } from './api.service';
-import { ImageService } from './image.service';
+import { ApiService } from './services/api.service';
+import { ImageService } from './services/image.service';
+import { EventService } from './services/event.service';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet, MenuBarComponent, NotificationsBarComponent, StoryBarComponent, HttpClientModule],
-  providers: [ApiService, ImageService],
+  providers: [ApiService, ImageService, EventService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -7,11 +7,15 @@ import edu.carroll.doin_backend.web.security.JwtUtil;
 import edu.carroll.doin_backend.web.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Console;
 
 @RestController
 @RequestMapping("api")
@@ -49,23 +53,20 @@ public class LoginController {
     }
   }
 
-  @PostMapping("/register")
-  public ResponseEntity<String> registerPost(RegisterDTO register) {
-    log.info("LoginController: new user {} registering", register.getUsername());
-    System.out.print(register.getUsername());
-    boolean isValidUser = userService.validateCredentials(register.getUsername(), register.getPassword());
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(RegisterDTO register) {
+        log.info("LoginController: new user {} registering", register.getUsername());
+        System.out.print(register.getUsername());
 
-    // if the user is validated by our loginService...
-    if (isValidUser) {
-//      final String token = jwtUtil.generateToken(register.getUsername());
-//       Return the JWT token
-      return ResponseEntity.ok("Registered");
-      // if NOT valid...
-    } else {
-      // return that the username or password is invalid, no more specific than that to not reveal info
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        boolean registered = userService.createNewUser(register);
+
+        // if the user is validated by our loginService...
+        if (registered) {
+            return ResponseEntity.ok("{}");
+        } else {
+            // return that the username or password is invalid, no more specific than that to not reveal info
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong");
+        }
     }
-
-  }
 
 }

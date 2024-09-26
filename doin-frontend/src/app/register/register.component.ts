@@ -2,9 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { useAnimation } from '@angular/animations';
-import {ApiService} from "../api.service";
-
+import { ApiService } from '../services/api.service';
 
 
 @Component({
@@ -15,7 +13,7 @@ import {ApiService} from "../api.service";
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  constructor(private router: Router, private apiService : ApiService) {}
+  constructor(private router: Router, private apiService : ApiService) { }
   registerData = {
     username: '',
     password: '',
@@ -36,13 +34,13 @@ export class RegisterComponent {
     }
 
     if (this.registerData.username && this.registerData.password) {
-      this.apiService.post('login', this.registerData).subscribe(
+      this.apiService.post('register', this.registerData).subscribe(
         response => {
           console.log('Login successful', response);
-          this.router.navigate(['/home']);
+          this.router.navigate(['/login']);
         },
         error => {
-          console.error('Login failed:', error);
+          console.error('Register failed:', error);
         }
       );
     } else {

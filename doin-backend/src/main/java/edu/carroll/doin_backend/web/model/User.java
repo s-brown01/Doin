@@ -20,23 +20,23 @@ public class User {
     private LocalDateTime createdAt;
     @OneToOne
     @JoinColumn(name = "profile_picture_id")
-    private Image profilePictureId;
+    private Image profilePicture;
     @ManyToOne
     @JoinColumn(name = "security_question_id")
     private SecurityQuestion securityQuestionId;
     @Column(name = "security_question_answer_hash")
-    private String securityQuestionAnswer;
+    private  String securityQuestionAnswer;
 
     public User(UserDTO user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        this.profilePictureId = user.getProfilePictureId();
+        this.profilePicture = user.getProfilePicture();
     }
 
     public User(RegisterDTO registerDTO){
         this.username = registerDTO.getUsername();
         this.passwordHash = registerDTO.getPasswordHashed();
-        this.securityQuestionId = registerDTO.getSecurityQuestion();
+        // this.securityQuestionId = registerDTO.getSecurityQuestionId();
         this.securityQuestionAnswer = registerDTO.getSecurityAnswer();
 
     }
@@ -86,12 +86,12 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public Image getProfilePictureId() {
-        return profilePictureId;
+    public Image getProfilePicture() {
+        return profilePicture;
     }
 
-    public void setProfilePictureId(Image profilePictureId) {
-        this.profilePictureId = profilePictureId;
+    public void setProfilePicture(Image profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public SecurityQuestion getSecurityQuestionId() {
@@ -112,7 +112,6 @@ public class User {
 
     /**
      * Getter for the User's Hashed Password.
-     *
      * @return - the String containing the hashing of the user's password.
      */
     public String getHashedPassword() {
