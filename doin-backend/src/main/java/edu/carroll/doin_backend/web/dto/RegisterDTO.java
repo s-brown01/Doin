@@ -1,8 +1,10 @@
 package edu.carroll.doin_backend.web.dto;
 
+import edu.carroll.doin_backend.web.model.SecurityQuestion;
+
 public class RegisterDTO {
 
-    public RegisterDTO(String username, String password, Integer securityQuestionId, String securityAnswer) {
+    public RegisterDTO(String username, String password, String confirmPassword, Integer securityQuestionId, String securityAnswer) {
         this.username = username;
         this.password = password;
         this.securityQuestionId = securityQuestionId;
@@ -10,9 +12,19 @@ public class RegisterDTO {
     }
 
     private String username;
-    private String password;
+    private final String password;
     private Integer securityQuestionId;
     private String securityAnswer;
+    private String passwordHashed;
+
+    public String getPasswordHashed() {
+        return passwordHashed;
+    }
+
+    public void setPasswordHashed(String passwordHashed) {
+        this.passwordHashed = passwordHashed;
+    }
+
 
     public String getUsername() {
         return username;
@@ -24,10 +36,6 @@ public class RegisterDTO {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Integer getSecurityQuestionId() {

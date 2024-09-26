@@ -52,6 +52,7 @@ public class LoginController {
   @PostMapping("/register")
   public ResponseEntity<String> registerPost(RegisterDTO register) {
     log.info("LoginController: new user {} registering", register.getUsername());
+    System.out.print(register.getUsername());
     boolean isValidUser = userService.validateCredentials(register.getUsername(), register.getPassword());
 
     // if the user is validated by our loginService...

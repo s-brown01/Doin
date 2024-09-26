@@ -3,6 +3,7 @@ package edu.carroll.doin_backend.web.service;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.model.User;
+import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
@@ -28,20 +29,37 @@ public class UserServiceImpl implements UserService {
       */
     private final PasswordService passwordService;
 
+    private final SecurityQuestionRepository securityQuestionRepo;
+
     /**
      * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order. The parameters in constructor allow Springboot to automatically inject dependencies.
      * @param loginRepo - the LoginRepository which holds all registered Users
      * @param passwordService - the PasswordService to verify user's password
      */
-    public UserServiceImpl(LoginRepository loginRepo, PasswordService passwordService){
+    public UserServiceImpl(LoginRepository loginRepo, PasswordService passwordService, SecurityQuestionRepository securityQuestionRepo) {
         this.loginRepo = loginRepo;
         this.passwordService = passwordService;
+        this.securityQuestionRepo = securityQuestionRepo;
     }
 
-//    @Override
-    public boolean createNewUser(RegisterDTO registerDTO) {
-        // HERE IS WHERE HASH
-        return false;
+    @Override
+    public String createNewUser(RegisterDTO registerDTO) {
+        // make sure there are no other users with this username
+        if (!loginRepo.findByUsernameIgnoreCase(registerDTO.getUsername()).isEmpty()) {
+            return "Username Taken";
+        }
+
+        // make sure Password and ConfirmPassword match
+        if (!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
+            return "Unmatched Password";
+        }
+
+
+
+        //UserDTO user
+
+
+        return "Registered";
     }
 
     /**

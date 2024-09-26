@@ -1,5 +1,6 @@
 package edu.carroll.doin_backend.web.model;
 
+import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
 import jakarta.persistence.*;
 
@@ -30,6 +31,14 @@ public class User {
         this.id = user.getId();
         this.username = user.getUsername();
         this.profilePictureId = user.getProfilePictureId();
+    }
+
+    public User(RegisterDTO registerDTO){
+        this.username = registerDTO.getUsername();
+        this.passwordHash = registerDTO.getPasswordHashed();
+        this.securityQuestionId = registerDTO.getSecurityQuestion();
+        this.securityQuestionAnswer = registerDTO.getSecurityAnswer();
+
     }
 
     public User() {
