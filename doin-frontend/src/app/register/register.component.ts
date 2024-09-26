@@ -27,7 +27,14 @@ export class RegisterComponent {
   onRegister(){
     if (this.registerData.password != this.registerData.confirmPassword){
       console.error("Passwords need to match");
+      return;
     }
+
+    if (this.registerData.password.length < 8){
+      console.error("Password must be at least 8 characters");
+      return;
+    }
+
     if (this.registerData.username && this.registerData.password) {
       this.apiService.post('login', this.registerData).subscribe(
         response => {
