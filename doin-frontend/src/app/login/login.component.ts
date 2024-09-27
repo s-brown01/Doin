@@ -26,6 +26,10 @@ export class LoginComponent {
     if (username && password) {
       this.apiService.post('login', this.loginData).subscribe(
         response => {
+          if (response.ok) {
+            console.log('Login successful - moving to home', response);
+            this.router.navigate(['/home']);
+          }
           console.log('Login successful', response);
           this.router.navigate(['/home']);
         },
