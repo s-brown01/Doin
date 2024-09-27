@@ -36,11 +36,20 @@ export class RegisterComponent {
     if (this.registerData.username && this.registerData.password) {
       this.apiService.post('register', this.registerData).subscribe(
         response => {
-          console.log('Login successful', response);
+          if (response.ok){
+            console.log('Registration successful - moving to login', response);
+            this.router.navigate(['/login']);
+          }
           this.router.navigate(['/login']);
         },
         error => {
-          console.error('Register failed:', error);
+          if (error.status == 401){
+            console.error('Invalid username or password, please try again');
+          } else if (error.status == 400) {
+            console.error('Bad request. Please double check input');
+          } else {
+            console.error('Registration failed:', error);
+          }
         }
       );
     } else {
