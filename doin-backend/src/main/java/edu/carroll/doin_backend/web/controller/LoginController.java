@@ -8,10 +8,7 @@ import edu.carroll.doin_backend.web.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +34,7 @@ public class LoginController {
    * @return ResponseEntity with either the JWT-Token or a HttpStatus.Unauthorized
    */
   @PostMapping("/login")
-  public ResponseEntity<String> loginPost(LoginDTO login) {
+  public ResponseEntity<String> loginPost(@RequestBody LoginDTO login) {
     log.info("LoginController: user {} attemptig login", login.getUsername());
     boolean isValidUser = userService.validateCredentials(login.getUsername(), login.getPassword());
 
@@ -54,9 +51,9 @@ public class LoginController {
   }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(RegisterDTO register) {
+    public ResponseEntity<String> registerUser(@RequestBody RegisterDTO register) {
         log.info("LoginController: new user {} registering", register.getUsername());
-        System.out.print(register.getUsername());
+        System.out.print("\n\n\n\n\n" + register.getUsername());
 
         boolean registered = userService.createNewUser(register);
 
@@ -65,7 +62,7 @@ public class LoginController {
             return ResponseEntity.ok("{}");
         } else {
             // return that the username or password is invalid, no more specific than that to not reveal info
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
     }
 

@@ -14,7 +14,6 @@ public interface UserService {
      * @return - true if a new user has been created, false if not.
      */
     boolean createNewUser(RegisterDTO registerDTO);
-    //String createNewUser(RegisterDTO registerDTO);
 
     /**
      * This method will ensure that the username inputted is in the database and

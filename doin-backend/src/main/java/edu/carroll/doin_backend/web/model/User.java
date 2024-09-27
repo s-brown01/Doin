@@ -2,6 +2,7 @@ package edu.carroll.doin_backend.web.model;
 
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
+import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class User {
     private Image profilePicture;
     @ManyToOne
     @JoinColumn(name = "security_question_id")
-    private SecurityQuestion securityQuestionId;
+    private SecurityQuestion securityQuestion;
     @Column(name = "security_question_answer_hash")
     private  String securityQuestionAnswer;
 
@@ -33,11 +34,13 @@ public class User {
         this.profilePicture = user.getProfilePicture();
     }
 
-    public User(RegisterDTO registerDTO){
+    public User(RegisterDTO registerDTO, String passwordHash, SecurityQuestion securityQuestion) {
         this.username = registerDTO.getUsername();
-        this.passwordHash = registerDTO.getPasswordHashed();
-        // this.securityQuestionId = registerDTO.getSecurityQuestionId();
+        this.passwordHash = passwordHash;
+        this.securityQuestion = securityQuestion;
         this.securityQuestionAnswer = registerDTO.getSecurityAnswer();
+
+        registerDTO.clearData();
 
     }
 
@@ -94,12 +97,12 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public SecurityQuestion getSecurityQuestionId() {
-        return securityQuestionId;
+    public SecurityQuestion getSecurityQuestion() {
+        return securityQuestion;
     }
 
-    public void setSecurityQuestionId(SecurityQuestion securityQuestionId) {
-        this.securityQuestionId = securityQuestionId;
+    public void setSecurityQuestion(SecurityQuestion securityQuestion) {
+        this.securityQuestion = securityQuestion;
     }
 
     public String getSecurityQuestionAnswer() {

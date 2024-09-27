@@ -1,7 +1,7 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
-import edu.carroll.doin_backend.web.dto.UserDTO;
+import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
 import org.slf4j.Logger;
@@ -42,22 +42,99 @@ public class UserServiceImpl implements UserService {
         this.securityQuestionRepo = securityQuestionRepo;
     }
 
-    //@Override
-    public String createNewUser2(RegisterDTO registerDTO) {
-        // make sure there are no other users with this username
-        if (!loginRepo.findByUsernameIgnoreCase(registerDTO.getUsername()).isEmpty()) {
-            return "Username Taken";
-        }
-
-        // make sure Password and ConfirmPassword match
-//        if (!registerDTO.getPassword().equals(registerDTO())) {
-//            return "Unmatched Password";
-//        }
-        return "Registered";
-    }
-
     @Override
     public boolean createNewUser(RegisterDTO registerDTO) {
+        log.info("createNewUser: Attempting to create new user {}", registerDTO.getUsername());
+        if(!isValidNewUsername(registerDTO.getUsername())) {
+            log.info("createNewUser: Invalid username {}", registerDTO.getUsername());
+            return false;
+        }
+
+        if(!isValidPassword(registerDTO.getPassword())) {
+            log.info("createNewUser: Invalid password with username {}", registerDTO.getUsername());
+            return false;
+        }
+
+        // REMOVE THIS FOR PRODUCTION
+        if (registerDTO.getUsername().equalsIgnoreCase("fail")) {
+            System.out.println("\n\n test case");
+            return false;
+        }
+
+        final Integer securityQID = securityQuestionRepo.findIdByQuestion(registerDTO.getSecurityQuestionString());
+        // make sure the Security Question exists in the database
+        if (securityQID == null) {
+            log.warn("createNewUser: Invalid security question ID {}, new Register {}", registerDTO.getSecurityQuestionString(), registerDTO.getUsername());
+            return false;
+        }
+        // set SecurityQuestionID
+        registerDTO.setSecurityQuestionId(securityQID);
+        SecurityQuestion securityQuestion = securityQuestionRepo.getReferenceById(securityQID);
+        // create hashed password
+        String hashedPassword = passwordService.hashPassword(registerDTO.getPassword());
+
+        // store the hashed security answer
+        registerDTO.setSecurityAnswer(passwordService.hashPassword(registerDTO.getSecurityAnswer()));
+
+        try {
+            log.info("createNewUser: validated and saving new User {}", registerDTO.getUsername());
+            User newUser = new User(registerDTO, hashedPassword, securityQuestion);
+            loginRepo.save(newUser);
+        } catch (Exception e) {
+            // make sure no error when saving/creating the user
+            log.error("createNewUser: adding new User {} failed\n{}", registerDTO.getUsername(), e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * This function makes sure that a new User's username is valid: not empty/null, and not taken by another user.
+     * @param username - the new username to be checked
+     * @return true if the username is valid, false if not valid (empty, null, non-unique).
+     */
+    private boolean isValidNewUsername(String username) {
+        // make sure not null or empty
+        if (username == null || username.isEmpty() || username.trim().isEmpty()) {
+            log.warn("createNewUser: isValidNewUsername - null or empty username");
+            return false;
+        }
+
+        // make sure there are no other users with this username
+        if (!loginRepo.findByUsernameIgnoreCase(username).isEmpty()) {
+            log.warn("createNewUser: isValidNewUsername - non-unique username");
+            return false;
+        }
+
+        // making sure there's no weird characters in the name
+        String[] invalidChars = new String[] {"`", "'", "/", ";", ":", "*", "{", "}", "[", "]", "|"};
+        for (String s : invalidChars) {
+            // indexOf(c) will return -1 if char doesn't exist
+            if (username.contains(s)) {
+                log.warn("createNewUser: isValidNewUsername - invalid username");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * This function makes sure that a new User's password is valid: not empty/null and not "password"
+     * @param password - the raw password to be checked
+     * @return true if the username is valid, false if not valid (null, empty, equals "password").
+     */
+    private boolean isValidPassword(String password) {
+        if (password == null || password.isEmpty() || password.trim().isEmpty()) {
+            log.warn("createNewUser: isValidPassword - null or empty password");
+            return false;
+        }
+
+        if (password.equalsIgnoreCase("password")) {
+            log.warn("createNewUser: isValidPassword - password equals password");
+            return false;
+        }
+
         return true;
     }
 

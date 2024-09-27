@@ -5,6 +5,7 @@ import edu.carroll.doin_backend.web.model.Image;
 import edu.carroll.doin_backend.web.repository.ImageRepository;
 import edu.carroll.doin_backend.web.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,9 +35,14 @@ public class ImageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> getImage(@PathVariable Long id) {
-        Image img = imageService.get(id);
+    public ResponseEntity<Image> getImage(@PathVariable Long id) {
+        try {
+            Image image = imageService.get(id);
+            return ResponseEntity.ok(image);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
 
-        return ResponseEntity.ok().body(img.getData());
+        //return ResponseEntity.ok().body(img.getData());
     }
 }
