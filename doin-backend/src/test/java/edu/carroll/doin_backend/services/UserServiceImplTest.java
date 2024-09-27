@@ -25,33 +25,11 @@ public class UserServiceImplTest {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private LoginRepository loginRepository;
-
-    @Autowired
-    private PasswordService passwordService;
+//
+//    @Autowired
+//    private PasswordService passwordService;
 
     private UserDTO mockUserDTO = new UserDTO();
-
-    @BeforeEach
-    public void beforeTest() {
-        log.info("beforeTest: verifying that dependencies are injected");
-//        assertNotNull("loginRespository must be injected", loginRepository);
-        assertNotNull("userService must be injected", userService);
-        assertNotNull("passwordService must be injected", passwordService);
-
-//        userService.createNewUser(mockUserDTO);
-
-//        log.info("beforeTest: making mock user");
-//        mockUser = new User(username, passwordService.hashPassword(password));
-
-//        log.info("beforeTest: adding mock user to repository");
-//        final List<User> users = loginRepository.findByUsernameIgnoreCase(username);
-//        if (users.isEmpty()) {
-//            loginRepository.save(mockUser);
-//        }
-    }
 
     @Test
     public void validateUserSuccess() {
