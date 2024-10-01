@@ -4,7 +4,7 @@ import edu.carroll.doin_backend.web.model.SecurityQuestion;
 
 public class RegisterDTO {
 
-    public RegisterDTO(String username, String password, String confirmPassword, String securityQuestion, String securityAnswer) {
+    public RegisterDTO(String username, String password, String securityQuestion, String securityAnswer) {
         this.username = username;
         this.password = password;
         this.securityQuestionString = securityQuestion;
