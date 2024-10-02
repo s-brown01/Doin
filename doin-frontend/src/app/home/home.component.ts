@@ -18,6 +18,14 @@ export class HomeComponent {
   constructor(private eventService: EventService) {}
 
   ngOnInit(): void {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      console.error("No session JWT-Token found");
+      // return;
+    } else {
+      console.log("Found JWT Token!");
+      // validate
+    }
     this.getEvents();
   }
 
