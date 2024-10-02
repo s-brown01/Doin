@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -18,17 +19,20 @@ import java.util.Date;
  */
 
 
-@Component
-public class JwtUtil {
+@Service
+public class JwtTokenService implements TokenService {
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour in milliseconds
-    private SecretKey secretKey;
+    private static final SecretKey SECRET_KEY = "super_secret_key";
 
-    @PostConstruct
-    public void init() {
+    JwtTokenService() {
         // Generate a secure random key for HS256
-        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+//        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
+
+//    @PostConstruct
+//    public void init() {
+//    }
 
     /**
      * Create a new JWT Token for a specific user (identified by the username) that expires in one hour.
@@ -41,7 +45,7 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(secretKey)  // Use the secure key
+                .signWith(SECRET_KEY)  // Use the secure key
                 .compact();
     }
 
@@ -53,7 +57,8 @@ public class JwtUtil {
      * @return true if the username matches the JWTToken's stored data and the token is not expired.
      */
     public boolean validateToken(String token, String username) {
-        final String extractedUsername = extractUsername(token);
+        final String extractedUsername = getUsername(token);
+
         return (extractedUsername.equals(username) && !isTokenExpired(token));
     }
 
@@ -63,7 +68,7 @@ public class JwtUtil {
      * @param token - the token to extract the username from
      * @return - the username that was stored in the token.
      */
-    public String extractUsername(String token) {
+    public String getUsername(String token) {
         return extractClaims(token).getSubject();
     }
 
