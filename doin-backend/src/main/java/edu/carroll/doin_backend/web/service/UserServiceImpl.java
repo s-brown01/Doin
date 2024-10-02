@@ -1,9 +1,11 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
+import edu.carroll.doin_backend.web.dto.TokenDTO;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
+import edu.carroll.doin_backend.web.security.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
@@ -29,6 +31,11 @@ public class UserServiceImpl implements UserService {
       */
     private final PasswordService passwordService;
 
+    /**
+     * a TokenService to validate tokens
+     */
+    private final TokenService tokenService;
+
     private final SecurityQuestionRepository securityQuestionRepo;
 
     /**
@@ -36,10 +43,11 @@ public class UserServiceImpl implements UserService {
      * @param loginRepo - the LoginRepository which holds all registered Users
      * @param passwordService - the PasswordService to verify user's password
      */
-    public UserServiceImpl(LoginRepository loginRepo, PasswordService passwordService, SecurityQuestionRepository securityQuestionRepo) {
+    public UserServiceImpl(LoginRepository loginRepo, PasswordService passwordService, SecurityQuestionRepository securityQuestionRepo, TokenService tokenService) {
         this.loginRepo = loginRepo;
         this.passwordService = passwordService;
         this.securityQuestionRepo = securityQuestionRepo;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -161,7 +169,7 @@ public class UserServiceImpl implements UserService {
 
         // if we find more than 1 user...
         if (foundUsers.size() > 1) {
-            log.debug("validateCredentials: found more than 1 user ({})", foundUsers.size());
+            log.warn("validateCredentials: found more than 1 user ({})", foundUsers.size());
             return false;
         }
 
@@ -177,5 +185,27 @@ public class UserServiceImpl implements UserService {
         // if passed all checks, then finally return true
         log.info("validateCredentials: User {} successfully validated", username);
         return true;
+    }
+
+    @Override
+    public boolean validateToken(TokenDTO tokenDTO) {
+        final String username =   tokenService.getUsername(tokenDTO.getToken());
+        log.info("validateToken: for user {}",username);
+
+        final List<User> users = loginRepo.findByUsernameIgnoreCase(username);
+
+        if (users.isEmpty()) {
+            // finding no users is expected, not horrid
+            log.debug("validateToken: found less than 1 user (0 total)");
+            return false;
+        }
+
+        if (users.size() > 1) {
+            // finding more than 1 user is a bigger issue than 0 users
+            log.warn("validateToken: found more than 1 user ({})", username);
+            return false;
+        }
+        // if username is validated, see if the token is valid with tokenService
+        return tokenService.validateToken(tokenDTO.getToken(), username);
     }
 }

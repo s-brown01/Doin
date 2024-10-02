@@ -1,6 +1,7 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
+import edu.carroll.doin_backend.web.dto.TokenDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
@@ -26,4 +27,5 @@ public interface UserService {
      */
     boolean validateCredentials(String username, String password);
 
+    boolean validateToken(TokenDTO tokenDTO);
 }
