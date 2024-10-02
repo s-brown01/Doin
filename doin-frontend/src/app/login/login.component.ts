@@ -3,11 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
-
-// TokenDTO interface for TypeScript
-export interface TokenDTO {
-  token: string;
-}
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -26,10 +22,27 @@ export class LoginComponent {
   constructor(private router: Router, private apiService : ApiService) { }
 
   ngOnInit(): void {
-    const token = sessionStorage.getItem('jwtToken');
+    const token = sessionStorage.getItem('token');
     if (token) {
       // showing for now it has it
       console.log("has Jwt Token");
+      const tokenDTO = { token: token };
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': token });
+
+      console.debug("SENDING TOKEN TO BACKEND");
+      this.apiService.post('validateToken', tokenDTO, headers).subscribe(
+        response => {
+          if (response.ok) {
+            console.log("User has valid token :)");
+          } else {
+            console.error("INVALID TOKEN");
+          }
+
+        },
+        error => {
+          console.error('Login failed', error);
+        }
+      )
     }
   }
 
@@ -44,7 +57,6 @@ export class LoginComponent {
           if (token) {
             // store JWT Token in the short-term session storage
             sessionStorage.setItem('token', token);
-            console.log('Login successful - moving to home', response);
             // redirect to the home page
             this.router.navigate(['/home']);
           } else {
