@@ -3,6 +3,7 @@ package edu.carroll.doin_backend.web.controller;
 import edu.carroll.doin_backend.web.dto.LoginDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.security.JwtUtil;
+import edu.carroll.doin_backend.web.dto.TokenDTO;
 
 import edu.carroll.doin_backend.web.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -34,19 +35,21 @@ public class LoginController {
    * @return ResponseEntity with either the JWT-Token or a HttpStatus.Unauthorized
    */
   @PostMapping("/login")
-  public ResponseEntity<String> loginPost(@RequestBody LoginDTO login) {
+  public ResponseEntity<TokenDTO> loginPost(@RequestBody LoginDTO login) {
     log.info("LoginController: user {} attemptig login", login.getUsername());
     boolean isValidUser = userService.validateCredentials(login.getUsername(), login.getPassword());
 
     // if the user is validated by our loginService...
     if (isValidUser) {
+      // generate new token and store it in DTO
       final String token = jwtUtil.generateToken(login.getUsername());
-      // Return the JWT token
-      return ResponseEntity.ok(token);
+      final TokenDTO tokenDTO = new TokenDTO(token);
+      // Return the DTO
+      return ResponseEntity.ok(tokenDTO);
     // if NOT valid...
     } else {
       // return that the username or password is invalid, no more specific than that to not reveal info
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
   }
 
