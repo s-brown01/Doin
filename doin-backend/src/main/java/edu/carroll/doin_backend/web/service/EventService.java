@@ -10,7 +10,7 @@ public interface EventService {
     List<EventDTO> getAll();
     EventDTO getById(Integer id);
     EventDTO add(EventDTO event);
+    void joinUser(Integer userId, Integer eventId);
     void update(EventDTO event);
     void delete(Integer id);
-
 }

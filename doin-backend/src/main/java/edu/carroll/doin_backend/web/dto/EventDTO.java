@@ -9,6 +9,7 @@ import edu.carroll.doin_backend.web.model.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EventDTO {
     public LocalDateTime getCreatedAt() {
@@ -110,7 +111,20 @@ public class EventDTO {
         this.location = event.getLocation();
         this.time = event.getTime();
         this.description = event.getDescription();
+        this.joiners = event.getJoiners().stream().map(UserDTO::new).toList();
         this.images = event.getImages();
     }
     public EventDTO() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventDTO eventDTO)) return false;
+        return Objects.equals(eventType, eventDTO.eventType) && visibility == eventDTO.visibility && Objects.equals(creator, eventDTO.creator) && Objects.equals(location, eventDTO.location) && Objects.equals(time, eventDTO.time) && Objects.equals(description, eventDTO.description) && Objects.equals(images, eventDTO.images) && Objects.equals(joiners, eventDTO.joiners) && Objects.equals(createdAt, eventDTO.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventType, visibility, creator, location, time, description, images, joiners, createdAt);
+    }
 }
