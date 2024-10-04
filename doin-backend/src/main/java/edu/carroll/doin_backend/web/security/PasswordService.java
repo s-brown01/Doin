@@ -1,4 +1,4 @@
-package edu.carroll.doin_backend.web.service;
+package edu.carroll.doin_backend.web.security;
 
 public interface PasswordService {
 

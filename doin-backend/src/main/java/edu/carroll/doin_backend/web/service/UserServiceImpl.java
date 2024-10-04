@@ -5,6 +5,7 @@ import edu.carroll.doin_backend.web.dto.TokenDTO;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
+import edu.carroll.doin_backend.web.security.PasswordService;
 import edu.carroll.doin_backend.web.security.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

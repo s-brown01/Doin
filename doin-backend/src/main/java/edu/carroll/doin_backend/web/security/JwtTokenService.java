@@ -23,11 +23,12 @@ import java.util.Date;
 public class JwtTokenService implements TokenService {
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour in milliseconds
-    private static final SecretKey SECRET_KEY = "super_secret_key";
+    private final SecretKey secretKey;
+//            = "super_secret_key";
 
     JwtTokenService() {
         // Generate a secure random key for HS256
-//        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
 //    @PostConstruct
@@ -45,7 +46,7 @@ public class JwtTokenService implements TokenService {
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SECRET_KEY)  // Use the secure key
+                .signWith(secretKey)  // Use the secure key
                 .compact();
     }
 

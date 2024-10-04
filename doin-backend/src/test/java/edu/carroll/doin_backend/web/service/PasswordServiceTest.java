@@ -1,5 +1,6 @@
 package edu.carroll.doin_backend.web.service;
 
+import edu.carroll.doin_backend.web.security.PasswordService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
