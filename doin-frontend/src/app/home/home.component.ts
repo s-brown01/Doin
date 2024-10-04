@@ -19,11 +19,11 @@ export class HomeComponent {
 
   ngOnInit(): void {
     const token = sessionStorage.getItem('token');
-    if (!token) {
-      console.error("No session JWT-Token found");
+    if (token) {
+      console.log("Found JWT Token!");
       // return;
     } else {
-      console.log("Found JWT Token!");
+      console.error("No session JWT-Token found");
       // validate
     }
     this.getEvents();
