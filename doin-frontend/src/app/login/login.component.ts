@@ -43,6 +43,32 @@ export class LoginComponent {
           console.error('Login failed', error);
         }
       )
+
+      /*
+      ngOnInit(): void {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      // showing for now it has it
+      console.error("has Jwt Token");
+      // const tokenDTO = { token: token };
+      // const headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': token });
+
+      console.log("SENDING TOKEN TO AuthSERVICE");
+
+      // this.authService.validateToken(token).subscribe(
+      //   result => {
+      //     if (result.valid) {
+      //       console.log("User has valid token :)", result.message);
+      //     } else {
+      //       console.error("INVALID TOKEN:", result.message);
+      //     }
+      //   },
+      //   error => {
+      //     console.error('Error occurred during token validation:', error);
+      //   }
+      // );
+    }
+       */
     }
   }
 
