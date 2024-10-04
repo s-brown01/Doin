@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("api")
 public class LoginController {
@@ -69,20 +72,26 @@ public class LoginController {
     }
 
     @PostMapping("/validateToken")
-    public ResponseEntity<String> validateToken(@RequestBody TokenDTO tokenDTO) {
+    public ResponseEntity<Map<String, Object>> validateToken(@RequestBody TokenDTO tokenDTO) {
       log.info("LoginController: validating token");
-      log.debug("Toke" );
+      Map<String, Object> response = new HashMap<>();
 
-        if (tokenDTO.getToken() == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
+      if (tokenDTO.getToken() == null) {
+          response.put("success", false);
+          response.put("message", "No token found");
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+      }
 
       boolean valid = userService.validateToken(tokenDTO);
 
       if (valid) {
-          return ResponseEntity.ok("{}");
+          response.put("success", true);
+          response.put("message", "Valid token");
+          return ResponseEntity.ok(response);
       } else {
-          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+          response.put("success", false);
+          response.put("message", "Invalid token");
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
       }
 
     }
