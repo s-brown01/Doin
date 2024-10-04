@@ -1,0 +1,29 @@
+<div class="popup" *ngIf="isVisible">
+    <div class="popup-content">
+      <h2>Create New Event</h2>
+      <form (ngSubmit)="onSubmit()">
+        <label for="description">Description</label>
+        <input id="description" type="text" [(ngModel)]="description" name="description" required />
+  
+        <label for="location">Location</label>
+        <input id="location" type="text" [(ngModel)]="location" name="location" />
+  
+        <label for="time">Time</label>
+        <input id="time" type="datetime-local" [(ngModel)]="time" name="time" required />
+  
+        <label for="eventType">Event Type</label>
+        <select id="eventType" [(ngModel)]="eventTypeName" name="eventType">
+          <option *ngFor="let type of eventTypes" [ngValue]="type">{{ type }}</option>
+        </select>
+  
+        <label for="visibility">Visibility</label>
+        <select id="visibility" [(ngModel)]="visibility" name="visibility">
+          <option value="PUBLIC">Public</option>
+          <option value="PRIVATE">Private</option>
+        </select>
+  
+        <button type="submit">Create Event</button>
+        <button type="button" (click)="closePopup()">Cancel</button>
+      </form>
+    </div>
+  </div>
