@@ -35,10 +35,10 @@ public class ImageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Image> getImage(@PathVariable Long id) {
+    public ResponseEntity<String> getImage(@PathVariable Long id) {
         try {
             Image image = imageService.get(id);
-            return ResponseEntity.ok(image);
+            return ResponseEntity.ok(image.getData());
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

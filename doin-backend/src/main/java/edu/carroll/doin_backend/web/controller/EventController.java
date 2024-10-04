@@ -30,6 +30,11 @@ public class EventController {
         return eventService.add(event);
     }
 
+    @PostMapping("/{id}/join")
+    public void join(@PathVariable Integer id, Integer userId) {
+        eventService.joinUser(id, userId);
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         eventService.delete(id);

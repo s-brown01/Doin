@@ -1,9 +1,10 @@
+import exp from "constants";
 import { ImageDTO } from "./image.dto";
 import { UserDTO } from "./user.dto";
 
 export class EventDTO {
     id: number;
-    eventType: string;
+    eventType: EventType;
     visibility: string;
     creator: UserDTO;
     location: string;
@@ -12,10 +13,9 @@ export class EventDTO {
     images: ImageDTO[] = [];
     joiners: UserDTO[] = [];
     createdAt: Date;
-
     constructor(
         id: number,
-        eventType: string,
+        eventType: EventType,
         visibility: string,
         creator: UserDTO,
         location: string,
@@ -36,4 +36,16 @@ export class EventDTO {
         this.joiners = joiners;
         this.createdAt = createdAt;
     }
+}
+
+
+export class EventType{
+    id : number;
+    name : string;
+
+    constructor(id: number, name: string){
+        this.id = id;
+        this.name = name;
+    }
+    
 }
