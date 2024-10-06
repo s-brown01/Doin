@@ -4,6 +4,7 @@ import { ImageDTO } from '../../dtos/image.dto';
 import { EventDTO, EventType } from '../../dtos/event.dto';
 import { EventService } from '../../services/event.service';
 import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-add-post-popup',
   templateUrl: './add-post-popup.component.html',
@@ -45,9 +46,7 @@ export class AddPostPopupComponent {
     this.eventService.addEvent(event).subscribe({
       next: () => {
         this.closePopup();
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-          this.router.navigate([this.router.url]);
-        });
+        location.reload();
       },
       error: (err) => console.error("Error while adding event:", err)
     });
