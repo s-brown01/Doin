@@ -1,84 +1,116 @@
 package edu.carroll.doin_backend.web.service;
 
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.carroll.doin_backend.web.dto.EventDTO;
-import edu.carroll.doin_backend.web.dto.UserDTO;
-import edu.carroll.doin_backend.web.enums.Visibility;
+import edu.carroll.doin_backend.web.exception.ResourceNotFoundException;
 import edu.carroll.doin_backend.web.model.Event;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.EventRepository;
+import edu.carroll.doin_backend.web.repository.LoginRepository;
+import edu.carroll.doin_backend.web.service.EventServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
-@SpringBootTest
 public class EventServiceImplTest {
-    @Autowired
-    private EventService eventService;
 
-    private Event event;
-    private EventDTO eventDTO;
-    private User user;
+    @Mock
+    private EventRepository eventRepository;
+
+    @Mock
+    private LoginRepository userRepository;
+
+    @InjectMocks
+    private EventServiceImpl eventService;
 
     @BeforeEach
-    void setUp() {
-        user = new User();
-        user.setUsername("testuser");
-        user.setPasswordHash("hashedpassword");
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
-        event = new Event();
-        event.setDescription("Test Event");
-        event.setLocation("Test Location");
-        event.setVisibility(Visibility.PUBLIC);
+    @Test
+    void testAddEvent() {
+        User user = new User();
+        user.setId(1);
+        user.setUsername("testuser");
+
+        Event event = new Event();
+        event.setId(1);
         event.setCreator(user);
 
-        eventDTO = new EventDTO();
-        eventDTO.setDescription("Test Event");
-        eventDTO.setLocation("Test Location");
-        eventDTO.setCreator(new UserDTO(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(eventRepository.save(any(Event.class))).thenReturn(event);
 
+        EventDTO savedEvent = eventService.add(new EventDTO(event));
+
+        assertNotNull(savedEvent);
+        assertEquals(1, savedEvent.getId());
+        verify(userRepository, times(1)).save(user);
+        verify(eventRepository, times(1)).save(event);
     }
 
     @Test
-    @Rollback
-    public void testGetAllEvents() {
-        List<EventDTO> allEvents = eventService.getAll();
-        assertEquals(1, allEvents.size());
-        assertEquals("Test Event", allEvents.get(0).getDescription());
+    void testGetAllEvents() {
+        User user1 = new User();
+        user1.setId(1);
+        user1.setUsername("user1");
+
+        User user2 = new User();
+        user2.setId(2);
+        user2.setUsername("user2");
+
+        Event event1 = new Event();
+        event1.setId(1);
+        event1.setCreator(user1);
+
+        Event event2 = new Event();
+        event2.setId(2);
+        event2.setCreator(user2);
+
+        List<Event> events = Arrays.asList(event1, event2);
+
+        when(eventRepository.findAll()).thenReturn(events);
+
+        List<EventDTO> retrievedEvents = eventService.getAll();
+
+        assertNotNull(retrievedEvents);
+        assertEquals(2, retrievedEvents.size());
+        assertEquals(new EventDTO(event1), retrievedEvents.get(0));
+        assertEquals(new EventDTO(event2), retrievedEvents.get(1));
+        verify(eventRepository, times(1)).findAll();
     }
 
     @Test
-    @Rollback
-    public void testAddEvent() {
+    void testGetById_Success() {
+        Event event = new Event();
+        event.setId(1);
+        User user1 = new User();
+        user1.setId(1);
+        user1.setUsername("user1");
+        event.setCreator(user1);
 
-        EventDTO savedEvent = eventService.add(eventDTO);
+        when(eventRepository.findById(1)).thenReturn(Optional.of(event));
 
-        assertNotNull(savedEvent.getId());
-        assertEquals(eventDTO, savedEvent);
+        EventDTO result = eventService.getById(1);
 
-        List<EventDTO> allEvents = eventService.getAll();
-        assertEquals(1, allEvents.size());
+        assertNotNull(result);
+        assertEquals(1, result.getId());
     }
 
     @Test
-    @Rollback
-    public void testUpdateEvent() {
-        eventDTO.setDescription("Updated Event");
-        eventService.update(eventDTO);
-    }
+    void testGetById_EventNotFound() {
+        when(eventRepository.findById(1)).thenReturn(Optional.empty());
 
-    @Test
-    @Rollback
-    public void testDeleteEvent() {
-        eventService.delete(event.getId());
+        assertThrows(ResourceNotFoundException.class, () -> eventService.getById(1));
+        verify(eventRepository, times(1)).findById(1);
     }
 }
