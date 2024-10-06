@@ -12,8 +12,14 @@ export class NoAuthGuard implements CanActivate {
     const token = this.authService.getToken();
 
     if (token) {
-      this.router.navigate(['/home']);
-      return false;
+      const isTokenExpired = this.authService.isTokenExpired(token);
+
+      if (!isTokenExpired) {
+        this.router.navigate(['/home']);
+        return false;
+      } else {
+        return true;
+      }
     } else {
       return true;
     }
