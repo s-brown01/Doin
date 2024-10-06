@@ -11,6 +11,9 @@
         <option value="city">In what city were you born?</option>
       </select>
       <input type="text" placeholder="Security Answer" [(ngModel)]="registerData.securityAnswer" name="securityAnswer" required>
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
       <button type="submit">Register</button>
     </form>
     <div class="auth-links">
