@@ -3,6 +3,8 @@ package edu.carroll.doin_backend.web.dto;
 import edu.carroll.doin_backend.web.model.Image;
 import edu.carroll.doin_backend.web.model.User;
 
+import java.util.Objects;
+
 public class UserDTO {
     public Image getProfilePicture() {
         return profilePicture;
@@ -22,6 +24,18 @@ public class UserDTO {
 
     public Integer getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserDTO userDTO)) return false;
+        return Objects.equals(id, userDTO.id) && Objects.equals(username, userDTO.username) && Objects.equals(profilePicture, userDTO.profilePicture);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, profilePicture);
     }
 
     public void setId(Integer id) {

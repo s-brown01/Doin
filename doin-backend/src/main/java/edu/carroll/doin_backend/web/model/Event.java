@@ -1,7 +1,6 @@
 package edu.carroll.doin_backend.web.model;
 
 import edu.carroll.doin_backend.web.dto.EventDTO;
-import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.enums.Visibility;
 import jakarta.persistence.*;
 

@@ -1,6 +1,5 @@
 package edu.carroll.doin_backend.web.model;
 
-// import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

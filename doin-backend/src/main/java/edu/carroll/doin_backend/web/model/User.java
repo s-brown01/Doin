@@ -2,7 +2,6 @@ package edu.carroll.doin_backend.web.model;
 
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
-import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

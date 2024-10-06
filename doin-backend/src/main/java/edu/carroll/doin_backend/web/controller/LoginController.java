@@ -3,15 +3,16 @@ package edu.carroll.doin_backend.web.controller;
 import edu.carroll.doin_backend.web.dto.LoginDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.TokenDTO;
-
-import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.security.TokenService;
 import edu.carroll.doin_backend.web.service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,12 +24,10 @@ public class LoginController {
 
   private final TokenService tokenService;
   private final UserService userService;
-    private final LoginRepository loginRepository;
 
-    public LoginController(TokenService tokenService, UserService userService, LoginRepository loginRepository) {
-    this.tokenService = tokenService;
-    this.userService = userService;
-        this.loginRepository = loginRepository;
+    public LoginController(TokenService tokenService, UserService userService) {
+        this.tokenService = tokenService;
+        this.userService = userService;
     }
 
   /**

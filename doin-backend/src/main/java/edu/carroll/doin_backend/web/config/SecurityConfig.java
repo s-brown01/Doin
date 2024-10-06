@@ -16,28 +16,51 @@ import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * Security configuration class for the application.
+ * <p>
+ * This class configures the security settings for the web application using Spring Security.
+ * It includes settings for CORS, CSRF protection, and URL authorization rules.
+ * </p>
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
 
+    /**
+     * Constructs a new instance of {@link SecurityConfig}.
+     *
+     * @param jwtTokenFilter the JWT token filter to be applied in the security chain
+     */
     public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
         this.jwtTokenFilter = jwtTokenFilter;
     }
 
+    /**
+     * Configures the security filter chain for the application.
+     * <p>
+     * This method customizes the security settings, including disabling CSRF protection,
+     * setting up authorization rules for specific endpoints, and applying the JWT token filter.
+     * </p>
+     *
+     * @param http the {@link HttpSecurity} object to customize security settings
+     * @return the configured {@link SecurityFilterChain}
+     * @throws Exception if an error occurs while configuring security
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login").permitAll()
-                        .requestMatchers("/api/register").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/login").permitAll() // Allow unauthenticated access to /api/login
+                        .requestMatchers("/api/register").permitAll() // Allow unauthenticated access to /api/register
+                        .anyRequest().authenticated() // Require authentication for all other requests
                 )
-                .cors(withDefaults())
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors(withDefaults()) // Enable CORS support
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT token filter before username/password auth filter
 
-        return http.build();
+        return http.build(); // Build and return the security filter chain
     }
 }

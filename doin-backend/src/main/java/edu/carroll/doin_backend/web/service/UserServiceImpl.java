@@ -4,12 +4,12 @@ import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.TokenDTO;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
+import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
 import edu.carroll.doin_backend.web.security.PasswordService;
 import edu.carroll.doin_backend.web.security.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import edu.carroll.doin_backend.web.repository.LoginRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -188,25 +188,38 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    /**
+     * Validates the provided token by checking if it corresponds to a valid user.
+     * <p>
+     * This method first retrieves the username associated with the given token. It then checks if there is
+     * exactly one user associated with that username in the repository. If there are no users or multiple users,
+     * the token is considered invalid. Finally, if a valid user is found, it checks the validity of the token
+     * using the {@link TokenService}.
+     * </p>
+     *
+     * @param tokenDTO the {@link TokenDTO} object containing the token to validate.
+     * @return {@code true} if the token is valid and corresponds to exactly one user; {@code false} otherwise.
+     */
     @Override
     public boolean validateToken(TokenDTO tokenDTO) {
-        final String username =   tokenService.getUsername(tokenDTO.getToken());
-        log.info("validateToken: for user {}",username);
+        final String username = tokenService.getUsername(tokenDTO.getToken());
+        log.info("validateToken: for user {}", username);
 
         final List<User> users = loginRepo.findByUsernameIgnoreCase(username);
 
         if (users.isEmpty()) {
-            // finding no users is expected, not horrid
+            // Finding no users is expected, not horrid
             log.debug("validateToken: found less than 1 user (0 total)");
             return false;
         }
 
         if (users.size() > 1) {
-            // finding more than 1 user is a bigger issue than 0 users
+            // Finding more than 1 user is a bigger issue than 0 users
             log.warn("validateToken: found more than 1 user ({})", username);
             return false;
         }
-        // if username is validated, see if the token is valid with tokenService
+
+        // If username is validated, see if the token is valid with tokenService
         return tokenService.validateToken(tokenDTO.getToken());
     }
 }
