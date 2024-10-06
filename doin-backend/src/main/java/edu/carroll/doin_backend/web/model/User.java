@@ -4,12 +4,16 @@ import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -26,7 +30,7 @@ public class User {
     @JoinColumn(name = "security_question_id")
     private SecurityQuestion securityQuestion;
     @Column(name = "security_question_answer_hash")
-    private  String securityQuestionAnswer;
+    private String securityQuestionAnswer;
 
     public User(UserDTO user) {
         this.id = user.getId();
@@ -39,18 +43,11 @@ public class User {
         this.passwordHash = passwordHash;
         this.securityQuestion = securityQuestion;
         this.securityQuestionAnswer = registerDTO.getSecurityAnswer();
-
         registerDTO.clearData();
-
     }
 
     public User() {
     }
-
-//    public User(String username, String hashedPassword) {
-//        this.username = username;
-//        this.passwordHash = hashedPassword;
-//    }
 
     @PrePersist
     protected void onCreate() {
@@ -113,11 +110,34 @@ public class User {
         this.securityQuestionAnswer = securityQuestionAnswer;
     }
 
-    /**
-     * Getter for the User's Hashed Password.
-     * @return - the String containing the hashing of the user's password.
-     */
-    public String getHashedPassword() {
-        return passwordHash;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // No authorities needed, return an empty list
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return passwordHash; // Return the hashed password
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // User account is not expired
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // User account is not locked
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // User credentials are not expired
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // User account is enabled
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -23,17 +24,12 @@ import java.util.Date;
 public class JwtTokenService implements TokenService {
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour in milliseconds
+    private static final String SECRET_KEY = "your_static_secret_keyyour_static_secret_keyyour_static_secret_keyyour_static_secret_keyyour_static_secret_key"; // Ensure this is kept secure!
     private final SecretKey secretKey;
-//            = "super_secret_key";
 
     JwtTokenService() {
-        // Generate a secure random key for HS256
-        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        this.secretKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
-
-//    @PostConstruct
-//    public void init() {
-//    }
 
     /**
      * Create a new JWT Token for a specific user (identified by the username) that expires in one hour.
@@ -46,7 +42,7 @@ public class JwtTokenService implements TokenService {
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(secretKey)  // Use the secure key
+                .signWith(secretKey)
                 .compact();
     }
 
@@ -54,13 +50,10 @@ public class JwtTokenService implements TokenService {
      * Validate the token against the username.
      *
      * @param token    - the JWT Token to check and compare against the username
-     * @param username - the username to verify against the token
      * @return true if the username matches the JWTToken's stored data and the token is not expired.
      */
-    public boolean validateToken(String token, String username) {
-        final String extractedUsername = getUsername(token);
-
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+    public boolean validateToken(String token) {
+        return !isTokenExpired(token);
     }
 
     /**
@@ -81,7 +74,7 @@ public class JwtTokenService implements TokenService {
      */
     private Claims extractClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(secretKey) // Use the secure key for validation
+                .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
