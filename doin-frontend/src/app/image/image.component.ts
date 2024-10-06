@@ -6,9 +6,7 @@ import { ImageService } from '../services/image.service';
 
 @Component({
   selector: 'app-image',
-  templateUrl: './image.component.html',
-  imports: [CommonModule],
-  standalone: true
+  templateUrl: './image.component.html'
 })
 export class ImageComponent implements OnInit {
   imageData: string | null = null;

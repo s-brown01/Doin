@@ -15,14 +15,7 @@ export class EventService {
     return this.http.get<EventDTO[]>(this.baseUrl + "/events");
   }
 
-  addEvent(event : EventDTO){
-    return this.apiService.post("events", event).subscribe(
-      response => {
-        console.log('Uppload successful', response);
-      },
-      error => {
-        console.error('Uppload failed:', error);
-      }
-    );
+  addEvent(event : EventDTO): Observable<any>{
+    return this.apiService.post("events", event);
   }
 }

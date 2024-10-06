@@ -7,8 +7,6 @@ import { EventDTO } from "../dtos/event.dto";
 
 @Component({
   selector: 'app-discover',
-  standalone: true,
-  imports: [EventComponent, CommonModule],
   templateUrl: './discover.component.html',
   styleUrl: './discover.component.css'
 })
