@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { ApiService } from './api.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +51,13 @@ export class AuthService {
   clearToken(): void {
     this.token = null;
     localStorage.removeItem('authToken');
+  }
+
+  isTokenExpired(token: string): boolean {
+    const decoded: any = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+
+    return decoded.exp < currentTime;
   }
 
   private handleError(error: HttpErrorResponse) {

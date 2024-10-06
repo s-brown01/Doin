@@ -9,8 +9,9 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from './auth.guard';
 import { NoAuthGuard } from './no-auth.guard';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'user', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'discover', component: DiscoverComponent, canActivate: [AuthGuard] },
@@ -19,7 +20,9 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent, canActivate: [NoAuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', redirectTo: '/home' }
+  { path: '**', redirectTo: '/home' },
+  { path: 'error', component: ErrorPageComponent }, 
+  { path: '**', redirectTo: '/error' } 
 ];
 
 @NgModule({
