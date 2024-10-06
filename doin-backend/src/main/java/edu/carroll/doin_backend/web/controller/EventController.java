@@ -1,7 +1,6 @@
 package edu.carroll.doin_backend.web.controller;
 
 import edu.carroll.doin_backend.web.dto.EventDTO;
-import edu.carroll.doin_backend.web.model.Event;
 import edu.carroll.doin_backend.web.service.EventService;
 import org.springframework.web.bind.annotation.*;
 

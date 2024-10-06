@@ -7,6 +7,7 @@ import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -17,7 +18,10 @@ public class EventServiceImpl implements EventService {
     }
     @Override
     public List<EventDTO> getAll() {
-        return eventRepository.findAll().stream().map(EventDTO::new).toList();
+        return eventRepository.findAll().stream()
+                .sorted(Comparator.comparing(Event::getTime, Comparator.nullsLast(Comparator.reverseOrder())))
+                .map(EventDTO::new)
+                .toList();
     }
 
     @Override
