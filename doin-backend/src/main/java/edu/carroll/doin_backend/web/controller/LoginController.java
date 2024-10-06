@@ -23,13 +23,13 @@ public class LoginController {
 
   private final TokenService tokenService;
   private final UserService userService;
-    private final LoginRepository loginRepository;
+  private final LoginRepository loginRepository;
 
-    public LoginController(TokenService tokenService, UserService userService, LoginRepository loginRepository) {
+  public LoginController(TokenService tokenService, UserService userService, LoginRepository loginRepository) {
     this.tokenService = tokenService;
     this.userService = userService;
-        this.loginRepository = loginRepository;
-    }
+    this.loginRepository = loginRepository;
+  }
 
   /**
    * Handles POST requests to the /api/login endpoint.
@@ -44,6 +44,7 @@ public class LoginController {
 
     // if the user is validated by our loginService...
     if (isValidUser) {
+        log.info("LoginController: user {} successfully logged in, generating JWT-Tokens", login.getUsername());
       // generate new token and store it in DTO
       final String token = tokenService.generateToken(login.getUsername());
       final TokenDTO tokenDTO = new TokenDTO(token);
@@ -51,6 +52,7 @@ public class LoginController {
       return ResponseEntity.ok(tokenDTO);
     // if NOT valid...
     } else {
+        log.warn("LoginController: user {} failed to log in", login.getUsername());
       // return that the username or password is invalid, no more specific than that to not reveal info
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
@@ -64,8 +66,10 @@ public class LoginController {
 
         // if the user is validated by our loginService...
         if (registered) {
+            log.info("LoginController: user {} successfully registered", register.getUsername());
             return ResponseEntity.ok("{}");
         } else {
+            log.warn("LoginController: user {} failed to register", register.getUsername());
             // return that the username or password is invalid, no more specific than that to not reveal info
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
@@ -77,6 +81,7 @@ public class LoginController {
       Map<String, Object> response = new HashMap<>();
 
       if (tokenDTO.getToken() == null) {
+          log.debug("LoginController: NULL token");
           response.put("success", false);
           response.put("message", "No token found");
           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -85,10 +90,12 @@ public class LoginController {
       boolean valid = userService.validateToken(tokenDTO);
 
       if (valid) {
+          log.info("LoginController: valid token for user {}", tokenService.getUsername(tokenDTO.getToken()));
           response.put("success", true);
           response.put("message", "Valid token");
           return ResponseEntity.ok(response);
       } else {
+          log.warn("LoginController: invalid token for user {}", tokenService.getUsername(tokenDTO.getToken()));
           response.put("success", false);
           response.put("message", "Invalid token");
           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
