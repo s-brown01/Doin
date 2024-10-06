@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
@@ -66,7 +66,8 @@ import { AppRoutingModule } from './app.routes';
       useClass: AuthInterceptor,
       multi: true,
     },
+    {provide: ErrorHandler, useClass: ErrorHandler }
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {} 
