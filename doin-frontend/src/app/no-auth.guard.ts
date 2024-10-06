@@ -5,17 +5,17 @@ import { AuthService } from './services/auth.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate {
+export class NoAuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): boolean {
     const token = this.authService.getToken();
 
     if (token) {
-      return true;
-    } else {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/home']);
       return false;
+    } else {
+      return true;
     }
   }
 }

@@ -3,6 +3,9 @@
     <form (ngSubmit)="onLogin()">
       <input type="text" placeholder="Username" [(ngModel)]="loginData.username" name="username" required>
       <input type="password" placeholder="Password" [(ngModel)]="loginData.password" name="password" required>
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
       <button type="submit">Login</button>
     </form>
     <div class="auth-links">

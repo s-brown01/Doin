@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
         User user = foundUsers.get(0);
 
         // now validate the password using the Service's built in validator
-        if (!passwordService.validatePassword(password, user.getHashedPassword())) {
+        if (!passwordService.validatePassword(password, user.getPasswordHash())) {
             log.debug("validateCredentials: given password did not match with user's, {}, previously stored password", username);
             return false;
         }
@@ -207,6 +207,6 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         // if username is validated, see if the token is valid with tokenService
-        return tokenService.validateToken(tokenDTO.getToken(), username);
+        return tokenService.validateToken(tokenDTO.getToken());
     }
 }

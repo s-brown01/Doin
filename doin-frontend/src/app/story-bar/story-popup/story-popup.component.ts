@@ -2,9 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  standalone: true,
   selector: 'app-story-popup',
-  imports: [CommonModule],
   templateUrl: './story-popup.component.html',
   styleUrls: ['./story-popup.component.css']
 })

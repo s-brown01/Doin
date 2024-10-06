@@ -1,47 +1,73 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { ApiService } from './api.service';
-import { HttpHeaders } from '@angular/common/http';
-import {catchError, map, Observable, of} from "rxjs";
 
-/**
- * AuthService handles authentication-related operations such as
- * token validation by communicating with the backend API.
- *
- * Framework of this authorization service was found from
- * <a href="https://www.digitalocean.com/community/tutorials/angular-route-guards#using-the-canactivate-route-guard">here</a>.
- * It was refined to match specific project needs with help from ChatGPT.
- */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
+  private token: string | null = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService){
 
-  /**
-   * Validates a JWT token by sending it to the backend API.
-   *
-   * @param token The JWT token to validate
-   * @returns An observable that emits the server's response
-   */
-  validateToken(token: string): Observable<{ valid: boolean; message?: string }> {
-    console.error("Validating token");
-    const tokenDTO = { token: token };
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    console.log("Sending token to backend");
-    return this.apiService.post('validateToken', tokenDTO, headers).pipe(
-      map((response: { success: boolean; message: string }) => {
-        // Check the success status and return the corresponding object
-        return {
-          valid: response.success,
-          message: response.message
-        };
+  }
+
+  login(credentials: { username: string; password: string }): Observable<any> {
+    return this.apiService.post('login', credentials).pipe(
+      map((response: any) => {
+        const token = response.token;
+        this.setToken(token);
       }),
-      catchError((error) => {
-        return of({ valid: false, message: "Error occurred while validating the token" });
-      })
+      catchError(this.handleError)
+    );
+  }
+
+  register(registerData: {username: string,
+                          password: string,
+                          confirmPassword: string,
+                          securityQuestion: string,
+                          securityAnswer: string
+                        }): Observable<any> {
+    return this.apiService.post('register', registerData).pipe(
+      map((response: any) => {
+        return response;
+      }),
+      catchError(this.handleError)
     );
   }
 
 
+  setToken(token: string): void {
+    this.token = token;
+    localStorage.setItem('authToken', token); 
+  }
+
+  getToken(): string | null {
+    return this.token || localStorage.getItem('authToken');
+  }
+
+  clearToken(): void {
+    this.token = null;
+    localStorage.removeItem('authToken');
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'An unknown error occurred!';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      switch (error.status) {
+        case 401:
+          errorMessage = 'Invalid username or password!';
+          break;
+        case 500:
+          errorMessage = 'Internal server error. Please try again later.';
+          break;
+        default:
+          errorMessage = `Error: ${error.error}`;
+      }
+    }
+    return throwError(errorMessage);
+  }
 }

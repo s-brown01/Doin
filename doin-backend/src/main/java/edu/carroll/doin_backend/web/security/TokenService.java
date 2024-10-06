@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public interface TokenService {
     String generateToken(String username);
 
-    boolean validateToken(String token, String username);
+    boolean validateToken(String token);
 
     String getUsername(String token);
 }

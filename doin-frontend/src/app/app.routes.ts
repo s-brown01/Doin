@@ -7,19 +7,20 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ProfileComponent } from './profile/profile.component';
+import { AuthGuard } from './auth.guard';
+import { NoAuthGuard } from './no-auth.guard';
 
-export const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'user', component: ProfileComponent },
-  { path: 'discover', component: DiscoverComponent },
-  { path: 'friends', component: FriendsComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'forgot-password', component: ForgotPasswordComponent},
+const routes: Routes = [
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'user', component: ProfileComponent, canActivate: [AuthGuard] },
+  { path: 'discover', component: DiscoverComponent, canActivate: [AuthGuard] },
+  { path: 'friends', component: FriendsComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [NoAuthGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [NoAuthGuard] },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' }
 ];
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
