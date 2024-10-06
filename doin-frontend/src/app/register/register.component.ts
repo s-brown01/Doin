@@ -32,14 +32,11 @@ export class RegisterComponent {
     }
 
     if (this.registerData.username && this.registerData.password) {
-      this.authService.register({
-        username: this.registerData.username,
-        password: this.registerData.password,
-      }).subscribe(
+      this.authService.register(this.registerData).subscribe(
         (response) => {
-          if (response.ok) {
+            console.log('succesfull')
             this.router.navigate(['/login']); 
-          }
+          
         },
         (error) => {
           this.errorMessage = error;

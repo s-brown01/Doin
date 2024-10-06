@@ -67,7 +67,7 @@ public class LoginController {
             return ResponseEntity.ok("{}");
         } else {
             // return that the username or password is invalid, no more specific than that to not reveal info
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username or password");
         }
     }
 

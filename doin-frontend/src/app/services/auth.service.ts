@@ -23,7 +23,12 @@ export class AuthService {
     );
   }
 
-  register(registerData: { username: string; password: string }): Observable<any> {
+  register(registerData: {username: string,
+                          password: string,
+                          confirmPassword: string,
+                          securityQuestion: string,
+                          securityAnswer: string
+                        }): Observable<any> {
     return this.apiService.post('register', registerData).pipe(
       map((response: any) => {
         return response;
@@ -60,7 +65,7 @@ export class AuthService {
           errorMessage = 'Internal server error. Please try again later.';
           break;
         default:
-          errorMessage = `Error: ${error.message}`;
+          errorMessage = `Error: ${error.error}`;
       }
     }
     return throwError(errorMessage);
