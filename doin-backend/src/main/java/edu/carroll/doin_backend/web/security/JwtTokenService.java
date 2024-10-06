@@ -1,99 +1,93 @@
 package edu.carroll.doin_backend.web.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
 import java.util.Date;
 
-/**
- * This is a Utility class to create JWT Tokens, validate them, check expiration, and extract data.
- *
- * <BR>
- * The creation of this class was assisted by ChatGPT
- */
-
-
-@Service
+@Component
 public class JwtTokenService implements TokenService {
 
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour in milliseconds
-    private final SecretKey secretKey;
-//            = "super_secret_key";
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenService.class);
 
-    JwtTokenService() {
-        // Generate a secure random key for HS256
-        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    public static void main(String[] args){
+        JwtTokenService tokenService = new JwtTokenService();
+        System.out.println(tokenService.generateToken("test"));
     }
 
-//    @PostConstruct
-//    public void init() {
-//    }
+    private final String secret = "Super-Secret-Key";
 
     /**
-     * Create a new JWT Token for a specific user (identified by the username) that expires in one hour.
-     *
-     * @param username - the unique username of the user signed in
-     * @return the newly generated JWT-Token that identifies the user
+     * This is how long 1 hour is in milliseconds.
      */
+    private static final long HOUR_MILLIS = 60 * 60 * 1000;
+
+    private static final String issuer = "dointertasetsdtr asdrasr";
+
+    @Override
     public String generateToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(secretKey)  // Use the secure key
-                .compact();
+        try {
+            return JWT.create()
+                    .withSubject(username)
+                    .withClaim("username", username)
+                    .withIssuedAt(new Date())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + HOUR_MILLIS))
+                    .withIssuer(issuer)
+                    .sign(Algorithm.HMAC256(secret));
+        } catch (JWTCreationException e) {
+            log.error("TokenServiceImpl: generating a token resulted in a JWTCreationException: {}", e.toString());
+            return null;
+        } catch (IllegalArgumentException e) {
+            log.error("TokenServiceImpl: generating a token resulted in an IllegalArgumentException: {}", e.toString());
+            return null;
+        }
     }
 
-    /**
-     * Validate the token against the username.
-     *
-     * @param token    - the JWT Token to check and compare against the username
-     * @param username - the username to verify against the token
-     * @return true if the username matches the JWTToken's stored data and the token is not expired.
-     */
+    @Override
     public boolean validateToken(String token, String username) {
-        final String extractedUsername = getUsername(token);
+        try {
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
+                    .withSubject(username)
+                    .withIssuer(issuer)
+                    .build();
+            DecodedJWT jwt = verifier.verify(token);
 
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+            String tokenUsername = jwt.getClaim("username").asString();
+            if (!tokenUsername.equals(username)) {
+                log.warn("TokenServiceImpl: validate token - invalid token, wrong username");
+                return false;
+            }
+            if (tokenUsername == null) {
+                log.warn("TokenServiceImpl: validate token - null username");
+                return false;
+            }
+
+            return true;
+        } catch (JWTVerificationException exception) {
+            // Token is invalid
+            return false;
+        }
     }
 
-    /**
-     * Extract the username from the JWT Token.
-     *
-     * @param token - the token to extract the username from
-     * @return - the username that was stored in the token.
-     */
+    @Override
     public String getUsername(String token) {
-        return extractClaims(token).getSubject();
+        return JWT.decode(token).getClaim("username").asString();
     }
 
-    /**
-     * Extract claims from the token.
-     *
-     * @param token - the JWT token from which claims need to be extracted
-     * @return claims - the claims contained in the JWT token
-     */
-    private Claims extractClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey) // Use the secure key for validation
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public String validateTokenAndRetrieveSubject(String token) throws JWTVerificationException {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
+                .withSubject("username")
+                .withIssuer(issuer)
+                .build();
+        DecodedJWT jwt = verifier.verify(token);
+        return jwt.getClaim("username").asString();
     }
 
-    /**
-     * Check if the token is expired.
-     *
-     * @param token - the JWT token to check for expiration
-     * @return true if the token is expired, false otherwise
-     */
-    private boolean isTokenExpired(String token) {
-        return extractClaims(token).getExpiration().before(new Date());
-    }
 }

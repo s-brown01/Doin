@@ -1,3 +1,3 @@
-INSERT INTO security_questions(id, question) VALUES (1, 'pet');
-INSERT INTO security_questions(id, question) VALUES (2, 'school');
-INSERT INTO security_questions(id, question) VALUES (3, 'city');
+INSERT INTO SECURITY_QUESTIONS(id, question) VALUES (1, 'pet');
+INSERT INTO SECURITY_QUESTIONS(id, question) VALUES (2, 'school');
+INSERT INTO SECURITY_QUESTIONS(id, question) VALUES (3, 'city');
