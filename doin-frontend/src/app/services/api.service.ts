@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {catchError, Observable, throwError} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,12 @@ export class ApiService {
   }
 
   post(endpoint: string, data: any, headers?: HttpHeaders): Observable<any> {
-    return this.http.post(`${this.baseUrl}/${endpoint}`, data, { headers });
+    return this.http.post(`${this.baseUrl}/${endpoint}`, data, { headers }).pipe(
+      catchError(error => {
+        console.error("ERROR WITH POSTING");
+        return throwError(() => new Error('API request failed'));
+      })
+    );
   }
 
   get(endpoint: string, headers?: HttpHeaders): Observable<any> {

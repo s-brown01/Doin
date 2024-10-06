@@ -3,12 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpClientModule } from '@angular/common/http';
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports:[FormsModule, RouterModule],
+  imports:[FormsModule, RouterModule, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -20,16 +21,17 @@ export class LoginComponent {
   };
 
   constructor(private router: Router, private apiService : ApiService) { }
+  // constructor(private router: Router, private apiService : ApiService, private authService : AuthService) { }
 
   ngOnInit(): void {
     const token = sessionStorage.getItem('token');
     if (token) {
-      // showing for now it has it
+      // showing that token was found
       console.log("has Jwt Token");
       const tokenDTO = { token: token };
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': token });
 
-      console.debug("SENDING TOKEN TO BACKEND");
+      console.debug("SENDING TOKEN TO AuthSERVICE");
       this.apiService.post('validateToken', tokenDTO, headers).subscribe(
         response => {
           if (response.ok) {
@@ -45,16 +47,6 @@ export class LoginComponent {
       )
 
       /*
-      ngOnInit(): void {
-    const token = sessionStorage.getItem('token');
-    if (token) {
-      // showing for now it has it
-      console.error("has Jwt Token");
-      // const tokenDTO = { token: token };
-      // const headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': token });
-
-      console.log("SENDING TOKEN TO AuthSERVICE");
-
       // this.authService.validateToken(token).subscribe(
       //   result => {
       //     if (result.valid) {
