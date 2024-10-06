@@ -1,19 +1,15 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { ApiService } from '../services/api.service';
+import { AuthService } from '../services/auth.service';
 
 
 @Component({
   selector: 'app-register',
-  standalone: true,
-  imports: [FormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  constructor(private router: Router, private apiService : ApiService) { }
+  constructor(private router: Router, private authService: AuthService) { }
   registerData = {
     username: '',
     password: '',
@@ -21,40 +17,36 @@ export class RegisterComponent {
     securityQuestion: '',
     securityAnswer: ''
   }
+  errorMessage: string | null = null;
 
-  onRegister(){
-    if (this.registerData.password != this.registerData.confirmPassword){
-      console.error("Passwords need to match");
+
+  onRegister() {
+    if (this.registerData.password !== this.registerData.confirmPassword) {
+      this.errorMessage = "Passwords need to match";
       return;
     }
 
-    if (this.registerData.password.length < 8){
-      console.error("Password must be at least 8 characters");
+    if (this.registerData.password.length < 8) {
+      this.errorMessage = "Password must be at least 8 characters";
       return;
     }
 
     if (this.registerData.username && this.registerData.password) {
-      this.apiService.post('register', this.registerData).subscribe(
-        response => {
-          if (response.ok){
-            console.log('Registration successful - moving to login', response);
-            this.router.navigate(['/login']);
+      this.authService.register({
+        username: this.registerData.username,
+        password: this.registerData.password,
+      }).subscribe(
+        (response) => {
+          if (response.ok) {
+            this.router.navigate(['/login']); 
           }
-          this.router.navigate(['/login']);
         },
-        error => {
-          if (error.status == 401){
-            console.error('Invalid username or password, please try again');
-          } else if (error.status == 400) {
-            console.error('Bad request. Please double check input');
-          } else {
-            console.error('Registration failed:', error);
-          }
+        (error) => {
+          this.errorMessage = error;
         }
       );
     } else {
-      console.error('Please provide both username and password.');
+      this.errorMessage = 'Please provide both username and password.';
     }
-
   }
 }

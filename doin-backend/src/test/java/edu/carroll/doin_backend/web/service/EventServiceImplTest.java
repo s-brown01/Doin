@@ -20,7 +20,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@ActiveProfiles("test")
 @SpringBootTest
 public class EventServiceImplTest {
     @Autowired
