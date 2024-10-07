@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
         User user = foundUsers.get(0);
 
         // now validate the password using the Service's built in validator
-        if (!passwordService.validatePassword(password, user.getPasswordHash())) {
+        if (!passwordService.validatePassword(password, user.getPassword())) {
             log.debug("validateCredentials: given password did not match with user's, {}, previously stored password", username);
             return false;
         }
