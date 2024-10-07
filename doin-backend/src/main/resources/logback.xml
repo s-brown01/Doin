@@ -2,7 +2,7 @@
 <configuration>
   <appender name="Console" class ="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%date - [%level] - from $logger in %thread %n%message%xException</pattern>
+      <pattern>%date - [%level] - from %logger in %thread %n%message%xException%n</pattern>
     </encoder>
   </appender>
 
@@ -24,7 +24,7 @@
   </appender>
 
   <!-- level = "TRACE" is TEMPORARY. This should be changed once logging is more verbose  -->
-  <root level = "INFORMATION">
+  <root level = "INFO">
     <appender-ref ref = "Console" />
     <!-- Comment out logging to LogFile for now... -->
     <!-- <appender-ref ref = "LogFile" /> -->
