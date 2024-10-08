@@ -21,6 +21,15 @@ export class RegisterComponent {
 
 
   onRegister() {
+    if (!this.registerData.username ||
+      !this.registerData.password ||
+      !this.registerData.confirmPassword ||
+      !this.registerData.securityQuestion ||
+      !this.registerData.securityAnswer) {
+      this.errorMessage = "Please enter all information below";
+      return;
+    }
+
     if (this.registerData.password !== this.registerData.confirmPassword) {
       this.errorMessage = "Passwords need to match";
       return;
@@ -34,9 +43,8 @@ export class RegisterComponent {
     if (this.registerData.username && this.registerData.password) {
       this.authService.register(this.registerData).subscribe(
         (response) => {
-            console.log('succesfull')
-            this.router.navigate(['/login']); 
-          
+          this.errorMessage = null;
+          this.router.navigate(['/login']);
         },
         (error) => {
           this.errorMessage = error;
