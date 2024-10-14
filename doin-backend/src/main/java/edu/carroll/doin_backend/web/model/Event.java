@@ -14,21 +14,28 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @ManyToOne
     @JoinColumn(name = "event_type_id")
     private EventType eventType;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Visibility visibility;
+
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
+
     @Column
     private String location;
+
     @Column
     private LocalDateTime time;
+
     @Column
     private String description;
+
     @ManyToMany
     @JoinTable(
             name = "event_images",
@@ -36,6 +43,7 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "image_id")
     )
     private List<Image> images = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "event_joiners",
@@ -43,6 +51,7 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> joiners = new ArrayList<>();
+
     @Column
     private LocalDateTime createdAt;
 

@@ -16,18 +16,24 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(nullable = false)
     private String username;
+
     @Column(nullable = false)
     private String passwordHash;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
     @OneToOne
     @JoinColumn(name = "profile_picture_id")
     private Image profilePicture;
+
     @ManyToOne
     @JoinColumn(name = "security_question_id")
     private SecurityQuestion securityQuestion;
+
     @Column(name = "security_question_answer_hash")
     private String securityQuestionAnswer;
 
