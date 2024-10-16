@@ -3,6 +3,7 @@ package edu.carroll.doin_backend.web.controller;
 import edu.carroll.doin_backend.web.dto.LoginDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.TokenDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.security.TokenService;
 import edu.carroll.doin_backend.web.service.UserService;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -113,5 +115,12 @@ public class LoginController {
       }
 
     }
+
+    @PostMapping("friends")
+    public List<UserDTO> getFriends(@RequestBody UserDTO userDTO) {
+      return userService.getFriends();
+
+    }
+
 
 }
