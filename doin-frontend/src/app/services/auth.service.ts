@@ -38,10 +38,21 @@ export class AuthService {
     );
   }
 
+  forgotPassword(resetData: {username: string,
+                             securityQuestion: string,
+                             securityAnswer: string
+                           }): Observable<any> {
+    return this.apiService.post('forgot-passowrd', resetData).pipe(
+      map((response: any) => {
+        return response;
+      }),
+      catchError(this.handleError)
+    );
+  }
 
   setToken(token: string): void {
     this.token = token;
-    localStorage.setItem('authToken', token); 
+    localStorage.setItem('authToken', token);
   }
 
   getToken(): string | null {
