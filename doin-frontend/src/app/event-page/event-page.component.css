@@ -44,22 +44,24 @@
   }
   
   .attendees {
-    margin-top: 20px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); /* Responsive columns */
+    grid-gap: 0px; /* Uniform gap for both rows and columns */
+    width: 100%; /* Ensure it takes up the full width */
+    margin: 10px 0; /* Optional: spacing from other elements */
+}
 
-  }
-  
-  .attendee {
+.attendee {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 10px;
-    width: 10%;
-  }
+    padding: 10px;
+    background-color: #f1f1f1; /* Optional: background color for box */
+    border-radius: 10px; /* Optional: rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: add shadow for a box effect */
+    text-align: center;
+}
+
   
   .attendee-info {
     display: flex;
@@ -107,7 +109,7 @@
     height: 40px;
     background-color: #ddd;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-top: 10px;
   }
 
   
