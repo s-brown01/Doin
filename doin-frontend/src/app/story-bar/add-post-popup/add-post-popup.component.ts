@@ -4,6 +4,7 @@ import { ImageDTO } from '../../dtos/image.dto';
 import { EventDTO, EventType } from '../../dtos/event.dto';
 import { EventService } from '../../services/event.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-add-post-popup',
@@ -17,19 +18,23 @@ export class AddPostPopupComponent {
   eventTypeName: string = '';
   evetTypeId: number = 1;
   visibility: string = 'PUBLIC'; 
-  creator: UserDTO = new UserDTO(2, 'leo', new ImageDTO(1, '', '')); 
+  creator: UserDTO; 
   images: ImageDTO[] = [];
   joiners: UserDTO[] = [];
-  createdAt: Date = new Date();
+  createdAt: Date; 
 
   @Input() isVisible: boolean = false;
   @Output() closeAddPost = new EventEmitter<void>();
 
   eventTypes = ['party', 'meeting', 'lunch'];
 
-  constructor(private eventService : EventService, private router: Router) { }
+  constructor(private eventService: EventService, private router: Router, authService: AuthService) { 
+    this.createdAt = new Date(); 
+    this.creator = authService.getCurrentUser();
+  }
 
   async onSubmit() {
+    console.log(this.createdAt);
     const event = new EventDTO(
       0,
       new EventType(this.evetTypeId, this.eventTypeName),
