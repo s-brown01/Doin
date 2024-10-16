@@ -13,14 +13,14 @@
     max-width: 400px;
     margin: 0 auto;
   }
-  
+
   /* Title styling */
   .auth-container h1 {
     margin-bottom: 20px;
     font-size: 2rem;
     color: #333;
   }
-  
+
   /* Form input fields */
   .auth-container input[type="text"],
   .auth-container input[type="password"] {
@@ -32,7 +32,7 @@
     box-sizing: border-box;
     font-size: 1rem;
   }
-  
+
   /* Button styling */
   .auth-container button {
     width: 100%;
@@ -45,24 +45,33 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
-  
+
   .auth-container button:hover {
     background-color: #218838;
   }
-  
+
   /* Links for 'forgot password' and 'register' */
   .auth-links {
     margin-top: 15px;
     text-align: center;
   }
-  
+
   .auth-links a {
     color: #007bff;
     text-decoration: none;
     margin: 0 10px;
     font-size: 0.9rem;
   }
-  
+
   .auth-links a:hover {
     text-decoration: underline;
   }
+
+.error-message {
+  text-align: center;
+  color: black;
+  margin: 5px 0px;
+  font-weight: bold;
+  background-color: rgba(255, 0, 0, 0.49);
+  padding: 10px;
+}
