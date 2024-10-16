@@ -42,7 +42,7 @@ export class AuthService {
                              securityQuestion: string,
                              securityAnswer: string
                            }): Observable<any> {
-    return this.apiService.post('forgot-passowrd', resetData).pipe(
+    return this.apiService.post('forgot-password', resetData).pipe(
       map((response: any) => {
         return response;
       }),
