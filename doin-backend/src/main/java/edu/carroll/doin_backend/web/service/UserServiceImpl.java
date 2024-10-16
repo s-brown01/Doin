@@ -2,6 +2,7 @@ package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.TokenDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -221,5 +223,16 @@ public class UserServiceImpl implements UserService {
 
         // If username is validated, see if the token is valid with tokenService
         return tokenService.validateToken(tokenDTO.getToken());
+    }
+
+    @Override
+    public List<UserDTO> getFriends() {
+        List<User> users = loginRepo.findAll();
+        List<UserDTO> friends = new ArrayList<>();
+        for (User user : users) {
+            final UserDTO userDTO = new UserDTO(user);
+            friends.add(userDTO);
+        }
+        return friends;
     }
 }
