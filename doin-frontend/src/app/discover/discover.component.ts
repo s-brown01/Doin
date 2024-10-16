@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-// import { HomeComponent } from '../home/home.component';
-import { CommonModule } from "@angular/common";
-import { EventComponent } from "../event/event.component";
 import { EventService } from "../services/event.service";
 import { EventDTO } from "../dtos/event.dto";
 
