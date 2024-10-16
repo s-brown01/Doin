@@ -66,12 +66,6 @@ public class UserServiceImpl implements UserService {
             return false;
         }
 
-        // REMOVE THIS FOR PRODUCTION
-        if (registerDTO.getUsername().equalsIgnoreCase("fail")) {
-            System.out.println("\n\n test case");
-            return false;
-        }
-
         final Integer securityQID = securityQuestionRepo.findIdByQuestion(registerDTO.getSecurityQuestionString());
         // make sure the Security Question exists in the database
         if (securityQID == null) {
@@ -161,7 +155,15 @@ public class UserServiceImpl implements UserService {
         // we expect 1 user found per username.
         // if we find less than 1 user...
         if (foundUsers.isEmpty()) {
-            log.debug("validateCredentials: found less than 1 user (0 total)");
+            log.info("validateCredentials: user {} cannot be found in database", username);
+            // checking if other similar users are in there
+            List<User> extraUsers = loginRepo.findByUsernameContainingIgnoreCase(username);
+            if (extraUsers.isEmpty()) {
+                // no similar usernames, so just return false and no extra logs
+                return false;
+            }
+            // if there are similar usernames, give an extra log message
+            log.info("validateCredentials: similar usernames to {} found in database", username);
             return false;
         }
 
@@ -206,13 +208,13 @@ public class UserServiceImpl implements UserService {
 
         if (users.isEmpty()) {
             // Finding no users is expected, not horrid
-            log.debug("validateToken: found less than 1 user (0 total)");
+            log.debug("validateToken: found no users with username {}", username);
             return false;
         }
 
         if (users.size() > 1) {
             // Finding more than 1 user is a bigger issue than 0 users
-            log.warn("validateToken: found more than 1 user ({})", username);
+            log.warn("validateToken: JPA Repository found more than 1 users with username {}", username);
             return false;
         }
 
@@ -225,8 +227,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = loginRepo.findAll();
         List<UserDTO> friends = new ArrayList<>();
         for (User user : users) {
-            final UserDTO userDTO = new UserDTO(user);
-            friends.add(userDTO);
+            friends.add(new UserDTO(user));
         }
         return friends;
     }
