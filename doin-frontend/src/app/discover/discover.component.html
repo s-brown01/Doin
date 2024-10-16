@@ -1,5 +1,8 @@
 <h1> Other Events Goin On!</h1>
 <div class = "content-wrapper">
+  <div *ngIf="events.length === 0">
+    <p id = "no-events-found">No events available at the moment. :(</p>
+  </div>
   <div *ngFor="let event of events">
     <app-event class = "event-comp" [event]="event"></app-event>
   </div>
