@@ -27,7 +27,11 @@ export class LoginComponent {
           this.router.navigate(['/home']);
         },
         (error) => {
-          this.errorMessage = error;
+          if (error.status === 401) {
+            this.errorMessage = "Invalid username or password. Please try again!";
+          } else {
+            this.errorMessage = error;
+          }
         }
       );
     }

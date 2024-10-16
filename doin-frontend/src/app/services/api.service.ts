@@ -18,7 +18,10 @@ export class ApiService {
   post(endpoint: string, data: any, headers?: HttpHeaders): Observable<any> {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data, { headers }).pipe(
       catchError(error => {
-        console.error("ERROR WITH POSTING");
+        if (error.status === 401) {
+          return throwError(() => error);
+        }
+        console.error("Unexpected error - ", error);
         return throwError(() => new Error('API request failed'));
       })
     );
