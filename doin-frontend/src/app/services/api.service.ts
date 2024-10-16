@@ -18,9 +18,11 @@ export class ApiService {
   post(endpoint: string, data: any, headers?: HttpHeaders): Observable<any> {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data, { headers }).pipe(
       catchError(error => {
+        // unauthorized b/c of incorrect credentials
         if (error.status === 401) {
           return throwError(() => error);
         }
+        // any other error that is not an "unauthorized" error
         console.error("Unexpected error - ", error);
         return throwError(() => new Error('API request failed'));
       })
