@@ -25,7 +25,7 @@ export class AuthService {
       map((response: any) => {
         const token = response.token;
         this.setToken(token);
-    
+
         return token;
       }),
       switchMap((token: string) => {
@@ -34,11 +34,16 @@ export class AuthService {
             localStorage.setItem('currentUser', JSON.stringify(user));
             this.currentUserSubject.next(user);
             console.log(user);
-            return user; 
+            return user;
           })
         );
       }),
       catchError(error => {
+        // seeing if it is an unauthorized error
+        if (error.status === 401){
+          console.log("Invalid username or password");
+          return throwError(() => error);
+        }
         console.error("ERROR WITH POSTING", error);
         return throwError(() => new Error('API request failed'));
       })
