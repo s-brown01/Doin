@@ -42,29 +42,25 @@ public class LoginController {
   @PostMapping("/login")
   public ResponseEntity<TokenDTO> loginPost(@RequestBody LoginDTO login) {
     log.info("LoginController: user {} attempting login", login.getUsername());
-//    boolean isValidUser = userService.validateCredentials(login.getUsername(), login.getPassword());
     boolean isValidUser = false;
+
     try {
         isValidUser = userService.validateCredentials(login.getUsername(), login.getPassword());
     } catch (Exception e) {
         log.error("LoginController: user {} login errored {}", login.getUsername(), e.getStackTrace());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
-    log.info("LoginController: isValidUser = {}", isValidUser);
-    String token;
 
     // if the user is validated by our loginService...
     if (isValidUser) {
         log.info("LoginController: user {} successfully logged in, generating JWT-Tokens", login.getUsername());
         // generate new token and store it in DTO
-        token = tokenService.generateToken(login.getUsername());
+        final String token = tokenService.generateToken(login.getUsername());
         final TokenDTO tokenDTO = new TokenDTO(token);
         // Return the DTO
         return ResponseEntity.ok(tokenDTO);
     // if NOT valid...
     } else {
-        token = tokenService.generateToken(login.getUsername());
-        log.info("LoginController: failure {}", tokenService.getUsername(token));
         log.info("LoginController: user {} failed to log in", login.getUsername());
         // return that the username or password is invalid, no more specific than that to not reveal info
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
