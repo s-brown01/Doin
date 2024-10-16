@@ -131,18 +131,13 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This function makes sure that a new User's password is valid: not empty/null and not "password"
+     * This function makes sure that a new User's password is valid: not empty/null
      * @param password - the raw password to be checked
-     * @return true if the username is valid, false if not valid (null, empty, equals "password").
+     * @return true if the username is valid, false if not valid (null, empty).
      */
     private boolean isValidPassword(String password) {
         if (password == null || password.isEmpty() || password.trim().isEmpty()) {
             log.warn("createNewUser: isValidPassword - null or empty password");
-            return false;
-        }
-
-        if (password.equalsIgnoreCase("password")) {
-            log.warn("createNewUser: isValidPassword - password equals password");
             return false;
         }
 
