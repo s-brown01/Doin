@@ -29,7 +29,10 @@ public class PasswordBCryptService implements PasswordService {
    * @return - the hashed and salted version of the password.
    */
   @Override
-  public String hashPassword(String rawPassword) {
+  public String hashPassword(String rawPassword) throws IllegalArgumentException {
+    if (rawPassword == null) {
+      throw new IllegalArgumentException("rawPassword parameter cannot be null");
+    }
     return hasher.encode(rawPassword);
   }
 
