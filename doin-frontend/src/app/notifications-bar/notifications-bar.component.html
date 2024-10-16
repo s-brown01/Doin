@@ -1,8 +1,7 @@
 <div class="wrapper">
   <div class="profile-wrapper">
     <div class="profile-img-wrapper">
-      <app-image class="profile-img" [borderRadius]="'50%'"></app-image>
-    </div>
+      <app-image class="profile-img" [borderRadius]="'50%'" [image]="user?.profilePicture"></app-image>    </div>
     <div><a href="login" (click)="logout()">&nbsp;Logout</a></div>  </div>
   <div class="notifications">
     <ul>

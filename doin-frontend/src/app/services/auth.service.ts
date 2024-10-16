@@ -1,17 +1,23 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, switchMap, throwError } from 'rxjs';
 import { ApiService } from './api.service';
 import { jwtDecode } from 'jwt-decode';
+import { UserDTO } from '../dtos/user.dto';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private token: string | null = null;
+  private currentUserSubject: BehaviorSubject<UserDTO>;
+  public currentUser: Observable<UserDTO | null>;
 
-  constructor(private apiService: ApiService){
-
+  constructor(private apiService: ApiService, private userService: UserService){
+    const savedUser = localStorage.getItem('currentUser');
+    this.currentUserSubject = new BehaviorSubject<UserDTO>(savedUser ? JSON.parse(savedUser) : null);
+    this.currentUser = this.currentUserSubject.asObservable();
   }
 
   login(credentials: { username: string; password: string }): Observable<any> {
@@ -19,8 +25,23 @@ export class AuthService {
       map((response: any) => {
         const token = response.token;
         this.setToken(token);
+    
+        return token;
       }),
-      catchError(this.handleError)
+      switchMap((token: string) => {
+        return this.userService.getUserByName(credentials.username).pipe(
+          map((user: any) => {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            this.currentUserSubject.next(user);
+            console.log(user);
+            return user; 
+          })
+        );
+      }),
+      catchError(error => {
+        console.error("ERROR WITH POSTING", error);
+        return throwError(() => new Error('API request failed'));
+      })
     );
   }
 
@@ -51,6 +72,10 @@ export class AuthService {
   clearToken(): void {
     this.token = null;
     localStorage.removeItem('authToken');
+  }
+
+  getCurrentUser(): UserDTO {
+    return this.currentUserSubject.value;
   }
 
   isTokenExpired(token: string): boolean {
