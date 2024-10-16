@@ -27,6 +27,19 @@ export class ForgotPasswordComponent {
       return;
     }
 
+    // already checked that it's not null
+    this.authService.forgotPassword(this.resetData).subscribe(
+      (response) => {
+        this.errorMessage = null;
+        this.router.navigate(['/login']);
+      },
+      (error) => {
+        this.errorMessage = error.message;
+
+      }
+    )
+
+
     this.errorMessage = null;
 
 
