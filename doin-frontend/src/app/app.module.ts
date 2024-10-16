@@ -26,6 +26,7 @@ import { FriendsComponent } from './friends/friends.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AppRoutingModule } from './app.routes';
+import { UserPageComponent } from './user-page/user-page.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { AppRoutingModule } from './app.routes';
     FriendListComponent,
     AddPostPopupComponent,
     StoryPopupComponent,
-    StoryBarComponent
+    StoryBarComponent,
+    UserPageComponent
   ],
   imports: [
     BrowserModule,
