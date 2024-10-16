@@ -4,10 +4,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Changed to start to avoid centering all posts */
   flex-grow: 1;
   overflow-y: auto;
 
   scrollbar-width: thin;
-  scrollbar-color: content-wrapper#888 #f1f1f1;
+  scrollbar-color: #888 #f1f1f1; /* Fixed syntax for scrollbar color */
+}
+
+.post {
+  margin: 40px 0; /* Added vertical margin for spacing */
+  width: 50%; /* Ensures posts take full width of content-wrapper */
+  max-width: 600px; /* Optional: Limit max width for better readability */
+}
+
+.wrapper {
+  height: 100%;
 }

@@ -1,0 +1,121 @@
+.lunch-container {
+    margin-top: 100px;
+    height: 50vh;
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: auto;
+
+  }
+  
+  .header {
+    text-align: center;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .post-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .location, .time {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .image img {
+    width: 100%;
+    border-radius: 10px;
+  }
+  
+  .attendees {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); /* Responsive columns */
+    grid-gap: 0px; /* Uniform gap for both rows and columns */
+    width: 100%; /* Ensure it takes up the full width */
+    margin: 10px 0; /* Optional: spacing from other elements */
+}
+
+.attendee {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background-color: #f1f1f1; /* Optional: background color for box */
+    border-radius: 10px; /* Optional: rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: add shadow for a box effect */
+    text-align: center;
+}
+
+  
+  .attendee-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .attendee-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .send-request-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .send-request-btn:hover {
+    background-color: #45a049;
+  }
+
+  .profile-img{
+    width: 60px;
+    height: 60px;
+  }
+
+  .username-link{
+    text-decoration: none;
+  }
+
+  .friend-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #ddd;
+    border-radius: 50%;
+    margin-top: 10px;
+  }
+
+  
+  .attendee{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }

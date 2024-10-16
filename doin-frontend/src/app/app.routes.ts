@@ -10,12 +10,16 @@ import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from './auth.guard';
 import { NoAuthGuard } from './no-auth.guard';
 import { ErrorPageComponent } from './error-page/error-page.component';
+import { EventPageComponent } from './event-page/event-page.component';
+import { UserPageComponent } from './user-page/user-page.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'user', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'discover', component: DiscoverComponent, canActivate: [AuthGuard] },
   { path: 'friends', component: FriendsComponent, canActivate: [AuthGuard] },
+  { path: 'event/:id', component: EventPageComponent, canActivate: [AuthGuard] }, 
+  { path: 'user/:id', component: UserPageComponent, canActivate: [AuthGuard] }, 
   { path: 'login', component: LoginComponent, canActivate: [NoAuthGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [NoAuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },

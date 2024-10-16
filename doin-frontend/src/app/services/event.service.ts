@@ -15,7 +15,15 @@ export class EventService {
     return this.http.get<EventDTO[]>(this.baseUrl + "/events");
   }
 
+  getEvent(id: Number): Observable<EventDTO> {
+    return this.http.get<EventDTO>(`${this.baseUrl}/events/${id}`);
+  }
+
   addEvent(event : EventDTO): Observable<any>{
     return this.apiService.post("events", event);
+  }
+
+  joinEvent(eventId: number, userId: number){
+    return this.http.post(`${this.baseUrl}/events/${eventId}/join?userId=${userId}`, {});
   }
 }

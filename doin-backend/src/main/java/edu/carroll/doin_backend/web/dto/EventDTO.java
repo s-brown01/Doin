@@ -113,6 +113,7 @@ public class EventDTO {
         this.description = event.getDescription();
         this.joiners = event.getJoiners().stream().map(UserDTO::new).toList();
         this.images = event.getImages();
+        this.createdAt = event.getCreatedAt();
     }
     public EventDTO() {}
 
