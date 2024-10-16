@@ -16,6 +16,10 @@ export class DiscoverComponent {
     this.getEvents();
   }
 
+  trackByEventID(index: number, event: any){
+    return event.id;
+  }
+
   getEvents(): void {
     this.eventService.getEvents().subscribe((data: EventDTO[]) => {
       this.events = data;
