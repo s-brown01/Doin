@@ -143,6 +143,11 @@ public class Event {
         this.joiners.add(user);
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     public Event(EventDTO event) {
         this.id = event.getId();
         this.eventType = event.getEventType();
@@ -152,6 +157,7 @@ public class Event {
         this.time = event.getTime();
         this.description = event.getDescription();
         this.images = event.getImages();
+        createdAt = event.getCreatedAt();
     }
     public Event() {}
 }
