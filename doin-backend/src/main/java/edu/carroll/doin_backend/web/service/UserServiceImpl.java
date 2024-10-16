@@ -2,17 +2,21 @@ package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.TokenDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
+import edu.carroll.doin_backend.web.repository.UserRepository;
 import edu.carroll.doin_backend.web.security.PasswordService;
 import edu.carroll.doin_backend.web.security.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,7 +25,6 @@ public class UserServiceImpl implements UserService {
      * A Logger to just for this class
      */
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
-
     /**
      * a LoginRepository to get the findByUsername method
      */
@@ -38,17 +41,19 @@ public class UserServiceImpl implements UserService {
     private final TokenService tokenService;
 
     private final SecurityQuestionRepository securityQuestionRepo;
+    private final UserRepository userRepository;
 
     /**
      * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order. The parameters in constructor allow Springboot to automatically inject dependencies.
      * @param loginRepo - the LoginRepository which holds all registered Users
      * @param passwordService - the PasswordService to verify user's password
      */
-    public UserServiceImpl(LoginRepository loginRepo, PasswordService passwordService, SecurityQuestionRepository securityQuestionRepo, TokenService tokenService) {
+    public UserServiceImpl(LoginRepository loginRepo, PasswordService passwordService, SecurityQuestionRepository securityQuestionRepo, TokenService tokenService, UserRepository userRepository) {
         this.loginRepo = loginRepo;
         this.passwordService = passwordService;
         this.securityQuestionRepo = securityQuestionRepo;
         this.tokenService = tokenService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -221,5 +226,22 @@ public class UserServiceImpl implements UserService {
 
         // If username is validated, see if the token is valid with tokenService
         return tokenService.validateToken(tokenDTO.getToken());
+    }
+
+    @Override
+    public UserDTO findUser(Integer id, String username) {
+        if(id == null && username == null) {
+            return null;
+        }
+
+        Optional<User> user = null;
+        if (id != null) {
+            user = userRepository.findById(id);
+        }
+        else{
+            user = Optional.ofNullable(userRepository.findByUsername(username));
+        }
+
+        return user.map(UserDTO::new).orElse(null);
     }
 }
