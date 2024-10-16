@@ -47,7 +47,12 @@ export class RegisterComponent {
           this.router.navigate(['/login']);
         },
         (error) => {
-          this.errorMessage = error;
+          console.log(error);
+          if (error.status === 400){
+            this.errorMessage = "Username is already taken";
+            return;
+          }
+          this.errorMessage = error.message;
         }
       );
     } else {
