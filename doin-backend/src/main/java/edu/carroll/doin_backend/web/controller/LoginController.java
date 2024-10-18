@@ -111,19 +111,22 @@ public class LoginController {
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
       log.info("LoginController: validating security questions for username {}", forgotPasswordDTO.getUsername());
 
-      ValidateResult result = userService.validateSecurityQuestion(forgotPasswordDTO);
-
-      if (result.isValid()) {
-          log.info("LoginController: forgotPassword successfully validated security questions for username {} ", forgotPasswordDTO.getUsername());
+      // make sure the security questions are completely valid
+      ValidateResult securityQuestionResult = userService.validateSecurityQuestion(forgotPasswordDTO);
+      if (!securityQuestionResult.isValid()) {
+          log.warn("LoginController: forgotPassword - username {} failed their security question", forgotPasswordDTO.getUsername());
+          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(securityQuestionResult.getMessage());
+      }
+      // ONLY AFTER SQ was validated
+      ValidateResult passwordResetResult = userService.resetPassword(forgotPasswordDTO);
+      if (passwordResetResult.isValid()) {
+          log.info("LoginController: forgotPassword - username {} reset their password", forgotPasswordDTO.getUsername());
           return ResponseEntity.ok("{}");
       } else {
-          log.warn("LoginController: forgotPassword - username {} failed their security question", forgotPasswordDTO.getUsername());
-          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(result.getMessage());
+          log.warn("LoginController: forgotPassword - username {} failed resetting their password", forgotPasswordDTO.getUsername());
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(passwordResetResult.getMessage());
       }
 
-
     }
-
-
 
 }
