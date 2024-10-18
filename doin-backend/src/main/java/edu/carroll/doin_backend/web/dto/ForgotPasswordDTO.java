@@ -8,21 +8,13 @@ public class ForgotPasswordDTO {
     public void setUsername(String username) {
         this.username = username;
     }
-
-    public String getEmail() {
-        return email;
+    
+    public String getSecurityQuestionValue() {
+        return securityQuestionValue;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getSecurityQuestionId() {
-        return securityQuestionId;
-    }
-
-    public void setSecurityQuestionId(Integer securityQuestionId) {
-        this.securityQuestionId = securityQuestionId;
+    public void setSecurityQuestionValue(String securityQuestionValue) {
+        this.securityQuestionValue = securityQuestionValue;
     }
 
     public String getSecurityQuestionAnswer() {
@@ -34,7 +26,6 @@ public class ForgotPasswordDTO {
     }
 
     private String username;
-    private String email;
-    private Integer securityQuestionId;
+    private String securityQuestionValue;
     private String securityQuestionAnswer;
 }
