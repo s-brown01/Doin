@@ -118,7 +118,7 @@ public class LoginController {
           return ResponseEntity.ok(result.getMessage());
       } else {
           log.warn("LoginController: forgotPassword - username {} failed their security question", forgotPasswordDTO.getUsername());
-          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result.getMessage());
+          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(result.getMessage());
       }
 
 
