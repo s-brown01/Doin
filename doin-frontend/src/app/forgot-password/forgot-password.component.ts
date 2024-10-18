@@ -12,8 +12,8 @@ export class ForgotPasswordComponent {
 
   resetData = {
     username: '',
-    securityQuestion: '',
-    securityAnswer: ''
+    securityQuestionValue: '',
+    securityQuestionAnswer: ''
   }
   errorMessage: string | null = null;
 
@@ -21,8 +21,8 @@ export class ForgotPasswordComponent {
   onResetPassword(){
     // checking no data is null
     if (!this.resetData.username ||
-      !this.resetData.securityQuestion ||
-      !this.resetData.securityAnswer ) {
+      !this.resetData.securityQuestionValue ||
+      !this.resetData.securityQuestionAnswer ) {
       this.errorMessage = "Please enter all information";
       return;
     }

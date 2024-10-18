@@ -64,10 +64,11 @@ export class AuthService {
     );
   }
 
-  forgotPassword(resetData: {username: string,
-                             securityQuestion: string,
-                             securityAnswer: string
-                           }): Observable<any> {
+  forgotPassword(resetData: {
+    securityQuestionAnswer: string;
+    securityQuestionValue: string;
+    username: string
+  }): Observable<any> {
     return this.apiService.post('forgot-password', resetData).pipe(
       map((response: any) => {
         return response;
