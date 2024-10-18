@@ -109,12 +109,13 @@ public class LoginController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
-      log.info("LoginController: forgot-password for username {}", forgotPasswordDTO.getUsername());
+      log.info("LoginController: validating security questions for username {}", forgotPasswordDTO.getUsername());
 
       ValidateResult result = userService.validateSecurityQuestion(forgotPasswordDTO);
 
       if (result.isValid()) {
-
+          log.info("LoginController: forgotPassword sucessfully validated security questions for username {} ", forgotPasswordDTO.getUsername());
+          return ResponseEntity.ok(result.getMessage());
       } else {
           log.warn("LoginController: forgotPassword - username {} failed their security question", forgotPasswordDTO.getUsername());
           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result.getMessage());
