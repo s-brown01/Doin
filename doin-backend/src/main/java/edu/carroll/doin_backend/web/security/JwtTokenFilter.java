@@ -65,14 +65,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
 
         // Allow unauthenticated access to register and login and forgot-password endpoints
-        if (uri.contains("/api/register") || uri.contains("/api/login") || uri.contains("/api/forgot-password")) {
+        if ("/api/register".equals(uri) ||
+                "/api/login".equals(uri) ||
+                "/api/forgot-password".equals(uri) ||
+                "/api/change-password".equals(uri)) {
             chain.doFilter(request, response);
             return;
         }
-//        if ("/api/register".equals(uri) || "/api/login".equals(uri) || "/api/forgot-password".equals(uri)) {
-//            chain.doFilter(request, response);
-//            return;
-//        }
 
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
