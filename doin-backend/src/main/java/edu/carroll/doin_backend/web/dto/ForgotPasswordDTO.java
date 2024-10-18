@@ -1,31 +1,40 @@
 package edu.carroll.doin_backend.web.dto;
 
 public class ForgotPasswordDTO {
+    private final String username;
+    private final String securityQuestionValue;
+    private final String securityQuestionAnswer;
+    private final String password;
+    private String hashedPassword;
+
+    public ForgotPasswordDTO(String username, String securityQuestionValue, String securityQuestionAnswer, String password) {
+        this.username = username;
+        this.securityQuestionValue = securityQuestionValue;
+        this.securityQuestionAnswer = securityQuestionAnswer;
+        this.password = password;
+    }
+
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
     public String getSecurityQuestionValue() {
         return securityQuestionValue;
-    }
-
-    public void setSecurityQuestionValue(String securityQuestionValue) {
-        this.securityQuestionValue = securityQuestionValue;
     }
 
     public String getSecurityQuestionAnswer() {
         return securityQuestionAnswer;
     }
 
-    public void setSecurityQuestionAnswer(String securityQuestionAnswer) {
-        this.securityQuestionAnswer = securityQuestionAnswer;
+    public String getPassword() {
+        return password;
     }
 
-    private String username;
-    private String securityQuestionValue;
-    private String securityQuestionAnswer;
+    public String getHashedPassword() {
+        return hashedPassword;
+    }
+
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
+    }
 }
