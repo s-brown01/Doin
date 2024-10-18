@@ -1,8 +1,6 @@
 package edu.carroll.doin_backend.web.service;
 
-import edu.carroll.doin_backend.web.dto.RegisterDTO;
-import edu.carroll.doin_backend.web.dto.TokenDTO;
-import edu.carroll.doin_backend.web.dto.UserDTO;
+import edu.carroll.doin_backend.web.dto.*;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
@@ -12,10 +10,8 @@ import edu.carroll.doin_backend.web.security.PasswordService;
 import edu.carroll.doin_backend.web.security.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +29,8 @@ public class UserServiceImpl implements UserService {
     private final LoginRepository loginRepo;
 
     /**
-      * a password service to verify users
-      */
+     * a password service to verify users
+     */
     private final PasswordService passwordService;
 
     /**
@@ -47,10 +43,15 @@ public class UserServiceImpl implements UserService {
 
     /**
      * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order. The parameters in constructor allow Springboot to automatically inject dependencies.
-     * @param loginRepo - the LoginRepository which holds all registered Users
+     *
+     * @param loginRepo       - the LoginRepository which holds all registered Users
      * @param passwordService - the PasswordService to verify user's password
      */
-    public UserServiceImpl(LoginRepository loginRepo, PasswordService passwordService, SecurityQuestionRepository securityQuestionRepo, TokenService tokenService, UserRepository userRepository) {
+    public UserServiceImpl(LoginRepository loginRepo,
+                           PasswordService passwordService,
+                           SecurityQuestionRepository securityQuestionRepo,
+                           TokenService tokenService,
+                           UserRepository userRepository) {
         this.loginRepo = loginRepo;
         this.passwordService = passwordService;
         this.securityQuestionRepo = securityQuestionRepo;
@@ -58,15 +59,23 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * This method creates a new User in the LoginRepository based on the RegisterDTO
+     * placed into the method. It will verify the username (no special characters and is
+     * unique), hash the password, and hash the security question.
+     *
+     * @param registerDTO - the DTO that contains the necessary data to create a new user
+     * @return true is a new user was created, false if it wasn't for any reason
+     */
     @Override
     public boolean createNewUser(RegisterDTO registerDTO) {
         log.info("createNewUser: Attempting to create new user {}", registerDTO.getUsername());
-        if(!isValidNewUsername(registerDTO.getUsername())) {
+        if (!isValidNewUsername(registerDTO.getUsername())) {
             log.info("createNewUser: Invalid username {}", registerDTO.getUsername());
             return false;
         }
 
-        if(!isValidPassword(registerDTO.getPassword())) {
+        if (!isValidPassword(registerDTO.getPassword())) {
             log.info("createNewUser: Invalid password with username {}", registerDTO.getUsername());
             return false;
         }
@@ -100,6 +109,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This function makes sure that a new User's username is valid: not empty/null, and not taken by another user.
+     *
      * @param username - the new username to be checked
      * @return true if the username is valid, false if not valid (empty, null, non-unique).
      */
@@ -117,7 +127,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // making sure there's no weird characters in the name
-        String[] invalidChars = new String[] {"`", "'", "/", ";", ":", "*", "{", "}", "[", "]", "|"};
+        String[] invalidChars = new String[]{"`", "'", "/", ";", ":", "*", "{", "}", "[", "]", "|"};
         for (String s : invalidChars) {
             // indexOf(c) will return -1 if char doesn't exist
             if (username.contains(s)) {
@@ -131,6 +141,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This function makes sure that a new User's password is valid: not empty/null
+     *
      * @param password - the raw password to be checked
      * @return true if the username is valid, false if not valid (null, empty).
      */
@@ -150,7 +161,7 @@ public class UserServiceImpl implements UserService {
      * @param username - the username the person logging in is using
      * @param password - the password the person logging in is using
      * @return true if the username and password are both valid; false if 1 or both
-     *         are invalid.
+     * are invalid.
      */
     @Override
     public boolean validateCredentials(String username, String password) {
@@ -229,15 +240,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findUser(Integer id, String username) {
-        if(id == null && username == null) {
+        if (id == null && username == null) {
             return null;
         }
 
         Optional<User> user;
         if (id != null) {
             user = userRepository.findById(id);
-        }
-        else{
+        } else {
             user = Optional.ofNullable(userRepository.findByUsername(username));
         }
 
@@ -245,12 +255,60 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> getFriends() {
-        List<User> users = loginRepo.findAll();
-        List<UserDTO> friends = new ArrayList<>();
-        for (User user : users) {
-            friends.add(new UserDTO(user));
+    public ValidateResult validateSecurityQuestion(ForgotPasswordDTO forgotPasswordDTO) {
+        log.info("UserServiceImpl: validateSecurityQuestion - validating for user {}", forgotPasswordDTO.getUsername());
+
+        List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(forgotPasswordDTO.getUsername());
+
+        // make sure the username exists in the repository
+        if (foundUsers.isEmpty()) {
+            log.info("validateSecurityQuestion: user {} does not exist", forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "Invalid Username");
         }
-        return friends;
+
+        // make sure there isn't more than 1 user
+        if (foundUsers.size() > 1) {
+            log.warn("forgotPassword: found more than 1 user with username {}", forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "Internal Error");
+        }
+
+        // get the security question id from the html string
+        final Integer securityQID = securityQuestionRepo.findIdByQuestion(forgotPasswordDTO.getSecurityQuestionValue());
+        // make sure the Security Question exists in the database
+        if (securityQID == null) {
+            log.warn("forgotPassword: Invalid security question ID {}, username {}", forgotPasswordDTO.getSecurityQuestionValue(), forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "Internal Error");
+        }
+
+        // the user who wants to validate their password
+        User resetUser = foundUsers.get(0);
+        if (!passwordService.validatePassword(forgotPasswordDTO.getSecurityQuestionAnswer(), resetUser.getSecurityQuestionAnswer())) {
+            log.warn("forgotPassword: the security question given did not match with the hashed answer stored for username {}", forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "Invalid Security Question");
+        }
+
+
+
+    /*
+        // set SecurityQuestionID
+        registerDTO.setSecurityQuestionId(securityQID);
+        SecurityQuestion securityQuestion = securityQuestionRepo.getReferenceById(securityQID);
+        // create hashed password
+        String hashedPassword = passwordService.hashPassword(registerDTO.getPassword());
+
+        // store the hashed security answer
+        registerDTO.setSecurityAnswer(passwordService.hashPassword(registerDTO.getSecurityAnswer()));
+
+        try {
+            log.info("createNewUser: validated and saving new User {}", registerDTO.getUsername());
+            User newUser = new User(registerDTO, hashedPassword, securityQuestion);
+            loginRepo.save(newUser);
+        } catch (Exception e) {
+            // make sure no error when saving/creating the user
+            log.error("createNewUser: adding new User {} failed\n{}", registerDTO.getUsername(), e.getMessage());
+            return false;
+        }
+        return true;*/
+        return new ValidateResult(true, "Successfully validated");
     }
 }
