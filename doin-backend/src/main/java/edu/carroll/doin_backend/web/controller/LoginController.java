@@ -114,7 +114,7 @@ public class LoginController {
       ValidateResult result = userService.validateSecurityQuestion(forgotPasswordDTO);
 
       if (result.isValid()) {
-          log.info("LoginController: forgotPassword sucessfully validated security questions for username {} ", forgotPasswordDTO.getUsername());
+          log.info("LoginController: forgotPassword successfully validated security questions for username {} ", forgotPasswordDTO.getUsername());
           return ResponseEntity.ok(result.getMessage());
       } else {
           log.warn("LoginController: forgotPassword - username {} failed their security question", forgotPasswordDTO.getUsername());
