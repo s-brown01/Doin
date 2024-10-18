@@ -13,7 +13,9 @@ export class ForgotPasswordComponent {
   resetData = {
     username: '',
     securityQuestionValue: '',
-    securityQuestionAnswer: ''
+    securityQuestionAnswer: '',
+    password: '',
+    confirmPassword: ''
   }
   errorMessage: string | null = null;
 
@@ -22,11 +24,17 @@ export class ForgotPasswordComponent {
     // checking no data is null
     if (!this.resetData.username ||
       !this.resetData.securityQuestionValue ||
-      !this.resetData.securityQuestionAnswer ) {
+      !this.resetData.securityQuestionAnswer ||
+      !this.resetData.password ||
+      !this.resetData.confirmPassword) {
       this.errorMessage = "Please enter all information";
       return;
     }
-
+    // checking password and confirm password match
+    if (this.resetData.password !== this.resetData.confirmPassword){
+      this.errorMessage = "Password and Confirm Password Need to Match";
+      return;
+    }
     // already checked that it's not null
     this.authService.forgotPassword(this.resetData).subscribe(
       (response) => {
@@ -35,14 +43,10 @@ export class ForgotPasswordComponent {
       },
       (error) => {
         this.errorMessage = error.message;
-
       }
     )
-
-
+    // if everything goes fine, take away error message
     this.errorMessage = null;
-
-
   }
 
 }
