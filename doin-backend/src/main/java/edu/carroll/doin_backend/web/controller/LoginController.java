@@ -112,8 +112,8 @@ public class LoginController {
 
     }
 
-    @PostMapping("friends")
-    public List<UserDTO> getFriends(@RequestBody UserDTO userDTO) {
+    @PostMapping("/forgot-password")
+    public List<UserDTO> forgotPassword(@RequestBody UserDTO userDTO) {
       return userService.getFriends();
 
     }
