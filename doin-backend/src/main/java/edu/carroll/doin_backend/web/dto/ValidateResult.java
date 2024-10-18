@@ -3,9 +3,13 @@ package edu.carroll.doin_backend.web.dto;
 /**
  * Represents the result of a validation process.
  *
+ * <p>
  * This class encapsulates the outcome of a validation operation,
  * indicating whether the validation was successful and providing
  * an associated message to describe the result.
+ * </p>
+ *
+ * <p>Structure of the class and javadoc was helped by ChatGPT and StackOverflow</p>
  */
 public class ValidateResult {
     private final boolean valid;
