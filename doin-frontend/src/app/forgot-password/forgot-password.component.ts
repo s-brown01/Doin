@@ -32,7 +32,12 @@ export class ForgotPasswordComponent {
     }
     // checking password and confirm password match
     if (this.resetData.password !== this.resetData.confirmPassword){
-      this.errorMessage = "Password and Confirm Password Need to Match";
+      this.errorMessage = "Password and Confirm Password need to match";
+      return;
+    }
+    // checking password length
+    if (this.resetData.password.length < 8) {
+      this.errorMessage = "Password needs to be 8 characters";
       return;
     }
     // already checked that it's not null
