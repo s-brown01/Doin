@@ -307,4 +307,44 @@ public class UserServiceImpl implements UserService {
         log.info("validateSecurityQuestion: User {} successfully validated", forgotPasswordDTO.getUsername());
         return new ValidateResult(true, "Successfully validated");
     }
+
+    @Override
+    public ValidateResult resetPassword(ForgotPasswordDTO forgotPasswordDTO) {
+        log.info("resetPassword: resetting for user {}", forgotPasswordDTO.getUsername());
+        // validating the username
+        List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(forgotPasswordDTO.getUsername());
+        if (foundUsers.isEmpty()) {
+            log.warn("resetPassword: user {} does not exist", forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "Invalid Username");
+        }
+        // make sure not multiple users
+        if (foundUsers.size() > 1) {
+            log.warn("resetPassword: multiple users found with username {}", forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "Internal Username Error");
+        }
+        User user = foundUsers.get(0);
+        // validating password
+        if (!isValidPassword(forgotPasswordDTO.getPassword())) {
+            log.warn("resetPassword: Invalid new Password for username {}", forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "Invalid Password");
+        }
+        // make sure old and new passwords are different
+        final String oldHash = user.getPassword();
+        if (passwordService.validatePassword(forgotPasswordDTO.getPassword(), oldHash)) {
+            log.info("resetPassword: New password is same as old for user: {}", forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "New Password is the same as old");
+        }
+        // set the password with the new password
+        user.setPasswordHash(passwordService.hashPassword(forgotPasswordDTO.getPassword()));
+        // make sure the new password if validated
+        if (!passwordService.validatePassword(forgotPasswordDTO.getPassword(), user.getPassword())) {
+            // if the new password doesn't match, then give it the old hash
+            user.setPasswordHash(oldHash);
+            log.info("resetPassword: New hashed password doesn't match new password for user, resetting to old password: {}", forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "Error with new password");
+        }
+        // if all tests pass, its good and save changes
+        loginRepo.save(user);
+        return new ValidateResult(true, "Successfully reset password");
+    }
 }

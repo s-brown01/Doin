@@ -34,4 +34,6 @@ public interface UserService {
     UserDTO findUser(Integer id, String username);
 
     ValidateResult validateSecurityQuestion(ForgotPasswordDTO forgotPasswordDTO);
+
+    ValidateResult resetPassword(ForgotPasswordDTO forgotPasswordDTO);
 }
