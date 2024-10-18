@@ -297,6 +297,12 @@ public class UserServiceImpl implements UserService {
 
         // the user who wants to validate their password
         User resetUser = foundUsers.get(0);
+
+        if (!resetUser.getSecurityQuestion().getId().equals(securityQID)) {
+            log.warn("forgotPassword: Given security question ID did not match stored ID for user {}", forgotPasswordDTO.getUsername());
+            return new ValidateResult(false, "Invalid Security Question");
+        }
+
         if (!passwordService.validatePassword(forgotPasswordDTO.getSecurityQuestionAnswer(), resetUser.getSecurityQuestionAnswer())) {
             log.warn("forgotPassword: the security question given did not match with the hashed answer stored for username {}", forgotPasswordDTO.getUsername());
             return new ValidateResult(false, "Invalid Security Question");
