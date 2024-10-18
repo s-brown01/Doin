@@ -115,7 +115,7 @@ public class LoginController {
 
       if (result.isValid()) {
           log.info("LoginController: forgotPassword successfully validated security questions for username {} ", forgotPasswordDTO.getUsername());
-          return ResponseEntity.ok(result.getMessage());
+          return ResponseEntity.ok("{}");
       } else {
           log.warn("LoginController: forgotPassword - username {} failed their security question", forgotPasswordDTO.getUsername());
           return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(result.getMessage());
