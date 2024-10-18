@@ -254,6 +254,21 @@ public class UserServiceImpl implements UserService {
         return user.map(UserDTO::new).orElse(null);
     }
 
+    /**
+     * Validates the security question and answer for a user during the password reset process.
+     *<p>
+     * This method checks if the provided username exists, verifies that there is only one user
+     * associated with that username, ensures that the security question is valid, and confirms
+     * that the provided security answer matches the stored answer.
+     * </p>
+     * <p>This javadoc was generated with help from ChatGPT</p>
+     *
+     * @param forgotPasswordDTO the data transfer object containing the user's username,
+     *                          security question, and security answer
+     * @return a {@link ValidateResult} object containing the validation outcome.
+     *         If the validation fails, the result will contain a message indicating the reason for the failure.
+     *         If the validation succeeds, the result will indicate success with a corresponding message.
+     */
     @Override
     public ValidateResult validateSecurityQuestion(ForgotPasswordDTO forgotPasswordDTO) {
         log.info("UserServiceImpl: validateSecurityQuestion - validating for user {}", forgotPasswordDTO.getUsername());
@@ -287,28 +302,6 @@ public class UserServiceImpl implements UserService {
             return new ValidateResult(false, "Invalid Security Question");
         }
 
-
-
-    /*
-        // set SecurityQuestionID
-        registerDTO.setSecurityQuestionId(securityQID);
-        SecurityQuestion securityQuestion = securityQuestionRepo.getReferenceById(securityQID);
-        // create hashed password
-        String hashedPassword = passwordService.hashPassword(registerDTO.getPassword());
-
-        // store the hashed security answer
-        registerDTO.setSecurityAnswer(passwordService.hashPassword(registerDTO.getSecurityAnswer()));
-
-        try {
-            log.info("createNewUser: validated and saving new User {}", registerDTO.getUsername());
-            User newUser = new User(registerDTO, hashedPassword, securityQuestion);
-            loginRepo.save(newUser);
-        } catch (Exception e) {
-            // make sure no error when saving/creating the user
-            log.error("createNewUser: adding new User {} failed\n{}", registerDTO.getUsername(), e.getMessage());
-            return false;
-        }
-        return true;*/
         return new ValidateResult(true, "Successfully validated");
     }
 }
