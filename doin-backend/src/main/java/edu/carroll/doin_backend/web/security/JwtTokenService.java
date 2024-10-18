@@ -32,6 +32,7 @@ public class JwtTokenService implements TokenService {
      * This is how long 1 hour is in milliseconds.
      */
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour in milliseconds
+    private static final long PASSWORD_RESET_EXPIRATION_TIME = 1000 * 60 * 15; // 15 minutes in milliseconds
     private static final String SECRET_KEY = "Super-Secret-Key";
     private static final String issuer = "doin";
 
@@ -124,5 +125,28 @@ public class JwtTokenService implements TokenService {
     @Override
     public String getUsername(String token) {
         return JWT.decode(token).getClaim("username").asString();
+    }
+
+    @Override
+    public String generatePasswordResetToken(String username) {
+        try {
+            return JWT.create()
+                    .withSubject(username)
+                    .withClaim("password-reset", "password-reset")
+                    .withClaim("username", (Integer) null)
+                    .withIssuedAt(new Date())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + PASSWORD_RESET_EXPIRATION_TIME))
+                    .withIssuer(issuer)
+                    .sign(Algorithm.HMAC256(SECRET_KEY));
+        } catch (JWTCreationException e) {
+            log.error("TokenServiceImpl: generating a passwordResertToken resulted in a JWTCreationException: {}", e.toString());
+            return null;
+        } catch (IllegalArgumentException e) {
+            log.error("TokenServiceImpl: generating a passwordResertToken resulted in an IllegalArgumentException: {}", e.toString());
+            return null;
+        } catch (Exception e) {
+            log.error("TokenServiceImpl: generating a passwordResertToken resulted in UNKNOWN error: {}", e.toString());
+            return null;
+        }
     }
 }
