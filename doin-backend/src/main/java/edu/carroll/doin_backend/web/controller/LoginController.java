@@ -1,12 +1,8 @@
 package edu.carroll.doin_backend.web.controller;
 
-import edu.carroll.doin_backend.web.dto.LoginDTO;
-import edu.carroll.doin_backend.web.dto.RegisterDTO;
-import edu.carroll.doin_backend.web.dto.TokenDTO;
-import edu.carroll.doin_backend.web.dto.UserDTO;
+import edu.carroll.doin_backend.web.dto.*;
 import edu.carroll.doin_backend.web.security.TokenService;
 import edu.carroll.doin_backend.web.service.UserService;
-import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -113,10 +108,21 @@ public class LoginController {
     }
 
     @PostMapping("/forgot-password")
-    public List<UserDTO> forgotPassword(@RequestBody UserDTO userDTO) {
-      return userService.getFriends();
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
+      log.info("LoginController: forgot-password for username {}", forgotPasswordDTO.getUsername());
+
+      ValidateResult result = userService.validateSecurityQuestion(forgotPasswordDTO);
+
+      if (result.isValid()) {
+
+      } else {
+          log.warn("LoginController: forgotPassword - username {} failed their security question", forgotPasswordDTO.getUsername());
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result.getMessage());
+      }
+
 
     }
+
 
 
 }
