@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login").permitAll() // Allow unauthenticated access to /api/login
                         .requestMatchers("/api/register").permitAll() // Allow unauthenticated access to /api/register
+                        .requestMatchers("/api/forgot-password").permitAll() // Allow unauthenticated access to /api/forgot-password
                         .anyRequest().authenticated() // Require authentication for all other requests
                 )
                 .cors(withDefaults()) // Enable CORS support
