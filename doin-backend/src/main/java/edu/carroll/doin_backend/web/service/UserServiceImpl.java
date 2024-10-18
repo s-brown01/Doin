@@ -283,15 +283,15 @@ public class UserServiceImpl implements UserService {
 
         // make sure there isn't more than 1 user
         if (foundUsers.size() > 1) {
-            log.warn("forgotPassword: found more than 1 user with username {}", forgotPasswordDTO.getUsername());
+            log.warn("validateSecurityQuestion: found more than 1 user with username {}", forgotPasswordDTO.getUsername());
             return new ValidateResult(false, "Internal Error");
         }
-
+        
         // get the security question id from the html string
         final Integer securityQID = securityQuestionRepo.findIdByQuestion(forgotPasswordDTO.getSecurityQuestionValue());
         // make sure the Security Question exists in the database
         if (securityQID == null) {
-            log.warn("forgotPassword: Invalid security question ID {}, username {}", forgotPasswordDTO.getSecurityQuestionValue(), forgotPasswordDTO.getUsername());
+            log.warn("validateSecurityQuestion: Invalid security question ID {}, username {}", forgotPasswordDTO.getSecurityQuestionValue(), forgotPasswordDTO.getUsername());
             return new ValidateResult(false, "Internal Error");
         }
 
@@ -299,12 +299,12 @@ public class UserServiceImpl implements UserService {
         User resetUser = foundUsers.get(0);
 
         if (!resetUser.getSecurityQuestion().getId().equals(securityQID)) {
-            log.warn("forgotPassword: Given security question ID did not match stored ID for user {}", forgotPasswordDTO.getUsername());
+            log.warn("validateSecurityQuestion: Given security question ID did not match stored ID for user {}", forgotPasswordDTO.getUsername());
             return new ValidateResult(false, "Invalid Security Question");
         }
 
         if (!passwordService.validatePassword(forgotPasswordDTO.getSecurityQuestionAnswer(), resetUser.getSecurityQuestionAnswer())) {
-            log.warn("forgotPassword: the security question given did not match with the hashed answer stored for username {}", forgotPasswordDTO.getUsername());
+            log.warn("validateSecurityQuestion: the security question given did not match with the hashed answer stored for username {}", forgotPasswordDTO.getUsername());
             return new ValidateResult(false, "Invalid Security Question");
         }
 
