@@ -1,16 +1,14 @@
 package edu.carroll.doin_backend.web.security;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
+@SpringBootTest
+@Transactional
 public class PasswordServiceTest {
     /**
      * A password to be used for all tests (used as a correct password)
@@ -21,13 +19,14 @@ public class PasswordServiceTest {
      */
     private static final String wrongPassword = "wrongPassword";
 
-    @InjectMocks
-    private PasswordBCryptService passwordService;
+    /**
+     * The Password Service to test
+     */
+    private final PasswordService passwordService;
 
-    @BeforeEach
-    public void setup() {
-        System.out.println("TESTING PASSWORD");
-        MockitoAnnotations.openMocks(this);
+    @Autowired
+    public PasswordServiceTest(PasswordService passwordService) {
+        this.passwordService = passwordService;
     }
 
     /**

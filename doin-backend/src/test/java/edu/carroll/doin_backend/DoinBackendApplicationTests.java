@@ -1,23 +1,15 @@
 package edu.carroll.doin_backend;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-//import org.springframework.boot.test.context.SpringBootTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-//@SpringBootApplication
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-//@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootTest // This will load the main application context for tests
 public class DoinBackendApplicationTests {
-    private static final Logger log = LoggerFactory.getLogger(DoinBackendApplicationTests.class);
 
-    public static void main(String[] args) {
-        log.info("Starting DoinBackendApplication");
-        SpringApplication.run(DoinBackendApplicationTests.class, args);
+    @Test
+    public void contextLoads() {
+        // Simple test to check if the context loads correctly
+        assertNotNull(this); // You can replace this with actual test logic
     }
-
 }
-

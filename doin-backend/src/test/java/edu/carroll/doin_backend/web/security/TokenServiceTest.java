@@ -1,76 +1,48 @@
 package edu.carroll.doin_backend.web.security;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import static org.mockito.Mockito.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@SpringBootTest
 public class TokenServiceTest {
-    private static final String username = "test";
 
-    @InjectMocks
-    private JwtTokenService tokenService; // Mock the TokenService
-
-    @BeforeEach
-    public void setup() {
-        System.out.println("TESTING TOKEN SERVICE");
-        MockitoAnnotations.openMocks(this); // Initialize Mockito annotations
-    }
-
-    @Test
-    public void generateToken() {
-        final String mockToken = tokenService.generateToken(username);
-//        when(tokenService.generateToken(username)).thenReturn(mockToken);
-
-        assertNotNull(mockToken, "generateToken: token should not be null");
-
-//        when(tokenService.getUsername(mockToken)).thenReturn(username);
-
-        assertEquals(username, tokenService.getUsername(mockToken), "generateToken: username should match the token");
-    }
-
-    @Test
-    public void validateToken() {
-        final String mockToken = tokenService.generateToken(username);
-//        when(tokenService.generateToken(username)).thenReturn(mockToken);
-
-//        when(tokenService.getUsername(mockToken)).thenReturn(username);
-
-        String token = tokenService.generateToken(username);
-        String tokenUsername = tokenService.getUsername(token);
-
-        assertEquals(username, tokenUsername, "validateToken: username should match the token");
-    }
-
-    /*
-    private static final Logger log = LoggerFactory.getLogger(TokenServiceTest.class);
-
+    /**
+     * The tokenService we're testing
+     */
     @Autowired
     private TokenService tokenService;
 
+    private static final String username = "testUsername";
+
+    /**
+     * Test for generating a token and asserting that it's not null.
+     */
     @Test
     public void generateToken() {
-        log.info("generateToken - tests begin");
-        final String username = "test";
+        // Generate a token for the given username
         String token = tokenService.generateToken(username);
-        assertNotNull("generateToken: token is null", token);
-
-        assertTrue("generateToken: username should match", username.equals(tokenService.getUsername(token)));
+        // Assert that the generated token is not null
+        assertNotNull(token, "Token should not be null");
+        // Assert that the username extracted from the token matches the expected username
+        assertEquals(username, tokenService.getUsername(token), "Username should match the token");
     }
 
+    /**
+     * Test for validating a token and ensuring the username can be extracted correctly.
+     */
     @Test
     public void validateToken() {
-        log.info("validateToken - tests begin");
-        final String username = "test";
+        // Generate a token for the given username
         String token = tokenService.generateToken(username);
+        // Extract the username from the token and validate it
         String tokenUsername = tokenService.getUsername(token);
-        assertTrue("validateToken: username should match", username.equals(tokenUsername));
-
+        // Assert that the extracted username is not null
+        assertNotNull(tokenUsername, "Token Username should not be null");
+        // Assert that the extracted username matches the expected username
+        assertEquals(username, tokenUsername, "Username should match the token");
+        // Assert that the token is valid
+        assertTrue(tokenService.validateToken(token), "Token should be valid");
     }
-    */
 }
