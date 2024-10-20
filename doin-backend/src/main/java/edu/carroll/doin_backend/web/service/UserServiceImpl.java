@@ -5,7 +5,7 @@ import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
-import edu.carroll.doin_backend.web.repository.UserRepository;
+//import edu.carroll.doin_backend.web.repository.UserRepository;
 import edu.carroll.doin_backend.web.security.PasswordService;
 import edu.carroll.doin_backend.web.security.TokenService;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     private final TokenService tokenService;
 
     private final SecurityQuestionRepository securityQuestionRepo;
-    private final UserRepository userRepository;
+//    private final UserRepository userRepository;
 
     /**
      * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order. The parameters in constructor allow Springboot to automatically inject dependencies.
@@ -50,13 +50,14 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(LoginRepository loginRepo,
                            PasswordService passwordService,
                            SecurityQuestionRepository securityQuestionRepo,
-                           TokenService tokenService,
-                           UserRepository userRepository) {
+                           TokenService tokenService
+//                           , UserRepository userRepository
+    ) {
         this.loginRepo = loginRepo;
         this.passwordService = passwordService;
         this.securityQuestionRepo = securityQuestionRepo;
         this.tokenService = tokenService;
-        this.userRepository = userRepository;
+//        this.userRepository = userRepository;
     }
 
     /**
@@ -246,9 +247,11 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> user;
         if (id != null) {
-            user = userRepository.findById(id);
+            user = loginRepo.findById(id);
+//            user = userRepository.findById(id);
         } else {
-            user = Optional.ofNullable(userRepository.findByUsername(username));
+            user = Optional.ofNullable(loginRepo.findByUsernameIgnoreCase(username).get(0));
+//            user = Optional.ofNullable(userRepository.findByUsername(username));
         }
 
         return user.map(UserDTO::new).orElse(null);
