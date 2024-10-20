@@ -1,5 +1,6 @@
 package edu.carroll.doin_backend.web.model;
 
+import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -19,9 +20,9 @@ public class Friendship {
     @JoinColumn(name = "friend_id")
     private User friend;
 
-    // @Column(name = "status", nullable = false)
-    // @Enumerated(EnumType.STRING)
-    // private FriendshipStatus status;
+     @Column(name = "status", nullable = false)
+     @Enumerated(EnumType.STRING)
+     private FriendshipStatus status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
