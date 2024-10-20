@@ -21,7 +21,7 @@ public class FriendController {
         this.friendService = friendService;
     }
 
-    @PostMapping("/")
+    @PostMapping("/friends")
     public Set<User> getFriendsOfFreinds(){
         return null;
     }
