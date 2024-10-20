@@ -1,16 +1,36 @@
 package edu.carroll.doin_backend.web.repository;
 
-import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 import edu.carroll.doin_backend.web.model.Friendship;
 import edu.carroll.doin_backend.web.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Set;
 
+/**
+ * Repository interface for managing {@link Friendship} entities and related operations.
+ * Extends the JpaRepository to provide CRUD and custom query methods for Friendship.
+ */
 public interface FriendRepository extends JpaRepository<Friendship, Integer> {
+
+    /**
+     * Retrieves a set of users who are friends of the user's friends but are not directly friends
+     * with the given user.
+     * <p>
+     * This query finds users who are connected to the given user through mutual friendships.
+     * It does so by joining the friendship relationships where:
+     * <ul>
+     *   <li>The friend of a friend's user (f2) is not the same as the original user.</li>
+     *   <li>The friend of a friend (f2) is not already directly a friend of the user.</li>
+     * </ul>
+     * This helps in suggesting new friends (i.e., "friends you may know") based on mutual connections.
+     * <BR>
+     * This javadoc was created with help from chatGPT.
+     *
+     * @param user The {@link User} for whom to find friends of friends.
+     * @return A set of users who are friends of the user's friends but not direct friends of the user.
+     */
     @Query("SELECT f2.friend FROM Friendship f1 " +
             "JOIN Friendship f2 ON f1.friend = f2.user " +
             "WHERE f1.user = :user " +
