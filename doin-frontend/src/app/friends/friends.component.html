@@ -6,7 +6,9 @@
     </div>
     <ul>
       <!--      <div *ngFor = "let friend of friendsList; trackBy: trackByFriendID"></div>-->
-      <div *ngFor = "let friend of friendsList"></div>
+      <li *ngFor = "let friend of friendsList">
+        <app-friend-list [friend]="friend"></app-friend-list>
+      </li>
 <!--      <app-friend-list></app-friend-list>-->
 <!--      <app-friend-list></app-friend-list>-->
 <!--      <app-friend-list></app-friend-list>-->
