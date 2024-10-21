@@ -9,27 +9,17 @@
       <li *ngFor = "let friend of friendsList">
         <app-friend-list [friend]="friend"></app-friend-list>
       </li>
-<!--      <app-friend-list></app-friend-list>-->
-<!--      <app-friend-list></app-friend-list>-->
-<!--      <app-friend-list></app-friend-list>-->
-<!--      <app-friend-list></app-friend-list>-->
-<!--      <app-friend-list></app-friend-list>-->
-<!--      <app-friend-list></app-friend-list>-->
+
     </ul>
   </div>
   <div class="may-know">
     <h4>You may know:</h4>
     <div class="may-know-list">
       <ul>
-        <app-friend-list></app-friend-list>
-        <app-friend-list></app-friend-list>
-        <app-friend-list></app-friend-list>
-        <app-friend-list></app-friend-list>
-        <app-friend-list></app-friend-list>
-        <app-friend-list></app-friend-list>
-        <app-friend-list></app-friend-list>
+        <li *ngFor = "let friend of fofList">
+          <app-friend-list [friend]="friend"></app-friend-list>
+        </li>
       </ul>
-
     </div>
   </div>
 </div>
