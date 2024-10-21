@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {FriendshipDto} from "../../dtos/friendship.dto";
 import {ImageDTO} from "../../dtos/image.dto";
 
@@ -8,16 +8,6 @@ import {ImageDTO} from "../../dtos/image.dto";
   styleUrl: './friend-list.component.css'
 })
 export class FriendListComponent {
-  friends: FriendshipDto[] = [];
-  friendData = {
-    username: '',
-    profilePic: ImageDTO
-  }
-
-
-
-  // constructor(username: string, profilePic ImageDTO) {
-  //
-  // }
+  @Input() friend!: FriendshipDto;  // Marking as input so parent can pass it
 
 }
