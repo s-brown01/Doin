@@ -19,12 +19,6 @@ public interface FriendRepository extends JpaRepository<Friendship, Integer> {
      * with the given user.
      * <p>
      * This query finds users who are connected to the given user through mutual friendships.
-     * It does so by joining the friendship relationships where:
-     * <ul>
-     *   <li>The friend of a friend's user (f2) is not the same as the original user.</li>
-     *   <li>The friend of a friend (f2) is not already directly a friend of the user.</li>
-     * </ul>
-     * This helps in suggesting new friends (i.e., "friends you may know") based on mutual connections.
      * <BR>
      * This javadoc was created with help from chatGPT.
      *
