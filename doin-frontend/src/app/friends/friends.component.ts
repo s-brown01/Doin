@@ -19,9 +19,14 @@ export class FriendsComponent {
   }
 
   getFriends(): void {
-    this.friendService.getFriends().subscribe((data: FriendshipDto[]) => {
-      this.friendsList = data;
-    });
+    // this.friendService.getFriends().subscribe((data: FriendshipDto[]) => {
+    //   this.friendsList = data;
+    // });
+    this.friendsList = [
+      // new FriendshipDto("friend1", "CONFIRMED", {url: 'pic1.jpg'}),
+      // new FriendshipDto("friend2", "PENDING", {url: 'pic2.jpg'}),
+      // new FriendshipDto("friend3", "CONFIRMED", {url: 'pic3.jpg'})
+    ]
   }
 
   // trackByFriendID(index: number, friend: any) {
