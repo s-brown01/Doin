@@ -5,12 +5,14 @@
       <button class="search-button">Search</button>
     </div>
     <ul>
-      <app-friend-list></app-friend-list>
-      <app-friend-list></app-friend-list>
-      <app-friend-list></app-friend-list>
-      <app-friend-list></app-friend-list>
-      <app-friend-list></app-friend-list>
-      <app-friend-list></app-friend-list>
+      <!--      <div *ngFor = "let friend of friendsList; trackBy: trackByFriendID"></div>-->
+      <div *ngFor = "let friend of friendsList"></div>
+<!--      <app-friend-list></app-friend-list>-->
+<!--      <app-friend-list></app-friend-list>-->
+<!--      <app-friend-list></app-friend-list>-->
+<!--      <app-friend-list></app-friend-list>-->
+<!--      <app-friend-list></app-friend-list>-->
+<!--      <app-friend-list></app-friend-list>-->
     </ul>
   </div>
   <div class="may-know">
