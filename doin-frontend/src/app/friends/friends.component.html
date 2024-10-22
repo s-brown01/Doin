@@ -1,10 +1,10 @@
 <div class="friends-wrapper">
   <div class="search-friends">
     <div class="search-container">
-      <input type="text" class="search-input" [(ngModel)]="searchInput" placeholder="Search" />
+      <input type="text" class="search-input" (keyup.enter)="findFriend()" [(ngModel)]="searchInput" placeholder="Search" />
       <button class="search-button" (click)=findFriend()>Search</button>
     </div>
-    <div id="search-error-message" *ngIf="searchErrorMessage">{{searchErrorMessage}}</div>
+    <div class="error-message" *ngIf="searchErrorMessage">{{searchErrorMessage}}</div>
     <ul>
       <li *ngFor = "let friend of searchFriends">
         <app-friend-list [friend]="friend"></app-friend-list>
@@ -19,7 +19,7 @@
         <li *ngFor = "let friend of mayKnowList">
           <app-friend-list [friend]="friend"></app-friend-list>
         </li>
-        <div id="may-know-error-message" *ngIf="fofErrorMessage">{{fofErrorMessage}}</div>
+        <div class="error-message" *ngIf="fofErrorMessage">{{fofErrorMessage}}</div>
       </ul>
     </div>
   </div>

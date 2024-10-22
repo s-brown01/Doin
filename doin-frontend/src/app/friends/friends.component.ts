@@ -38,25 +38,28 @@ export class FriendsComponent {
 
   findFriend(){
     if (!this.searchInput){
-      this.searchErrorMessage = "Please input something to search";
+      this.searchErrorMessage = "Please a username something to search";
+      this.searchFriends = [];
       return;
     }
-    this.friendService.getFriendByUsername(this.searchInput).subscribe(data => {
-      this.searchFriends = data;
-      this.searchErrorMessage = null
-    },
-      error => {
-      console.error("Error in searching: " + error);
-      this.searchErrorMessage = error.message;
-    })
-  }
-
-  loadFriends(): void {
+    this.searchErrorMessage = null;
     this.searchFriends = [
       new FriendshipDto("friend1", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend1", "test")),
       new FriendshipDto("friend2", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend2", "test")),
       new FriendshipDto("friend3", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend3", "test"))
     ]
+    return;
+    // this.friendService.getFriendByUsername(this.searchInput).subscribe(data => {
+    //   this.searchFriends = data;
+    //   this.searchErrorMessage = null
+    // },
+    //   error => {
+    //   console.error("Error in searching: " + error);
+    //   this.searchErrorMessage = error.message;
+    // })
+  }
+
+  loadFriends(): void {
     this.mayKnowList = [
       new FriendshipDto("fof 1", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend1", "test")),
       new FriendshipDto("fof 2", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend2", "test")),
