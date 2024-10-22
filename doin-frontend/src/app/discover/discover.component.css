@@ -25,7 +25,10 @@
 #end-of-events {
   margin: 30px auto;
   /*text-align: center;*/
-  
+  background-color: #48bb78;
+  padding: 15px;
+  font-size: 12pt;
+  font-weight: bold;
 }
 
 h1 {
