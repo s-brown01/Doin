@@ -2,6 +2,11 @@ package edu.carroll.doin_backend.web.controller;
 
 import edu.carroll.doin_backend.web.dto.EventDTO;
 import edu.carroll.doin_backend.web.service.EventService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,8 +42,10 @@ public class EventController {
      * @return a list of {@link EventDTO} representing all events
      */
     @GetMapping()
-    public List<EventDTO> getAll() {
-        return eventService.getAll();
+    public Page<EventDTO> getAll(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("time").descending());
+        return eventService.getAll(pageable);
     }
 
     /**
@@ -79,8 +86,9 @@ public class EventController {
      * @param userId the ID of the user joining the event
      */
     @PostMapping("/{id}/join")
-    public void join(@PathVariable Integer id, @RequestParam Integer userId) {
-        eventService.joinUser(id, userId);
+    public ResponseEntity<Boolean> join(@PathVariable Integer id, @RequestParam Integer userId) {
+        boolean res = eventService.joinUser(id, userId);
+        return ResponseEntity.ok(res);
     }
 
     /**
