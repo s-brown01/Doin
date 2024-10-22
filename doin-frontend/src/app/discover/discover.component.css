@@ -12,9 +12,25 @@
   scrollbar-color: #888 #f1f1f1;
 }
 
+.post {
+  margin: 30px 0; /* Added vertical margin for spacing */
+  width: 50%; /* Ensures posts take full width of content-wrapper */
+  max-width: 600px; /* Optional: Limit max width for better readability */
+}
+
+.wrapper {
+  height: 100%;
+}
+
+#end-of-events {
+  margin: 30px auto;
+  /*text-align: center;*/
+  
+}
+
 h1 {
   width: 65%;
-  margin: 20px auto auto;
+  margin: 15px auto 10px;
   border-bottom: 4px solid #48bb78;
   text-align: center;
 }
