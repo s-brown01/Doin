@@ -21,6 +21,7 @@
     </div>
     <div class="footer">
       <button class="join-button" (click)="join()">Join</button>
+      <div *ngIf="result">{{result}}</div>
       <div class="avatars">
         <div *ngFor="let joiner of event.joiners" class="avatar">
           <app-image [borderRadius]="'50%'" [image]="joiner.profilePicture"></app-image>
