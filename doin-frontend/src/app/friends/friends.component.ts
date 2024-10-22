@@ -11,15 +11,27 @@ import {ImageDTO} from "../dtos/image.dto";
 export class FriendsComponent {
   friendsList: FriendshipDto[] = [];
   fofList: FriendshipDto[] = [];
+  fofErrorMessage: string | null = null;
 
   constructor(private friendService: FriendService) {
   }
 
   ngOnInit(): void {
-    this.getFriends();
+    this.loadFriends();
   }
 
   getFriends(): void {
+    this.friendService.getFriendsOfFriends().subscribe(data => {
+        this.fofList = data;
+        this.fofErrorMessage = null;
+      },
+      error => {
+        console.error("Error in subscribing to Friends of Friends: " + error);
+        this.fofErrorMessage = error.message;
+      })
+  }
+
+  loadFriends(): void {
     this.friendsList = [
       new FriendshipDto("friend1", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend1", "test")),
       new FriendshipDto("friend2", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend2", "test")),

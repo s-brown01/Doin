@@ -9,19 +9,23 @@ import {FriendListComponent} from "../shared/friend-list/friend-list.component";
 })
 export class FriendService {
 
-  private baseUrl = 'http://localhost:8080/api';
+  private baseUrl = 'http://localhost:8080/api/friends';
   constructor(private http: HttpClient, private apiService : ApiService) { }
 
 
-  getFriends(): Observable<FriendshipDto[]> {
+  getFriendsOfFriends(): Observable<FriendshipDto[]> {
     return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends");
   }
 
-  getFriendByID(id: Number): Observable<FriendshipDto> {
-    return this.http.get<FriendshipDto>(`${this.baseUrl}/friends/${id}`);
+  getFriendByUsername(username: string): Observable<FriendshipDto> {
+    return this.http.get<FriendshipDto>(`${this.baseUrl}/friends/${username}`);
   }
 
   addFriend(friend : FriendshipDto): Observable<any>{
-    return this.apiService.post("/friends", friend);
+    return this.apiService.post("/friends/add-friend", friend);
+  }
+
+  removeFriend(friend : FriendshipDto): Observable<any>{
+    return this.apiService.post("/friends/remove-friend", friend)
   }
 }
