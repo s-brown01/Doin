@@ -25,7 +25,7 @@ public class FriendController {
     }
 
     @PostMapping("/{username}")
-    public UserDTO getFriendByUsername(@PathVariable String username){
+    public UserDTO[] getFriendByUsername(@PathVariable String username){
         return null;
     }
 
