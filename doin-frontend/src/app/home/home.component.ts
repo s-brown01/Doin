@@ -8,17 +8,30 @@ import { EventDTO } from '../dtos/event.dto';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  hasMoreEvents: boolean = true;
   events: EventDTO[] = [];
+  currentPage = 0;
+  pageSize = 10;
 
   constructor(private eventService: EventService) {}
 
   ngOnInit(): void {
-    this.getEvents();
+    this.loadEvents();
   }
 
-  getEvents(): void {
-    this.eventService.getEvents().subscribe((data: EventDTO[]) => {
-      this.events = data;
+  loadEvents(): void {
+    this.eventService.getEvents(this.currentPage, this.pageSize).subscribe((newEvents: EventDTO[]) => {
+      if (newEvents.length > 0) {
+        this.events.push(...newEvents); 
+        this.currentPage++;
+      } else {
+        this.hasMoreEvents = false;  
+      }
     });
   }
+
+  onLoadMore(): void {
+    this.loadEvents();
+  }
+
 }

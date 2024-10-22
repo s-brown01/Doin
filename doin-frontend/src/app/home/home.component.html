@@ -4,6 +4,7 @@
   <div *ngFor="let event of events" class="post">
     <app-event class="event-comp" [event]="event"></app-event>
   </div>
+  <button *ngIf="hasMoreEvents" (click)="onLoadMore()">Load More</button>
   </div>
 </div>
 
