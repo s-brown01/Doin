@@ -20,13 +20,9 @@ export class UserService {
         let params: any = {};
         params.username = username;
       
-        console.log('Request URL:', `${this.baseUrl}/users`);
-        console.log('Request Params:', params);
-      
         return this.http.get<UserDTO>(`${this.baseUrl}/users`, { params }).pipe(
           tap((response) => console.log('Response:', response)),
           catchError((error) => {
-            console.error('Error fetching user:', error);
             return throwError(error);
           })
         );

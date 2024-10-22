@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "event_types")
 public class EventType {
+    //one to many consider
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
