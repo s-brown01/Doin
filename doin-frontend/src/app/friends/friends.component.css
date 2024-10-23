@@ -69,6 +69,12 @@ ul > * {
   background-color: #27ae60;
 }
 
+.search-result {
+  /*background-color: #4a4a4a;*/
+  height: 75%
+
+}
+
 .may-know {
   height: 45%;
   width: 100%;

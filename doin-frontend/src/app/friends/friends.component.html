@@ -4,13 +4,15 @@
       <input type="text" class="search-input" (keyup.enter)="findFriend()" [(ngModel)]="searchInput" placeholder="Search" />
       <button class="search-button" (click)=findFriend()>Search</button>
     </div>
-    <div class="error-message" *ngIf="searchErrorMessage">{{searchErrorMessage}}</div>
-    <ul>
-      <li *ngFor = "let friend of searchFriends">
-        <app-friend-list [friend]="friend"></app-friend-list>
-      </li>
+    <div class = "search-result">
+      <div class="error-message" *ngIf="searchErrorMessage">{{searchErrorMessage}}</div>
+      <ul>
+        <li *ngFor = "let friend of searchFriends">
+          <app-friend-list [friend]="friend"></app-friend-list>
+        </li>
+      </ul>
+    </div>
 
-    </ul>
   </div>
   <div class="may-know">
     <h3>You may know:</h3>
