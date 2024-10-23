@@ -44,9 +44,9 @@ export class FriendsComponent {
     }
     this.searchErrorMessage = null;
     this.searchResults = [
-      new FriendshipDto("friend1", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend1", "test")),
-      new FriendshipDto("friend2", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend2", "test")),
-      new FriendshipDto("friend3", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend3", "test"))
+      new FriendshipDto("friend1", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend1", "test"), 1),
+      new FriendshipDto("friend2", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend2", "test"), 1),
+      new FriendshipDto("friend3", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend3", "test"), 1)
     ]
     return;
     // this.friendService.getFriendByUsername(this.searchInput).subscribe(data => {
@@ -61,12 +61,12 @@ export class FriendsComponent {
 
   loadFriends(): void {
     this.mayKnowList = [
-      new FriendshipDto("fof 1", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend1", "test")),
-      new FriendshipDto("fof 2", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend2", "test")),
-      new FriendshipDto("fof 3", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend3", "test")),
-      new FriendshipDto("fof 4", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend4", "test")),
-      new FriendshipDto("fof 5", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend5", "test")),
-      new FriendshipDto("fof 6", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend6", "test"))
+      new FriendshipDto("fof 1", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend1", "test"), 1),
+      new FriendshipDto("fof 2", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend2", "test"), 1),
+      new FriendshipDto("fof 3", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend3", "test"), 1),
+      new FriendshipDto("fof 4", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend4", "test"), 1),
+      new FriendshipDto("fof 5", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend5", "test"), 1),
+      new FriendshipDto("fof 6", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend6", "test"), 1)
     ]
   }
 
