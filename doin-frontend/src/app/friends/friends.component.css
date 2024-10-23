@@ -1,3 +1,7 @@
+.content-wrapper {
+  align-items: center;
+}
+
 .friends-wrapper {
   height: 100vh; /* Full viewport height */
   display: flex;
@@ -86,8 +90,8 @@ ul > * {
 
 .may-know-list{
   height: 100%;
+  width: 55%;
   overflow-y: auto;
-
 }
 
 h3 {

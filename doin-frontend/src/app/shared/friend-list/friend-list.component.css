@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
+  width: 350px;
 }
 
 .avatar {
@@ -17,19 +18,30 @@
   flex-grow: 1;
   font-size: 16px;
   font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+  width: 35%;
+  overflow: hidden; /* Hide overflowed text */
+  text-overflow: ellipsis; /* Display '...' when text overflows */
 }
 
-.remove-button {
+.remove-button, .add-button {
   padding: 6px 12px;
-  border: 1px solid #c0392b;
   border-radius: 20px;
   background-color: transparent;
-  color: #c0392b;
   font-size: 12px;
   font-weight: bold;
   cursor: pointer;
   outline: none;
   margin: 10px;
+  width: 85%;
+  height: 30px;
+}
+
+.remove-button {
+  border: 1px solid #c0392b;
+  color: #c0392b;
+
 }
 
 .remove-button:hover {
@@ -38,16 +50,8 @@
 }
 
 .add-button {
-  padding: 6px 12px;
   border: 1px solid #1c7b0b;
-  border-radius: 20px;
-  background-color: transparent;
   color: #1c7b0b;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  outline: none;
-  margin: 10px;
 }
 
 .add-button:hover {
