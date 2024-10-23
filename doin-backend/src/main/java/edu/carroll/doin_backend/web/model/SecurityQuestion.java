@@ -5,12 +5,23 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "security_questions")
 public class SecurityQuestion {
-    public Integer getId() {
-        return id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(nullable = false)
+    private String question;
+
+    public SecurityQuestion() {
     }
 
-    public void setId(Integer id) {
+    public SecurityQuestion(int id, String question) {
         this.id = id;
+        this.question = question;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getQuestion() {
@@ -20,11 +31,4 @@ public class SecurityQuestion {
     public void setQuestion(String question) {
         this.question = question;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(nullable = false)
-    private String question;
 }
