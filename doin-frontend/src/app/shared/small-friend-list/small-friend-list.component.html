@@ -1,0 +1,11 @@
+<div class="small-friend-item ">
+  <img
+    class = "avatar"
+    src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
+  />
+<!--  <div class="avatar"></div>-->
+  <!--  <img class="avatar" [src]="friend.profilePic.data" alt="{{friend.username}}'s pfp"></img>-->
+  <a [routerLink]="['/user', friend.id]" class="friend-name-link">
+    <span class="friend-name">{{friend.username}}</span>
+  </a>
+</div>
