@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 
-public class UserServiceImplTest {
+public class UserServiceTest {
     private static final String username = "testUser";
     private static final String password = "testPassword";
 
@@ -31,7 +31,7 @@ public class UserServiceImplTest {
     private SecurityQuestionRepository securityQuestionRepo;
 
     @InjectMocks
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @BeforeEach
     public void setup() {
