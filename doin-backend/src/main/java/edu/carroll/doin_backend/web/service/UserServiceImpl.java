@@ -167,6 +167,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean validateCredentials(String username, String password) {
         log.debug("validateCredentials: user '{}' attempting login", username);
+        if (username == null || password == null){
+            log.warn("validateCredentials: username or password is null");
+            return false;
+        }
+
         List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
 
         // we expect 1 user found per username.
