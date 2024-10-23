@@ -2,7 +2,18 @@
   <div class="profile-wrapper">
     <div class="profile-img-wrapper">
       <app-image class="profile-img" [borderRadius]="'50%'" [image]="user?.profilePicture"></app-image>    </div>
-    <div><a href="login" (click)="logout()">&nbsp;Logout</a></div>  </div>
+    <div><a href="login" (click)="logout()">Logout</a></div>
+  </div>
+
+  <div class="friends-list">
+    <p>Your Friends</p>
+    <ul>
+      <li *ngFor="let friend of friendsList">
+        <app-small-friend-list [friend]="friend"></app-small-friend-list>
+      </li>
+    </ul>
+  </div>
+
   <div class="notifications">
     <ul>
       <li>
