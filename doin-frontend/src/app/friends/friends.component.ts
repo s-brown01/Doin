@@ -10,7 +10,7 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
   styleUrls: ['./friends.component.css']
 })
 export class FriendsComponent {
-  searchFriends: FriendshipDto[] = [];
+  searchResults: FriendshipDto[] = [];
   mayKnowList: FriendshipDto[] = [];
 
   fofErrorMessage: string | null = null;
@@ -39,11 +39,11 @@ export class FriendsComponent {
   findFriend(){
     if (!this.searchInput){
       this.searchErrorMessage = "Please a username something to search";
-      this.searchFriends = [];
+      this.searchResults = [];
       return;
     }
     this.searchErrorMessage = null;
-    this.searchFriends = [
+    this.searchResults = [
       new FriendshipDto("friend1", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend1", "test")),
       new FriendshipDto("friend2", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend2", "test")),
       new FriendshipDto("friend3", FriendshipStatus.CONFIRMED, new ImageDTO(1, "friend3", "test"))
