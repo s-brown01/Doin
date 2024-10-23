@@ -1,44 +1,70 @@
 package edu.carroll.doin_backend.web.service;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import edu.carroll.doin_backend.web.model.SecurityQuestion;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
 import edu.carroll.doin_backend.web.security.PasswordService;
 import edu.carroll.doin_backend.web.model.User;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
-import java.util.Collections;
-import java.util.List;
-
+@SpringBootTest
+@Transactional
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class UserServiceTest {
     private static final String username = "testUser";
     private static final String password = "testPassword";
 
-    @Mock
+    @Autowired
     private LoginRepository loginRepo;
 
-    @Mock
+    @Autowired
     private PasswordService passwordService;
 
-    @Mock
+    @Autowired
     private SecurityQuestionRepository securityQuestionRepo;
 
-    @InjectMocks
+    @Autowired
     private UserService userService;
 
     @BeforeEach
-    public void setup() {
-        System.out.println("TESTING USER SERVICE");
-        MockitoAnnotations.openMocks(this);
+    public void loadTables(){
+        securityQuestionRepo.deleteAll();
+        loginRepo.deleteAll();
+        securityQuestionRepo.save(new SecurityQuestion(1, "pet"));
     }
 
+    @Test
+    public void validateUser(){
+
+        // Happy
+        // unsuccessful login - no one in database yet
+        assertFalse(userService.validateCredentials(username, password), "validateUser: No Users - verifying that no users still returns false");
+
+        // creating a new user, assuming it works - tested in other method
+        RegisterDTO newUser = new RegisterDTO(username, password, "pet", "answer");
+        assertTrue(userService.createNewUser(newUser), "validateUser: creating new user");
+        assertTrue(userService.validateCredentials(username, password), "validateUser: Success - should be the same credentials and be validated");
+
+        // Crappy
+        final String invalidUsername = username + "FAKE";
+        final String invalidPassword = password + "FAKE";
+
+        assertFalse(userService.validateCredentials(username, invalidPassword), "validateUser: InvalidPassword - should not be validated with incorrect password");
+        assertFalse(userService.validateCredentials(invalidUsername, password), "validateUser: InvalidUsername - should not be validated with incorrect username");
+        assertFalse(userService.validateCredentials(invalidUsername, invalidPassword), "validateUser: InvalidUsernameAndPassword - should not be validated with incorrect username and password");
+
+    }
+
+
+    /*
     @Test
     public void validateUser_Happy() {
         User mockUser = new User();
@@ -124,27 +150,6 @@ public class UserServiceTest {
         assertFalse(result, "User validation should fail if the username and password is null");
     }
 
-    /*
-    @Test
-    public void validateUser(){
-        // Happy
-        // unsuccessful login - no one in database yet
-        assertFalse("validateUser: No Users - verifying that no users still returns false", userService.validateCredentials(username, password));
-
-        // creating a new user, assuming it works - tested in other method
-        RegisterDTO newUser = new RegisterDTO(username, password, "pet", "answer");
-        assertTrue("validateUser: creating new user", userService.createNewUser(newUser));
-        assertTrue("validateUser: Success - should be the same credentials and be validated", userService.validateCredentials(username, password));
-
-        // Crappy
-        final String invalidUsername = username + "FAKE";
-        final String invalidPassword = password + "FAKE";
-
-        assertFalse("validateUser: InvalidPassword - should not be validated with incorrect password", userService.validateCredentials(username, invalidPassword));
-        assertFalse("validateUser: InvalidUsername - should not be validated with incorrect username", userService.validateCredentials(invalidUsername, password));
-        assertFalse("validateUser: InvalidUsernameAndPassword - should not be validated with incorrect username and password", userService.validateCredentials(invalidUsername, invalidPassword));
-
-    }
 
     @Test
     public void createNewUser() {
