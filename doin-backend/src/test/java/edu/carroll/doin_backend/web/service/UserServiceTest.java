@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
-import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
-import edu.carroll.doin_backend.web.security.PasswordService;
-import edu.carroll.doin_backend.web.model.User;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
 @SpringBootTest
@@ -23,12 +20,6 @@ public class UserServiceTest {
     private static final String password = "testPassword";
 
     @Autowired
-    private LoginRepository loginRepo;
-
-    @Autowired
-    private PasswordService passwordService;
-
-    @Autowired
     private SecurityQuestionRepository securityQuestionRepo;
 
     @Autowired
@@ -36,124 +27,66 @@ public class UserServiceTest {
 
     @BeforeEach
     public void loadTables(){
+        // clear all repos
         securityQuestionRepo.deleteAll();
-        loginRepo.deleteAll();
+        // put in the shared data for the tables
         securityQuestionRepo.save(new SecurityQuestion(1, "pet"));
     }
 
     @Test
-    public void validateUser(){
-
+    public void validateCredentials(){
         // Happy
         // unsuccessful login - no one in database yet
-        assertFalse(userService.validateCredentials(username, password), "validateUser: No Users - verifying that no users still returns false");
+        assertFalse(userService.validateCredentials(username, password), "validateCredentials: No Users - verifying that no users still returns false");
 
         // creating a new user, assuming it works - tested in other method
         RegisterDTO newUser = new RegisterDTO(username, password, "pet", "answer");
-        assertTrue(userService.createNewUser(newUser), "validateUser: creating new user");
-        assertTrue(userService.validateCredentials(username, password), "validateUser: Success - should be the same credentials and be validated");
+        assertTrue(userService.createNewUser(newUser), "validateCredentials: creating new user");
+        assertTrue(userService.validateCredentials(username, password), "validateCredentials: Success - should be the same credentials and be validated");
 
         // Crappy
         final String invalidUsername = username + "FAKE";
         final String invalidPassword = password + "FAKE";
+        final String upperCasePassword = password.toUpperCase();
+        final String lowerCasePassword = password.toLowerCase();
 
-        assertFalse(userService.validateCredentials(username, invalidPassword), "validateUser: InvalidPassword - should not be validated with incorrect password");
-        assertFalse(userService.validateCredentials(invalidUsername, password), "validateUser: InvalidUsername - should not be validated with incorrect username");
-        assertFalse(userService.validateCredentials(invalidUsername, invalidPassword), "validateUser: InvalidUsernameAndPassword - should not be validated with incorrect username and password");
+        assertFalse(userService.validateCredentials(invalidUsername, password), "validateCredentials: InvalidUsername - should not be validated with incorrect username");
+        assertFalse(userService.validateCredentials(invalidUsername, invalidPassword), "validateCredentials: InvalidUsernameAndPassword - should not be validated with incorrect username and password");
+        assertFalse(userService.validateCredentials(username, invalidPassword), "validateCredentials: InvalidPassword - should not be validated with incorrect password");
+        assertFalse(userService.validateCredentials(username, upperCasePassword), "validateCredentials: InvalidPassword - should not be validated with upper case password");
+        assertFalse(userService.validateCredentials(username, lowerCasePassword), "validateCredentials: InvalidPassword - should not be validated with lower case password");
 
-    }
+        // Crazy
 
-
-    /*
-    @Test
-    public void validateUser_Happy() {
-        User mockUser = new User();
-        mockUser.setUsername(username);
-        mockUser.setPasswordHash(passwordService.hashPassword(password));
-
-        when(loginRepo.findByUsernameIgnoreCase(username)).thenReturn(List.of(mockUser));
-        when(passwordService.validatePassword(password, mockUser.getPassword())).thenReturn(true);
-
-        boolean result = userService.validateCredentials(username, password);
-        assertTrue(result, "UserServiceImpl: validateUser_Happy - User should be validated successfully in happy path");
+        assertFalse(userService.validateCredentials(null, null), "validateCredentials: NullCredentials - should not validate null credentials");
+        assertFalse(userService.validateCredentials(null, password), "validateCredentials: NullPassword - should not validate null username");
+        assertFalse(userService.validateCredentials(username, null), "validateCredentials: NullUsername - should not validate null username");
     }
 
     @Test
-    public void validateUser_InvalidPassword() {
-        final String invalidPassword = "invalidPassword";
-        User mockUser = new User();
-        mockUser.setUsername(username);
-        mockUser.setPasswordHash(passwordService.hashPassword(password));
+    public void createNewUser(){
+        // Happy
+        final String validQuestion = "pet";
+        final String validAnswer = "answer";
+        // creating a new user with a valid questions and answers
+        final RegisterDTO newUser = new RegisterDTO(username, password, validQuestion, validAnswer);
+        assertTrue(userService.createNewUser(newUser), "createNewUser: creating new user");
+        // trying to create the same user twice
+        assertFalse(userService.createNewUser(newUser), "createNewUser: should not create newUser twice");
 
-        when(loginRepo.findByUsernameIgnoreCase(username)).thenReturn(List.of(mockUser));
-        when(passwordService.validatePassword(invalidPassword, mockUser.getPassword())).thenReturn(false);
+        // Crappy
+        // a username for the new user, a security question not in the entity, and an empty string for the answer
+        final String newUsername = "new" + username;
+        final String badQuestion = "invalid security question";
+        final String emptyAnswer = "";
+        // creating a new user with a null security question
+        final RegisterDTO newBadUser = new RegisterDTO(newUsername, password, badQuestion, emptyAnswer);
+        assertFalse(userService.createNewUser(newBadUser), "createNewUser: should not create a user with invalid SecurityQuestion");
 
-        boolean result = userService.validateCredentials(username, invalidPassword);
-        assertFalse(result, "UserServiceImpl: validateUser_InvalidPassword - User should not be validated with an incorrect password");
-
+        // Crazy
+        // try to create a user with null data
+        final RegisterDTO newNullUser = new RegisterDTO(null, null, null, null);
+        assertFalse(userService.createNewUser(newNullUser), "createNewUser: should not create a user with null values");
     }
 
-    @Test
-    public void validateCredentials_InvalidUsername() {
-        final String invalidUsername = "invalidUsername";
-        when(loginRepo.findByUsernameIgnoreCase(invalidUsername)).thenReturn(Collections.emptyList());
-
-        boolean result = userService.validateCredentials(invalidUsername, password);
-
-        assertFalse(result, "User should not be validated with an incorrect username");
-    }
-
-
-    @Test
-    public void validateCredentials_InvalidUsernameAndPassword() {
-        final String invalidUsername = "invalidUsername";
-        final String invalidPassword = "invalidPassword";
-        when(loginRepo.findByUsernameIgnoreCase(invalidUsername)).thenReturn(Collections.emptyList());
-
-        boolean result = userService.validateCredentials(invalidUsername, invalidPassword);
-
-        assertFalse(result, "User should not be validated with incorrect username and password");
-    }
-
-    @Test
-    public void validateCredentials_NullPassword() {
-        User mockUser = new User();
-        mockUser.setUsername(username);
-        mockUser.setPasswordHash(null);
-
-        when(loginRepo.findByUsernameIgnoreCase(username)).thenReturn(List.of(mockUser));
-
-        boolean result = userService.validateCredentials(username, null);
-
-        assertFalse(result, "User validation should fail if the password is null");
-    }
-
-    @Test
-    public void validateCredentials_NullUsername() {
-        User mockUser = new User();
-        mockUser.setUsername(null);
-        mockUser.setPasswordHash(passwordService.hashPassword(password));
-
-        when(loginRepo.findByUsernameIgnoreCase(username)).thenReturn(Collections.emptyList());
-        boolean result = userService.validateCredentials(null, password);
-        assertFalse(result, "User validation should fail if the username is null");
-    }
-
-    @Test
-    public void validateCredentials_NullPasswordAndUsername() {
-        User mockUser = new User();
-        mockUser.setUsername(null);
-        mockUser.setPasswordHash(null);
-
-        when(loginRepo.findByUsernameIgnoreCase(username)).thenReturn(Collections.emptyList());
-        boolean result = userService.validateCredentials(username, password);
-        assertFalse(result, "User validation should fail if the username and password is null");
-    }
-
-
-    @Test
-    public void createNewUser() {
-
-    }
-     */
 }
