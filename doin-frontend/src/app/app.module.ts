@@ -27,12 +27,13 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AppRoutingModule } from './app.routes';
 import { UserPageComponent } from './user-page/user-page.component';
+import {SmallFriendListComponent} from "./shared/small-friend-list/small-friend-list.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     DiscoverComponent,
-    EventComponent, 
+    EventComponent,
     EventPageComponent,
     ForgotPasswordComponent,
     FriendsComponent,
@@ -43,6 +44,7 @@ import { UserPageComponent } from './user-page/user-page.component';
     NotificationsBarComponent,
     ProfileComponent,
     RegisterComponent,
+    SmallFriendListComponent,
     FriendListComponent,
     AddPostPopupComponent,
     StoryPopupComponent,
@@ -72,4 +74,4 @@ import { UserPageComponent } from './user-page/user-page.component';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {} 
+export class AppModule {}
