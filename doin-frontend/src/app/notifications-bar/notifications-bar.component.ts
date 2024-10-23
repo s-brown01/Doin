@@ -16,12 +16,12 @@ export class NotificationsBarComponent {
   user: UserDTO | null = null;
 
   friendsList = [
-    new FriendshipDto("fof 1", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend1", "test"), 1),
-    new FriendshipDto("fof 2", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend2", "test"), 1),
-    new FriendshipDto("fof 3", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend3", "test"), 1),
-    new FriendshipDto("fof 4", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend4", "test"), 1),
-    new FriendshipDto("fof 5", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend5", "test"), 1),
-    new FriendshipDto("fof 6", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend6", "test"), 1)
+    new FriendshipDto("username 1", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend1", "test"), 1),
+    new FriendshipDto("username 2", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend2", "test"), 1),
+    new FriendshipDto("username 3", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend3", "test"), 1),
+    new FriendshipDto("username 4", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend4", "test"), 1),
+    new FriendshipDto("username 5", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend5", "test"), 1),
+    new FriendshipDto("username 6", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend6", "test"), 1)
   ];
 
   constructor(private authService: AuthService, private router: Router) {}
