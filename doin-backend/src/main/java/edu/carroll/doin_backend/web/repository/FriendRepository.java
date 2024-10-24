@@ -38,7 +38,7 @@ public interface FriendRepository extends JpaRepository<Friendship, Integer> {
      * <p>This query returns random users who are not directly friends with the specified user and excludes the user
      * themselves. The number of users retrieved can be limited by the 'limit' parameter.</p>
      *
-     * <p>This function the custom query was generated with help from StackOverflow</p>
+     * <p>This function's custom query was generated with help from StackOverflow</p>
      *
      * @param currentUser The {@link User} to exclude from the results, along with their direct friends.
      * @param limit The maximum number of random users to retrieve.
