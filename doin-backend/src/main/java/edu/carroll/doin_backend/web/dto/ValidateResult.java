@@ -9,7 +9,7 @@ package edu.carroll.doin_backend.web.dto;
  * an associated message to describe the result.
  * </p>
  *
- * <p>Structure of the class and javadoc was helped by ChatGPT and StackOverflow</p>
+ * <p>Structure of the class and javadoc was helped by StackOverflow</p>
  */
 public class ValidateResult {
     private final boolean valid;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
  * This class will handle all hashed password generation and validating. This
  * service uses BCrypt to hash passwords. Additionally, BCrypt has automatic
  * salting, which is all handled using the built-in methods.
- * <BR/>
+ * <BR>
  * Structure for this class and how to implement BCrypt was influenced by
  * ChatGPT and <a href=
  * "https://auth0.com/blog/hashing-in-action-understanding-bcrypt/#How-does--bcrypt">
