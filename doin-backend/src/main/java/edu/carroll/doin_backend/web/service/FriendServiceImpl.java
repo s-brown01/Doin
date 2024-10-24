@@ -1,6 +1,7 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
+import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 import edu.carroll.doin_backend.web.model.Friendship;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.FriendRepository;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,14 +66,16 @@ public class FriendServiceImpl implements FriendService {
         try {
             Set<FriendshipDTO> friends = friendRepo.findFriendsOfFriends(initialUser);
             log.trace("getFriendsOfFriends: found {} friends for username {}", friends.size(), userUsername);
+
             // if less than 5 friends of friends were found, populate the rest with random users
             // > 5 is ok, but make sure to have some suggestions
             if (friends.size() < 5) {
                 log.trace("getFriendsOfFriends: no friends-of-friends found for username {}, fetching random users", userUsername);
-                Set<FriendshipDTO> randomUsers = friendRepo.findRandomUsersExcept(initialUser, 5 - friends.size());
+                Set<FriendshipDTO> randomUsers = getRandomUsers(initialUser,5 - friends.size());
                 // adding randomUsers to the friends Set
                 friends.addAll(randomUsers);
             }
+
             log.trace("FriendController: converting set to a FriendshipDTO[] and returning it for user: {}", userUsername);
             return friends.toArray(new FriendshipDTO[0]);
         } catch (Exception e) {
@@ -79,6 +83,35 @@ public class FriendServiceImpl implements FriendService {
             log.warn("getFriendsOfFriends: error while getting friends of friends for username {}", userUsername);
             return new FriendshipDTO[0];
         }
+    }
+
+    private Set<FriendshipDTO> getRandomUsers(User user, int amtOfUsers) {
+        // create an empty set to store all random users
+        Set<FriendshipDTO> randomUsers = new HashSet<>();
+
+        // a list of all users in the repository
+        List<User> allUsers = loginRepo.findAll();
+
+        // Create a Set for faster lookup of existing friends
+        Set<User> allFriends = new HashSet<>(friendRepo.findByUser(user).stream()
+                .map(Friendship::getFriend)
+                .toList());
+        // shuffle the list to create random selection of users
+        Collections.shuffle(allUsers);
+
+        for (User randomUser : allUsers) {
+            // if we have collected enough random users, break the for loop
+            if (randomUsers.size() >= amtOfUsers) {
+                break;
+            }
+            // if the randomUser is not already a friend, add them
+            if (!allFriends.contains(randomUser) &&
+                !randomUser.equals(user)) {
+                randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
+            }
+        }
+
+        return randomUsers;
     }
 
     @Override
