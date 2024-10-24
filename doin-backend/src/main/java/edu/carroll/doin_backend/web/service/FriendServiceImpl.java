@@ -60,9 +60,15 @@ public class FriendServiceImpl implements FriendService {
         User initialUser = foundUsers.get(0);
         // get the friends of friends
         log.trace("getFriendsOfFriends: getting friends from friendsRepository for username {}", username);
-        Set<FriendshipDTO> friends = friendRepo.findFriendsOfFriends(initialUser);
-        log.trace("getFriendsOfFriends: found {} friends for username {}", friends.size(), username);
-        return friends;
+        try {
+            Set<FriendshipDTO> friends = friendRepo.findFriendsOfFriends(initialUser);
+            log.trace("getFriendsOfFriends: found {} friends for username {}", friends.size(), username);
+            return friends;
+        } catch (Exception e) {
+            // if there are any Exceptions, return an empty Set
+            log.warn("getFriendsOfFriends: error while getting friends of friends for username {}", username);
+            return new HashSet<>();
+        }
     }
 
     @Override
