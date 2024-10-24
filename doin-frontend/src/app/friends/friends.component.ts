@@ -71,7 +71,7 @@ export class FriendsComponent {
     this.friendService.getFriendsOfFriends().subscribe(
       data => {
         this.mayKnowList = data;
-        this.fofErrorMessage = null;
+        this.fofErrorMessage = "yellow";
       }, error => {
         this.mayKnowList = [];
         this.fofErrorMessage = error.message;
