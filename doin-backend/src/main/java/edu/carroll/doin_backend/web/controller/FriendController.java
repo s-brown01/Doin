@@ -24,10 +24,7 @@ public class FriendController {
     @GetMapping()
     public ResponseEntity<FriendshipDTO[]> getFriendsOfFriends(@RequestHeader("Username") String username) {
         log.info("FriendController: starting to get Friends-of-Friends for user: {}", username);
-        Set<FriendshipDTO> mayKnow = friendService.getFriendsOfFriends(username);
-        log.trace("FriendController: converting set to a FriendshipDTO[] with user: {}", username);
-        FriendshipDTO[] friends = mayKnow.toArray(new FriendshipDTO[0]);
-        log.trace("FriendController: returning ResponseEntity with array for user: {}", username);
+        FriendshipDTO[] friends = friendService.getFriendsOfFriends(username);
         return ResponseEntity.ok(friends);
     }
 

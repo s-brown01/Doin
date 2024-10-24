@@ -43,18 +43,18 @@ public class FriendServiceImpl implements FriendService {
      * @return A set of users who are friends of the user's friends, or an empty set if none found.
      */
     @Override
-    public Set<FriendshipDTO> getFriendsOfFriends(String username) {
+    public FriendshipDTO[] getFriendsOfFriends(String username) {
         log.trace("getFriendsOfFriends: getting the friends of friends for username {}", username);
         List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
         // if the username wasn't found, return an empty list
         if (foundUsers == null || foundUsers.isEmpty()) {
             log.warn("getFriendsOfFriends: no users found for username {}", username);
-            return new HashSet<>();
+            return new FriendshipDTO[0];
         }
         // if more than 1 user was found, return an empty list
         if (foundUsers.size() > 1) {
             log.warn("getFriendsOfFriends: more than one user found for username {}", username);
-            return new HashSet<>();
+            return new FriendshipDTO[0];
         }
         // get the user that was found
         User initialUser = foundUsers.get(0);
@@ -63,11 +63,12 @@ public class FriendServiceImpl implements FriendService {
         try {
             Set<FriendshipDTO> friends = friendRepo.findFriendsOfFriends(initialUser);
             log.trace("getFriendsOfFriends: found {} friends for username {}", friends.size(), username);
-            return friends;
+            log.trace("FriendController: converting set to a FriendshipDTO[] and returning it for user: {}", username);
+            return friends.toArray(new FriendshipDTO[0]);
         } catch (Exception e) {
             // if there are any Exceptions, return an empty Set
             log.warn("getFriendsOfFriends: error while getting friends of friends for username {}", username);
-            return new HashSet<>();
+            return new FriendshipDTO[0];
         }
     }
 
