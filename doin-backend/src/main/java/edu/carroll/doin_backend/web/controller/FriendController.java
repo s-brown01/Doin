@@ -1,10 +1,12 @@
 package edu.carroll.doin_backend.web.controller;
 
+import edu.carroll.doin_backend.web.dto.FriendshipDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.service.FriendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Set;
 
@@ -20,22 +22,26 @@ public class FriendController {
     }
 
     @GetMapping()
-    public Set<UserDTO> getFriendsOfFriends(){
+    public ResponseEntity<FriendshipDTO[]> getFriendsOfFriends(@RequestHeader("Username") String username) {
+        log.info("FriendController: starting to get Friends-of-Friends for user: {}", username);
+        Set<FriendshipDTO> mayKnow = friendService.getFriendsOfFriends(username);
+        // set.toArray
+        // store array in ResponseEntity and return
         return null;
     }
 
     @GetMapping("/{username}")
-    public UserDTO[] getFriendByUsername(@PathVariable String username){
+    public ResponseEntity<UserDTO[]> getFriendByUsername(@PathVariable String username){
         return null;
     }
 
     @PostMapping("/add-friend")
-    public UserDTO addFriend(@RequestBody UserDTO userDTO){
+    public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO userDTO){
         return null;
     }
 
     @PostMapping("/remove-friend")
-    public UserDTO removeFriend(@RequestBody UserDTO userDTO){
+    public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO userDTO){
         return null;
     }
 }
