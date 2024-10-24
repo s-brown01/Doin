@@ -22,7 +22,7 @@ export class FriendsComponent {
   }
 
   ngOnInit(): void {
-    this.loadFriends();
+    this.loadMayKnowList();
   }
 
   getFriends(): void {
@@ -59,7 +59,7 @@ export class FriendsComponent {
     // })
   }
 
-  loadFriends(): void {
+  loadMayKnowList(): void {
     this.mayKnowList = [
       new FriendshipDto("fof 1", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend1", "test"), 1),
       new FriendshipDto("fof 2", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend2", "test"), 1),
@@ -68,6 +68,14 @@ export class FriendsComponent {
       new FriendshipDto("fof 5", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend5", "test"), 1),
       new FriendshipDto("fof 6", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend6", "test"), 1)
     ]
+    this.friendService.getFriendsOfFriends().subscribe(
+      data => {
+        this.mayKnowList = data;
+        this.fofErrorMessage = null;
+      }, error => {
+        this.mayKnowList = [];
+        this.fofErrorMessage = error.message;
+      })
   }
 
 
