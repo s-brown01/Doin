@@ -54,27 +54,3 @@ img.profile-img {
   height: 50px;
   object-fit: cover; /* Ensures the image is scaled correctly without distortion */
 }
-
-.friends-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.friends-list p {
-  color: #808080;
-  margin: 10px 5px 0px;
-}
-
-.friends-list ul {
-  width: 100%;
-  /*padding: 0px;*/
-  list-style: none;
-}
-
-.friends-list li {
-  /*margin: 5px 5px;*/
-  display: flex;
-  align-items: center;
-}

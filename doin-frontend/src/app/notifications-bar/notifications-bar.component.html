@@ -5,15 +5,6 @@
     <div><a href="login" (click)="logout()">Logout</a></div>
   </div>
 
-  <div class="friends-list">
-    <p>Your Friends</p>
-    <ul>
-      <li *ngFor="let friend of friendsList">
-        <app-small-friend-list [friend]="friend"></app-small-friend-list>
-      </li>
-    </ul>
-  </div>
-
   <div class="notifications">
     <ul>
       <li>
