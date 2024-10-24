@@ -29,4 +29,28 @@ public class Friendship {
 
     @Column(name = "confirmed_at")
     private LocalDateTime confirmedAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public User getFriend() {
+        return friend;
+    }
+
+    public FriendshipStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getConfirmedAt() {
+        return confirmedAt;
+    }
 }
