@@ -61,7 +61,7 @@ ul > * {
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
-  background-color: #2ecc71;
+  background-color: #28a745;
   color: #fff;
   font-size: 16px;
   font-weight: bold;
@@ -70,7 +70,7 @@ ul > * {
 }
 
 .search-button:hover {
-  background-color: #27ae60;
+  background-color: #3bd97d;
 }
 
 .search-result {
@@ -94,8 +94,10 @@ ul > * {
   overflow-y: auto;
 }
 
-h3 {
-  text-decoration: underline;
+.may-know h3 {
+  /*text-decoration: underline;*/
+  padding: 0px 5px;
+  border-bottom: 3px solid #28a745;
 }
 
 .error-message {
