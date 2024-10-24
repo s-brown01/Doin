@@ -21,7 +21,7 @@ export class DiscoverComponent {
   }
 
   getEvents(): void {
-    this.eventService.getEvents().subscribe((data: EventDTO[]) => {
+    this.eventService.getEvents(0, 10).subscribe((data: EventDTO[]) => {
       this.events = data;
     });
   }

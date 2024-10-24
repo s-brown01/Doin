@@ -18,7 +18,7 @@ export class UserPageComponent {
   }
 
   ngOnInit(): void {
-    this.eventService.getEvents().subscribe((data: EventDTO[]) => {
+    this.eventService.getEvents(0, 10).subscribe((data: EventDTO[]) => {
       this.events = data;
     });
     const userId = Number(this.route.snapshot.paramMap.get('id'));

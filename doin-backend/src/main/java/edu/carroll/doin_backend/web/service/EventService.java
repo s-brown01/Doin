@@ -1,6 +1,8 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.EventDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ public interface EventService {
      *
      * @return a list of {@link EventDTO} representing all events.
      */
-    List<EventDTO> getAll();
+    Page<EventDTO> getAll(Pageable pageable);
 
     /**
      * Retrieves an event by its unique identifier.
@@ -42,7 +44,7 @@ public interface EventService {
      * @param eventId the unique identifier of the event to join.
      * @throws IllegalArgumentException if the user or event ID is invalid.
      */
-    void joinUser(Integer userId, Integer eventId);
+    boolean joinUser(Integer userId, Integer eventId);
 
     /**
      * Updates an existing event in the system.

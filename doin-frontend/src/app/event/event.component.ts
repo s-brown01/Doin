@@ -11,6 +11,7 @@ import { AuthService } from '../services/auth.service';
 export class EventComponent {
   @Input() event!: EventDTO;
   time: string = 'few moments ago'
+  result: string|null = null
 
   constructor(private eventService: EventService, private authService: AuthService){
     this.eventService = eventService;
@@ -25,7 +26,14 @@ export class EventComponent {
     if (this.event && currentUser) {
       this.eventService.joinEvent(this.event.id, currentUser.id).subscribe(
         (response) => {
-          console.log('Successfully joined event', response);
+          if(response){
+            this.result = '🎉joined event!'
+            console.log('Successfully joined event', response);
+          }else{
+            this.result = '🙃already joined!'
+            console.log('Error joining event:', response);
+          }
+          
         },
         (error) => {
           console.error('Error joining event:', error);

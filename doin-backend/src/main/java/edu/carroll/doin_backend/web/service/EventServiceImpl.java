@@ -7,10 +7,13 @@ import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -23,14 +26,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> getAll() {
-        logger.info("Retrieving all events");
-        List<EventDTO> events = eventRepository.findAll().stream()
-                .sorted(Comparator.comparing(Event::getTime, Comparator.nullsLast(Comparator.reverseOrder())))
-                .map(EventDTO::new)
-                .toList();
-        logger.info("Successfully retrieved {} events", events.size());
-        return events;
+    public Page<EventDTO> getAll(Pageable pageable) {
+        logger.info("Retrieving events with paging, page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
+
+        Page<Event> eventPage = eventRepository.findAll(pageable);
+        Page<EventDTO> eventDTOPage = eventPage.map(EventDTO::new);
+
+        logger.info("Successfully retrieved {} events", eventDTOPage.getTotalElements());
+        return eventDTOPage;
     }
 
     @Override
@@ -54,14 +57,18 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void joinUser(Integer eventId, Integer userId) {
+    public boolean joinUser(Integer eventId, Integer userId) {
         logger.info("User with ID {} joining event with ID {}", userId, eventId);
         Event existing = eventRepository.getById(eventId);
+        if(existing.getJoiners().stream().anyMatch(a-> Objects.equals(a.getId(), userId))) {
+            return false;
+        }
         User user = new User();
         user.setId(userId);
         existing.addJoiner(user);
         eventRepository.save(existing);
         logger.info("User with ID {} successfully joined event with ID {}", userId, eventId);
+        return true;
     }
 
     @Override

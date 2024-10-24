@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { EventDTO } from '../dtos/event.dto';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from './api.service';
@@ -11,8 +11,11 @@ export class EventService {
   private baseUrl = 'http://localhost:8080/api';
   constructor(private http: HttpClient, private apiService : ApiService) { }
 
-  getEvents(): Observable<EventDTO[]> {
-    return this.http.get<EventDTO[]>(this.baseUrl + "/events");
+  getEvents(page: number, size: number): Observable<EventDTO[]> {
+    return this.http.get<{ content: EventDTO[] }>(`${this.baseUrl}/events?page=${page}&size=${size}`)
+      .pipe(
+        map((response: { content: any; }) => response.content)
+      );
   }
 
   getEvent(id: Number): Observable<EventDTO> {
@@ -23,7 +26,7 @@ export class EventService {
     return this.apiService.post("events", event);
   }
 
-  joinEvent(eventId: number, userId: number){
-    return this.http.post(`${this.baseUrl}/events/${eventId}/join?userId=${userId}`, {});
+  joinEvent(eventId: number, userId: number): Observable<boolean>{
+    return this.http.post<boolean>(`${this.baseUrl}/events/${eventId}/join?userId=${userId}`, {});
   }
 }
