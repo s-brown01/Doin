@@ -1,8 +1,10 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
+import edu.carroll.doin_backend.web.model.Friendship;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.FriendRepository;
+import edu.carroll.doin_backend.web.repository.LoginRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,11 +26,13 @@ public class FriendServiceImpl implements FriendService {
     /**
      * A JPA Repository that connects to Friendship Model
      */
-    private final FriendRepository friendRepository;
+    private final FriendRepository friendRepo;
+    private final LoginRepository loginRepo;
 
 
-    public FriendServiceImpl(FriendRepository friendRepository) {
-        this.friendRepository = friendRepository;
+    public FriendServiceImpl(FriendRepository friendRepository, LoginRepository loginRepository) {
+        this.friendRepo = friendRepository;
+        this.loginRepo = loginRepository;
     }
 
     /**
@@ -40,15 +44,25 @@ public class FriendServiceImpl implements FriendService {
      */
     @Override
     public Set<FriendshipDTO> getFriendsOfFriends(String username) {
-//        Set<FriendshipDTO> friends = friendRepository.findFriendsOfFriends(user);
-//        log.info("getFriendsOfFriends: Fetching friends of friends for user: {}", user.getUsername());
-//         if the JpaRepository returned a null, return an empty set instead so front-end doesn't break
-//        if (friends == null) {
-//            log.warn("GetFriendsOfFriends: null value found, returning empty set for user: {}", user.getUsername());
-//            return new HashSet<>();
-//        }
-//        log.info("Found {} friends of friends for user: {}", friends.size(), user.getUsername());
-//        return friends;
+        log.trace("getFriendsOfFriends: getting the friends of friends for username {}", username);
+        List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
+        // if the username wasn't found, return an empty list
+        if (foundUsers == null || foundUsers.isEmpty()) {
+            log.warn("getFriendsOfFriends: no users found for username {}", username);
+            return new HashSet<>();
+        }
+        // if more than 1 user was found, return an empty list
+        if (foundUsers.size() > 1) {
+            log.warn("getFriendsOfFriends: more than one user found for username {}", username);
+            return new HashSet<>();
+        }
+        // get the user that was found
+        User initialUser = foundUsers.get(0);
+        // get the friends of friends
+        log.trace("getFriendsOfFriends: getting friends from friendsRepository for username {}", username);
+        Set<FriendshipDTO> friends = friendRepo.findFriendsOfFriends(initialUser);
+        log.trace("getFriendsOfFriends: found {} friends for username {}", friends.size(), username);
+        return friends;
     }
 
     @Override
