@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs'
 import {FriendshipDto} from "../dtos/friendship.dto";
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { ApiService } from './api.service';
+import {AuthService} from "./auth.service";
 
 @Injectable({
   providedIn: 'root'
@@ -10,11 +11,13 @@ import { ApiService } from './api.service';
 export class FriendService {
 
   private baseUrl = 'http://localhost:8080/api';
-  constructor(private http: HttpClient, private apiService : ApiService) { }
+  constructor(private http: HttpClient, private apiService : ApiService, private authService: AuthService) { }
 
 
   getFriendsOfFriends(): Observable<FriendshipDto[]> {
-    return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends");
+    const username = this.authService.getCurrentUser().username;
+    const headers = new HttpHeaders().set('Username', username);
+    return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends", { headers });
   }
 
   getFriendByUsername(username: string): Observable<FriendshipDto[]> {
