@@ -6,6 +6,19 @@ import edu.carroll.doin_backend.web.model.User;
 import java.util.Objects;
 
 public class UserDTO {
+    private Integer id;
+    private String username;
+    private Image profilePicture;
+
+    public UserDTO(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.profilePicture = user.getProfilePicture();
+    }
+
+    public UserDTO() {
+    }
+
     public Image getProfilePicture() {
         return profilePicture;
     }
@@ -26,6 +39,10 @@ public class UserDTO {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -37,20 +54,4 @@ public class UserDTO {
     public int hashCode() {
         return Objects.hash(id, username, profilePicture);
     }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    private Integer id;
-    private String username;
-    private Image profilePicture;
-
-    public UserDTO(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.profilePicture = user.getProfilePicture();
-    }
-
-    public UserDTO() {}
 }
