@@ -30,5 +30,5 @@ public interface FriendRepository extends JpaRepository<Friendship, Integer> {
             "WHERE f1.user = :user " +
             "AND f2.friend != :user " +
             "AND f2.friend NOT IN (SELECT f3.friend FROM Friendship f3 WHERE f3.user = :user)")
-    Set<User> findFriendsOfFriends(@Param("user") User user);
+    Set<Friendship> findFriendsOfFriends(@Param("user") User user);
 }
