@@ -2,6 +2,7 @@ package edu.carroll.doin_backend.web.controller;
 
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
+import edu.carroll.doin_backend.web.dto.ValidateResult;
 import edu.carroll.doin_backend.web.service.FriendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +35,23 @@ public class FriendController {
     }
 
     @PostMapping("/add-friend")
-    public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO userDTO){
+    public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO userDTO, @RequestHeader("Username") String username){
+        ValidateResult result = friendService.addFriend(username, userDTO.getUsername());
         return null;
     }
 
     @PostMapping("/remove-friend")
     public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO userDTO){
+        return null;
+    }
+
+    @PostMapping("/block-user")
+    public ResponseEntity<Boolean> blockUser(@RequestBody UserDTO userDTO){
+        return null;
+    }
+
+    @PostMapping
+    public ResponseEntity<Boolean> unblockUser(@RequestBody UserDTO userDTO){
         return null;
     }
 }
