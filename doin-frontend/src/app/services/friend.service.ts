@@ -25,7 +25,9 @@ export class FriendService {
   }
 
   addFriend(friend : FriendshipDto): Observable<any>{
-    return this.apiService.post("/friends/add-friend", friend);
+    const username = this.authService.getCurrentUser().username;
+    const headers = new HttpHeaders().set('Username', username);
+    return this.apiService.post("/friends/add-friend", friend, headers );
   }
 
   removeFriend(friend : FriendshipDto): Observable<any>{
