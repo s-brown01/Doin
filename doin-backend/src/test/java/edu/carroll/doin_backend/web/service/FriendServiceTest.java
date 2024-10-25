@@ -85,9 +85,9 @@ public class FriendServiceTest {
 
     @Test
     public void addFriendTest() {
-        assertTrue(friendService.addFriend(username1, username2), "User1 should be able to add User2 as a friend");
-        assertTrue(friendService.addFriend(username1, username3), "User1 should be able to add User3 as a friend");
-        assertTrue(friendService.addFriend(username2, username1), "User2 should be able to add User1 as a friend");
+        assertTrue(friendService.addFriend(username1, username2).isValid(), "User1 should be able to add User2 as a friend");
+        assertTrue(friendService.addFriend(username1, username3).isValid(), "User1 should be able to add User3 as a friend");
+        assertTrue(friendService.addFriend(username2, username1).isValid(), "User2 should be able to add User1 as a friend");
         // get the Friendships for each user
         Set<Friendship> user1Friends = friendRepository.findByUser(loginRepository.findByUsernameIgnoreCase(username1).get(0));
         Set<Friendship> user2Friends = friendRepository.findByUser(loginRepository.findByUsernameIgnoreCase(username2).get(0));
@@ -100,11 +100,11 @@ public class FriendServiceTest {
 
         // invalid tests
         final String invalidUsername = username1 + "FAKE";
-        assertFalse(friendService.addFriend(username1, username2), "User1 should not be able to friend User2 twice");
-        assertFalse(friendService.addFriend(username1, null), "User1 should not be able to friend 'null'");
-        assertFalse(friendService.addFriend(null, null), "'null' should not be able to friend 'null'");
-        assertFalse(friendService.addFriend(username1, invalidUsername), "User1 should not be able to friend a user who doesn't exist");
-        assertFalse(friendService.addFriend(username1, username1), "User1 should not be able to friend themselves");
+        assertFalse(friendService.addFriend(username1, username2).isValid(), "User1 should not be able to friend User2 twice");
+        assertFalse(friendService.addFriend(username1, null).isValid(), "User1 should not be able to friend 'null'");
+        assertFalse(friendService.addFriend(null, null).isValid(), "'null' should not be able to friend 'null'");
+        assertFalse(friendService.addFriend(username1, invalidUsername).isValid(), "User1 should not be able to friend a user who doesn't exist");
+        assertFalse(friendService.addFriend(username1, username1).isValid(), "User1 should not be able to friend themselves");
 
         // get the Friendship tests again
         user1Friends = friendRepository.findByUser(loginRepository.findByUsernameIgnoreCase(username1).get(0));
@@ -123,15 +123,15 @@ public class FriendServiceTest {
         friendService.addFriend(username1, username2);
         friendService.addFriend(username2, username1);
 
-        assertTrue(friendService.removeFriend(username1, username2), "User1 should be able to unfriend User2");
+        assertTrue(friendService.removeFriend(username1, username2).isValid(), "User1 should be able to unfriend User2");
         // a fake username
         final String invalidUsername = username1 + "FAKE";
 
-        assertFalse(friendService.removeFriend(username1, username2), "User1 should not be able to unfriend User2 twice");
-        assertFalse(friendService.removeFriend(username1, null), "User1 should not be able to unfriend 'null'");
-        assertFalse(friendService.removeFriend(null, null), "'null' should not be able to unfriend 'null'");
-        assertFalse(friendService.removeFriend(username1, invalidUsername), "User1 should not be able to unfriend a user who doesn't exist");
-        assertFalse(friendService.removeFriend(username1, username1), "User1 should not be able to unfriend themselves");
+        assertFalse(friendService.removeFriend(username1, username2).isValid(), "User1 should not be able to unfriend User2 twice");
+        assertFalse(friendService.removeFriend(username1, null).isValid(), "User1 should not be able to unfriend 'null'");
+        assertFalse(friendService.removeFriend(null, null).isValid(), "'null' should not be able to unfriend 'null'");
+        assertFalse(friendService.removeFriend(username1, invalidUsername).isValid(), "User1 should not be able to unfriend a user who doesn't exist");
+        assertFalse(friendService.removeFriend(username1, username1).isValid(), "User1 should not be able to unfriend themselves");
     }
 
     @Test
@@ -146,6 +146,6 @@ public class FriendServiceTest {
 
     @Test
     public void unblockUserTest() {
-        
+
     }
 }
