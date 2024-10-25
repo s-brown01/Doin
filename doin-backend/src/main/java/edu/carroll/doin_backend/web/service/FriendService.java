@@ -12,6 +12,6 @@ public interface FriendService {
 
     ValidateResult addFriend(String userUsername, String friendUsername);
     ValidateResult removeFriend(String userUsername, String friendUsername);
-    ValidateResult blockUser(String userUsername, String blockUsername);
-    ValidateResult unblockUser(String userUsername, String blockUsername);
+
+    ValidateResult confirmFriend(String username, String username1);
 }

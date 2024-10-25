@@ -174,7 +174,13 @@ public class FriendServiceImpl implements FriendService {
         // check if the friend has a connection with user
         if (friendRepo.existsFriendshipByUserAndFriend(friend, user)) {
             // get the connection/Friendship
-            Friendship friendToUser = friendRepo.findByUserAndFriend(friend, user);
+            FriendshipStatus friendToUserStatus = friendRepo.findByUserAndFriend(friend, user).getStatus();
+            // make sure it is not PENDING already, confirm friendship
+            if (friendToUserStatus.equals(FriendshipStatus.PENDING)) {
+                log.info("addFriend: user {} and friend {} is already pending; now confirming friends", user, friendUsername);
+
+            }
+
             // check if the user is blocked
             if (friendToUser.getStatus().equals(FriendshipStatus.BLOCKED)) {
                 log.info("addFriend: friend {} has blocked user {}", friendUsername, userUsername);
@@ -186,18 +192,15 @@ public class FriendServiceImpl implements FriendService {
         // make sure there is not already a Friendship from user to friend
         log.trace("addFriend: checking user {} and friend {} are not already friends", userUsername, friendUsername);
         if (friendRepo.existsFriendshipByUserAndFriend(user, friend)) {
-            // if there is make sure it is confirmed/pending/blocked
+            // if there is make sure it is not not-added (just in case
             FriendshipStatus currentStatus = friendRepo.findByUserAndFriend(user, friend).getStatus();
-            if (currentStatus.equals(FriendshipStatus.BLOCKED) ||
-                currentStatus.equals(FriendshipStatus.CONFIRMED) ||
-                currentStatus.equals(FriendshipStatus.PENDING)) {
+            if (!currentStatus.equals(FriendshipStatus.NOTADDED)) {
                 log.warn("addFriend: there is already a friendship between user {} and friend {} with status {}", userUsername, friendUsername, currentStatus);
                 return new ValidateResult(false, "there is already a friendship between user");
             }
-            // if it is not pending/confirmed/blocked, then continue on
         }
         log.trace("addFriend: creating user {} and friend {} friendship", userUsername, friendUsername);
-        Friendship newFriendship = new Friendship(user, friend, FriendshipStatus.CONFIRMED);
+        Friendship newFriendship = new Friendship(user, friend, FriendshipStatus.PENDING);
         friendRepo.save(newFriendship);
 
         return new ValidateResult(true, "user has friended friend!");
@@ -209,13 +212,8 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public ValidateResult blockUser(String userUsername, String blockUsername) {
-        return new ValidateResult(false, "false for now");
-    }
-
-    @Override
-    public ValidateResult unblockUser(String userUsername, String blockUsername) {
-        return new ValidateResult(false, "false for now");
+    public ValidateResult confirmFriend(String userUsername, String friendUsername) {
+        return new ValidateResult(false, "default response");
     }
 
     /**
