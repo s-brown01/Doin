@@ -84,6 +84,11 @@ public class FriendServiceTest {
     }
 
     @Test
+    public void getUserTest() {
+        
+    }
+
+    @Test
     public void addFriendTest() {
         assertTrue(friendService.addFriend(username1, username2).isValid(), "User1 should be able to add User2 as a friend");
         assertTrue(friendService.addFriend(username1, username3).isValid(), "User1 should be able to add User3 as a friend");
