@@ -13,4 +13,5 @@ public interface FriendService {
     boolean addFriend(String userUsername, String friendUsername);
     boolean removeFriend(String userUsername, String friendUsername);
     boolean blockUser(String userUsername, String blockUsername);
+    boolean unblockUser(String userUsername, String blockUsername);
 }
