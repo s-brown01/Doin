@@ -27,19 +27,14 @@ export class FriendService {
     return this.apiService.post("/friends/add-friend", friend, headers );
   }
 
+  confirmFriend(friend : FriendshipDto): Observable<any>{
+    const headers = this.getHeaders();
+    return this.apiService.post("/confirm-friend", friend, headers);
+  }
+
   removeFriend(friend : FriendshipDto): Observable<any>{
     const headers = this.getHeaders();
     return this.apiService.post("/friends/remove-friend", friend, headers);
-  }
-
-  blockUser(friend : FriendshipDto): Observable<any>{
-    const headers = this.getHeaders();
-    return this.apiService.post("/friends/block-friend", friend, headers);
-  }
-
-  unblockUser(friend : FriendshipDto): Observable<any>{
-    const headers = this.getHeaders();
-    return this.apiService.post("/friends/unblock-friend", friend, headers);
   }
 
   private getHeaders(): HttpHeaders{
