@@ -58,7 +58,7 @@ public class FriendServiceImpl implements FriendService {
     public FriendshipDTO[] getFriendsOfFriends(String userUsername) {
         log.trace("getFriendsOfFriends: getting the friends of friends for username {}", userUsername);
         log.trace("getFriendsOfFriends: validating username {}", userUsername);
-        if (!validateUsername(userUsername)) {
+        if (!validUsername(userUsername)) {
             log.warn("getFriendsOfFriends: invalid username {}", userUsername);
             return new FriendshipDTO[0];
         }
@@ -126,21 +126,63 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
+    public FriendshipDTO getUser(String otherUsername) {
+        return null;
+    }
+
+    @Override
     public boolean addFriend(String userUsername, String friendUsername) {
         log.trace("addFriend: adding friend {} for user {}", friendUsername, userUsername);
-        log.trace("addFriend: validating username {}", userUsername);
-        if (!validateUsername(userUsername)) {
+        log.trace("addFriend: validating user username {}", userUsername);
+        if (!validUsername(userUsername)) {
             log.warn("addFriend: invalid user username {}", userUsername);
             return false;
         }
-        if (!validateUsername(friendUsername)) {
+        log.trace("addFriend: validating friend username {}", friendUsername);
+        if (!validUsername(friendUsername)) {
             log.warn("addFriend: invalid friend username {}", friendUsername);
             return false;
         }
         User user = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
         User friend = loginRepo.findByUsernameIgnoreCase(friendUsername).get(0);
 
-        return false;
+        log.trace("addFriend: checking user {} and friend {} are not the same", userUsername, friendUsername);
+        if (user.equals(friend)) {
+            log.info("addFriend: user {} and friend {} are the same", user, friend);
+            return false;
+        }
+
+        log.trace("addFriend: checking the user {} is not blocked by friend {}", userUsername, friendUsername);
+        // check if the friend has a connection with user
+        if (friendRepo.existsFriendshipByUserAndFriend(friend, user)) {
+            // get the connection/Friendship
+            Friendship friendToUser = friendRepo.findByUserAndFriend(friend, user);
+            // check if the user is blocked
+            if (friendToUser.getStatus().equals(FriendshipStatus.BLOCKED)) {
+                log.info("addFriend: friend {} has blocked user {}", friendUsername, userUsername);
+                return false;
+            }
+            // if not blocked, continue on
+        }
+
+        // make sure there is not already a Friendship from user to friend
+        log.trace("addFriend: checking user {} and friend {} are not already friends", userUsername, friendUsername);
+        if (friendRepo.existsFriendshipByUserAndFriend(user, friend)) {
+            // if there is make sure it is confirmed/pending/blocked
+            FriendshipStatus currentStatus = friendRepo.findByUserAndFriend(user, friend).getStatus();
+            if (currentStatus.equals(FriendshipStatus.BLOCKED) ||
+                currentStatus.equals(FriendshipStatus.CONFIRMED) ||
+                currentStatus.equals(FriendshipStatus.PENDING)) {
+                log.warn("addFriend: there is already a friendship between user {} and friend {} with status {}", userUsername, friendUsername, currentStatus);
+                return false;
+            }
+            // if it is not pending/confirmed/blocked, then continue on
+        }
+        log.trace("addFriend: creating user {} and friend {} friendship", userUsername, friendUsername);
+        Friendship newFriendship = new Friendship(user, friend, FriendshipStatus.CONFIRMED);
+        friendRepo.save(newFriendship);
+
+        return true;
     }
 
     @Override
@@ -149,20 +191,36 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendshipDTO getFriend(String friendUsername) {
-        return null;
+    public boolean blockUser(String userUsername, String blockUsername) {
+        return false;
     }
 
-    private boolean validateUsername(String username) {
-        List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
-        if (foundUsers == null || foundUsers.isEmpty()) {
-            log.warn("validateUsername: no users found for username {}", username);
+    @Override
+    public boolean unblockUser(String userUsername, String blockUsername) {
+        return false;
+    }
+
+    /**
+     * A helper method that checks if a specific username is valid in the database. It checks that the username is in the database and that there is only 1 user with that username. Also, it catches any errors that may occur.
+     *
+     * @param username - the username to check against the database
+     * @return true if the username is valid, false if not (not found, more than 1 user with that username, and any errors)
+     */
+    private boolean validUsername(String username) {
+        try {
+            List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
+            if (foundUsers == null || foundUsers.isEmpty()) {
+                log.warn("validateUsername: no users found for username {}", username);
+                return false;
+            }
+            if (foundUsers.size() > 1) {
+                log.warn("validateUsername: more than one user found for username {}", username);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            log.warn("validateUsername: error while validating username {}", username);
             return false;
         }
-        if (foundUsers.size() > 1) {
-            log.warn("validateUsername: more than one user found for username {}", username);
-            return false;
-        }
-        return true;
     }
 }
