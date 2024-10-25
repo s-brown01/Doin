@@ -1,6 +1,7 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
+import edu.carroll.doin_backend.web.dto.ValidateResult;
 import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 import edu.carroll.doin_backend.web.model.Friendship;
 import edu.carroll.doin_backend.web.model.User;
@@ -131,17 +132,17 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public boolean addFriend(String userUsername, String friendUsername) {
+    public ValidateResult addFriend(String userUsername, String friendUsername) {
         log.trace("addFriend: adding friend {} for user {}", friendUsername, userUsername);
         log.trace("addFriend: validating user username {}", userUsername);
         if (!validUsername(userUsername)) {
             log.warn("addFriend: invalid user username {}", userUsername);
-            return false;
+            return new ValidateResult(false, "invalid user username");
         }
         log.trace("addFriend: validating friend username {}", friendUsername);
         if (!validUsername(friendUsername)) {
             log.warn("addFriend: invalid friend username {}", friendUsername);
-            return false;
+            return new ValidateResult(false, "invalid friend username");
         }
         User user = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
         User friend = loginRepo.findByUsernameIgnoreCase(friendUsername).get(0);
@@ -149,7 +150,7 @@ public class FriendServiceImpl implements FriendService {
         log.trace("addFriend: checking user {} and friend {} are not the same", userUsername, friendUsername);
         if (user.equals(friend)) {
             log.info("addFriend: user {} and friend {} are the same", user, friend);
-            return false;
+            return new ValidateResult(false, "user and friend are the same");
         }
 
         log.trace("addFriend: checking the user {} is not blocked by friend {}", userUsername, friendUsername);
@@ -160,7 +161,7 @@ public class FriendServiceImpl implements FriendService {
             // check if the user is blocked
             if (friendToUser.getStatus().equals(FriendshipStatus.BLOCKED)) {
                 log.info("addFriend: friend {} has blocked user {}", friendUsername, userUsername);
-                return false;
+                return new ValidateResult(false, "friend has blocked user");
             }
             // if not blocked, continue on
         }
@@ -174,7 +175,7 @@ public class FriendServiceImpl implements FriendService {
                 currentStatus.equals(FriendshipStatus.CONFIRMED) ||
                 currentStatus.equals(FriendshipStatus.PENDING)) {
                 log.warn("addFriend: there is already a friendship between user {} and friend {} with status {}", userUsername, friendUsername, currentStatus);
-                return false;
+                return new ValidateResult(false, "there is already a friendship between user");
             }
             // if it is not pending/confirmed/blocked, then continue on
         }
@@ -182,22 +183,22 @@ public class FriendServiceImpl implements FriendService {
         Friendship newFriendship = new Friendship(user, friend, FriendshipStatus.CONFIRMED);
         friendRepo.save(newFriendship);
 
-        return true;
+        return new ValidateResult(true, "user has friended friend!");
     }
 
     @Override
-    public boolean removeFriend(String userUsername, String friendUsername) {
-        return false;
+    public ValidateResult removeFriend(String userUsername, String friendUsername) {
+        return new ValidateResult(false, "false for now");
     }
 
     @Override
-    public boolean blockUser(String userUsername, String blockUsername) {
-        return false;
+    public ValidateResult blockUser(String userUsername, String blockUsername) {
+        return new ValidateResult(false, "false for now");
     }
 
     @Override
-    public boolean unblockUser(String userUsername, String blockUsername) {
-        return false;
+    public ValidateResult unblockUser(String userUsername, String blockUsername) {
+        return new ValidateResult(false, "false for now");
     }
 
     /**
