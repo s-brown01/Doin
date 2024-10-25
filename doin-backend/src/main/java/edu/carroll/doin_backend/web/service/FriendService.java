@@ -7,8 +7,10 @@ import java.util.Set;
 
 @Service
 public interface FriendService {
-    public FriendshipDTO[] getFriendsOfFriends(String userUsername);
-    public boolean addFriend(String userUsername, String friendUsername);
-    public boolean removeFriend(String userUsername, String friendUsername);
-    public FriendshipDTO getFriend(String friendUsername);
+    FriendshipDTO[] getFriendsOfFriends(String userUsername);
+    FriendshipDTO getUser(String userUsername);
+
+    boolean addFriend(String userUsername, String friendUsername);
+    boolean removeFriend(String userUsername, String friendUsername);
+    boolean blockUser(String userUsername, String blockUsername);
 }
