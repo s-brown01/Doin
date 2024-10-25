@@ -127,6 +127,19 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public boolean addFriend(String userUsername, String friendUsername) {
+        log.trace("addFriend: adding friend {} for user {}", friendUsername, userUsername);
+        log.trace("addFriend: validating username {}", userUsername);
+        if (!validateUsername(userUsername)) {
+            log.warn("addFriend: invalid user username {}", userUsername);
+            return false;
+        }
+        if (!validateUsername(friendUsername)) {
+            log.warn("addFriend: invalid friend username {}", friendUsername);
+            return false;
+        }
+        User user = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
+        User friend = loginRepo.findByUsernameIgnoreCase(friendUsername).get(0);
+
         return false;
     }
 
@@ -138,5 +151,18 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public FriendshipDTO getFriend(String friendUsername) {
         return null;
+    }
+
+    private boolean validateUsername(String username) {
+        List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
+        if (foundUsers == null || foundUsers.isEmpty()) {
+            log.warn("validateUsername: no users found for username {}", username);
+            return false;
+        }
+        if (foundUsers.size() > 1) {
+            log.warn("validateUsername: more than one user found for username {}", username);
+            return false;
+        }
+        return true;
     }
 }
