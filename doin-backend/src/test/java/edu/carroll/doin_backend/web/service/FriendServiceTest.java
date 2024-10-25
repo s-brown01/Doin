@@ -132,14 +132,20 @@ public class FriendServiceTest {
         assertFalse(friendService.removeFriend(null, null), "'null' should not be able to unfriend 'null'");
         assertFalse(friendService.removeFriend(username1, invalidUsername), "User1 should not be able to unfriend a user who doesn't exist");
         assertFalse(friendService.removeFriend(username1, username1), "User1 should not be able to unfriend themselves");
-
-
-
-
     }
 
     @Test
     public void getFriendTest() {
 
+    }
+
+    @Test
+    public void blockUserTest() {
+
+    }
+
+    @Test
+    public void unblockUserTest() {
+        
     }
 }
