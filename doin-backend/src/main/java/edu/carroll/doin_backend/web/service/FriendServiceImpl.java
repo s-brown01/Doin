@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Implementation of the FriendService that handles operations related to friends and friendships.
+ * Implementation of the FriendService interface that handles operations related to friends and friendships.
+ * This service provides functionalities to retrieve friends of friends, add or remove friends, and get friendship details.
  */
 @Service
 public class FriendServiceImpl implements FriendService {
@@ -29,9 +30,18 @@ public class FriendServiceImpl implements FriendService {
      * A JPA Repository that connects to Friendship Model
      */
     private final FriendRepository friendRepo;
+
+    /**
+     * A JPA Repository that connects to the User model.
+     */
     private final LoginRepository loginRepo;
 
-
+    /**
+     * Constructor to initialize FriendServiceImpl with the necessary repositories.
+     *
+     * @param friendRepository The repository for managing Friendship entities.
+     * @param loginRepository  The repository for managing User entities.
+     */
     public FriendServiceImpl(FriendRepository friendRepository, LoginRepository loginRepository) {
         this.friendRepo = friendRepository;
         this.loginRepo = loginRepository;
@@ -47,20 +57,13 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public FriendshipDTO[] getFriendsOfFriends(String userUsername) {
         log.trace("getFriendsOfFriends: getting the friends of friends for username {}", userUsername);
-        List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(userUsername);
-        // if the username wasn't found, return an empty list
-        if (foundUsers == null || foundUsers.isEmpty()) {
-            log.warn("getFriendsOfFriends: no users found for username {}", userUsername);
+        log.trace("getFriendsOfFriends: validating username {}", userUsername);
+        if (!validateUsername(userUsername)) {
+            log.warn("getFriendsOfFriends: invalid username {}", userUsername);
             return new FriendshipDTO[0];
         }
-        // if more than 1 user was found, return an empty list
-        if (foundUsers.size() > 1) {
-            log.warn("getFriendsOfFriends: more than one user found for username {}", userUsername);
-            return new FriendshipDTO[0];
-        }
-
-        // get the user that was found
-        User initialUser = foundUsers.get(0);
+        // get the user that was found with the valid username
+        User initialUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
         // get the friends of friends
         log.trace("getFriendsOfFriends: getting friends from friendsRepository for username {}", userUsername);
         try {
@@ -85,6 +88,14 @@ public class FriendServiceImpl implements FriendService {
         }
     }
 
+    /**
+     * Retrieves a set of random users who are not already friends with the given user.
+     * The number of random users returned is specified by amtOfUsers.
+     *
+     * @param user        The user for whom to find random non-friends.
+     * @param amtOfUsers  The number of random users to retrieve.
+     * @return A set of FriendshipDTO representing random users who are not friends.
+     */
     private Set<FriendshipDTO> getRandomUsers(User user, int amtOfUsers) {
         // create an empty set to store all random users
         Set<FriendshipDTO> randomUsers = new HashSet<>();
