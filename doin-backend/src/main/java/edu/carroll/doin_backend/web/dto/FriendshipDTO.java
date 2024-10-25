@@ -66,5 +66,10 @@ public class FriendshipDTO {
     }
 
 
+    @Override
+    public String toString(){
+        return "Friend: " + username + " with status " + status.toString();
+    }
+
 
 }
