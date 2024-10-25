@@ -19,13 +19,13 @@ public interface FriendRepository extends JpaRepository<Friendship, Integer> {
 
     /**
      * Retrieves a set of FriendshipDTOs representing friends of the user's friends but are not directly friends
-     * with the given user.
+     * with the given user with a {@link FriendshipStatus} of 'not added'.
      *
      * <p>This function the custom query was generated with help from StackOverflow</p>
      * @param user The {@link User} for whom to find friends of friends.
      * @return A set of FriendshipDTOs who are friends of the user's friends but not direct friends of the user.
      */
-    @Query("SELECT new edu.carroll.doin_backend.web.dto.FriendshipDTO(f2.friend.id, f2.friend.username, f2.status, f2.friend.profilePicture) " +
+    @Query("SELECT new edu.carroll.doin_backend.web.dto.FriendshipDTO(f2.friend.id, f2.friend.username, edu.carroll.doin_backend.web.enums.FriendshipStatus.NOTADDED, f2.friend.profilePicture) " +
             "FROM Friendship f1 " +
             "JOIN Friendship f2 ON f1.friend = f2.user " +
             "WHERE f1.user = :user " +
