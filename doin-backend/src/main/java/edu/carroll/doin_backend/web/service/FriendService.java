@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface FriendService {
     FriendshipDTO[] getFriendsOfFriends(String userUsername);
-    FriendshipDTO getUser(String userUsername);
+    FriendshipDTO[] getUser(String userUsername);
 
     ValidateResult addFriend(String userUsername, String friendUsername);
     ValidateResult removeFriend(String userUsername, String friendUsername);

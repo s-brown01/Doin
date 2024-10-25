@@ -127,7 +127,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendshipDTO getUser(String otherUsername) {
+    public FriendshipDTO[] getUser(String otherUsername) {
         return null;
     }
 
