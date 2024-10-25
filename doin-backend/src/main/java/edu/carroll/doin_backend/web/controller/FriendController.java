@@ -6,6 +6,7 @@ import edu.carroll.doin_backend.web.dto.ValidateResult;
 import edu.carroll.doin_backend.web.service.FriendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -37,26 +38,30 @@ public class FriendController {
     }
 
     @PostMapping("/add-friend")
-    public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO userDTO, @RequestHeader("Username") String username){
-        ValidateResult result = friendService.addFriend(username, userDTO.getUsername());
-        return null;
+    public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username){
+        ValidateResult result = friendService.addFriend(username, friendDTO.getUsername());
+        if (result.isValid()){
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
+    }
+
+    @PostMapping("/confirm-friend")
+    public ResponseEntity<Boolean> confirmFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username){
+        ValidateResult result = friendService.confirmFriend(username, friendDTO.getUsername());
+        if (result.isValid()){
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
     }
 
     @PostMapping("/remove-friend")
-    public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO userDTO, @RequestHeader("Username") String username) {
-        ValidateResult result = friendService.removeFriend(username, userDTO.getUsername());
-        return null;
+    public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username) {
+        ValidateResult result = friendService.removeFriend(username, friendDTO.getUsername());
+        if (result.isValid()) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
     }
 
-    @PostMapping("/block-user")
-    public ResponseEntity<Boolean> blockUser(@RequestBody UserDTO userDTO, @RequestHeader("Username") String username){
-        ValidateResult result = friendService.blockUser(userDTO.getUsername(), username);
-        return null;
-    }
-
-    @PostMapping
-    public ResponseEntity<Boolean> unblockUser(@RequestBody UserDTO userDTO, @RequestHeader("Username") String username){
-        ValidateResult result = friendService.unblockUser(userDTO.getUsername(), username);
-        return null;
-    }
 }
