@@ -36,4 +36,6 @@ public interface FriendRepository extends JpaRepository<Friendship, Integer> {
     Set<Friendship> findByUser(User user);
 
     boolean existsFriendshipByUserAndFriend(User user, User friend);
+
+    Friendship findByUserAndFriend(User user, User friend);
 }
