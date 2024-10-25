@@ -30,8 +30,10 @@ public class FriendController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserDTO[]> getFriendByUsername(@PathVariable String username){
-        return null;
+    public ResponseEntity<FriendshipDTO[]> getUserByUsername(@PathVariable String username){
+        log.info("FriendController: starting to get User with username: {}", username);
+        FriendshipDTO[] newFriend = friendService.getUser(username);
+        return ResponseEntity.ok(newFriend);
     }
 
     @PostMapping("/add-friend")
@@ -41,17 +43,20 @@ public class FriendController {
     }
 
     @PostMapping("/remove-friend")
-    public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO userDTO){
+    public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO userDTO, @RequestHeader("Username") String username) {
+        ValidateResult result = friendService.removeFriend(username, userDTO.getUsername());
         return null;
     }
 
     @PostMapping("/block-user")
-    public ResponseEntity<Boolean> blockUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<Boolean> blockUser(@RequestBody UserDTO userDTO, @RequestHeader("Username") String username){
+        ValidateResult result = friendService.blockUser(userDTO.getUsername(), username);
         return null;
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> unblockUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<Boolean> unblockUser(@RequestBody UserDTO userDTO, @RequestHeader("Username") String username){
+        ValidateResult result = friendService.unblockUser(userDTO.getUsername(), username);
         return null;
     }
 }
