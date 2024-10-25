@@ -141,4 +141,25 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true; // User account is enabled
     }
+
+    @Override
+    public boolean equals (Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User otherUser = (User) o;
+        // all data should be the same, except profile pic
+        // id, username, passwordHash, securityQuestion, SQ Answer, and createdAt
+        return (
+                this.id.equals(otherUser.id) &&
+                this.username.equals(otherUser.getUsername()) &&
+                this.passwordHash.equals(otherUser.passwordHash) &&
+                this.securityQuestion.equals(otherUser.securityQuestion) &&
+                this.securityQuestionAnswer.equals(otherUser.securityQuestionAnswer) &&
+                this.createdAt.equals(otherUser.createdAt)
+                );
+    }
 }

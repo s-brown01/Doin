@@ -31,4 +31,20 @@ public class SecurityQuestion {
     public void setQuestion(String question) {
         this.question = question;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SecurityQuestion that = (SecurityQuestion) o;
+        // id and question should be the same
+        return (
+                this.id.equals(that.id) &&
+                this.question.equals(that.question)
+                );
+    }
 }

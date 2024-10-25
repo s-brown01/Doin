@@ -67,4 +67,22 @@ public class Friendship {
     public void setConfirmedAt(LocalDateTime confirmedAt) {
         this.confirmedAt = confirmedAt;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Friendship that = (Friendship) o;
+        // id, user, friend, and createdAt should all be the same
+        return (
+                this.id.equals(that.id) &&
+                this.user.equals(that.user) &&
+                this.friend.equals(that.friend) &&
+                this.createdAt.equals(that.createdAt)
+                );
+    }
 }
