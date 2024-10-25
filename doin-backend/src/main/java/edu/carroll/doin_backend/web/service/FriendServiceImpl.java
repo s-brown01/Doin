@@ -128,9 +128,26 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public FriendshipDTO[] getUser(String otherUsername) {
+        // if an exact match return just that user
+        // if no exact match return an array with similar usernames
         return null;
     }
 
+    /**
+     * Adds a friend for the user specified by the username.
+     *
+     * <p>
+     * This method validates the user and friend usernames, checks if a user is trying to friend themselves,
+     * checks friend has not blocked user, and verifies that a connection
+     * does not already exist between them. If all validations pass, a new friendship is created.
+     * </p>
+     *
+     * @param userUsername  the username of the user who wants to add a friend.
+     * @param friendUsername the username of the friend to be added.
+     * @return a {@link ValidateResult} object containing the status of the operation.
+     *         The status is true if user successfully friended 'friendUsername'; false if unsuccessful,
+     *         along with a message indicating the result of the operation.
+     */
     @Override
     public ValidateResult addFriend(String userUsername, String friendUsername) {
         log.trace("addFriend: adding friend {} for user {}", friendUsername, userUsername);
