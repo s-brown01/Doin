@@ -30,6 +30,16 @@ public class Friendship {
     @Column(name = "confirmed_at")
     private LocalDateTime confirmedAt;
 
+    public Friendship(User user, User friend, FriendshipStatus status) {
+        this.user = user;
+        this.friend = friend;
+        this.status = status;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Friendship() {
+    }
+
     public Long getId() {
         return id;
     }
@@ -52,5 +62,9 @@ public class Friendship {
 
     public LocalDateTime getConfirmedAt() {
         return confirmedAt;
+    }
+
+    public void setConfirmedAt(LocalDateTime confirmedAt) {
+        this.confirmedAt = confirmedAt;
     }
 }
