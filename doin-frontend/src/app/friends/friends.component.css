@@ -8,13 +8,14 @@
   flex-direction: column;
 }
 
-.search-friends {
+.search-area {
   display: flex;
+  margin: auto;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 55%; /* Adjusted to use percentage */
-  width: 100%;
+  width: 75%;
   overflow: hidden;
 }
 
@@ -73,31 +74,9 @@ ul > * {
   background-color: #3bd97d;
 }
 
-.search-result {
+.search-result-list {
   /*background-color: #4a4a4a;*/
   height: 75%
-
-}
-
-.may-know {
-  height: 45%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.may-know-list{
-  height: 100%;
-  width: 55%;
-  overflow-y: auto;
-}
-
-.may-know h3 {
-  /*text-decoration: underline;*/
-  padding: 0px 5px;
-  border-bottom: 3px solid #28a745;
 }
 
 .error-message {
@@ -108,3 +87,31 @@ ul > * {
   font-weight: bold;
   background-color: rgba(255, 0, 0, 0.49);
 }
+
+.incoming-requests {
+  display: flex;
+  margin: auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 55%; /* Adjusted to use percentage */
+  width: 75%;
+  overflow: hidden;
+}
+
+.incoming-requests h3 {
+  /*text-decoration: underline;*/
+  padding: 0px 5px;
+  border-bottom: 3px solid #28a745;
+}
+
+.incoming-request-list {
+  height: 100%;
+  width: 80%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+

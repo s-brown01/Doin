@@ -1,10 +1,13 @@
 <div class="friends-wrapper">
-  <div class="search-friends">
+  <!-- The search bar and results -->
+  <div class="search-area">
+    <!-- The search bar and button  -->
     <div class="search-container">
       <input type="text" class="search-input" (keyup.enter)="findFriend()" [(ngModel)]="searchInput" placeholder="Search" />
       <button class="search-button" (click)=findFriend()>Search</button>
     </div>
-    <div class = "search-result">
+    <!-- the results of the search bar -->
+    <div class = "search-result-list">
       <div class="error-message" *ngIf="searchErrorMessage">{{searchErrorMessage}}</div>
       <ul>
         <li *ngFor = "let user of searchResults">
@@ -12,6 +15,18 @@
         </li>
       </ul>
     </div>
+  </div>
 
+  <!-- all friends that added the user -->
+  <div class = "incoming-requests">
+    <h3>Added you:</h3>
+    <div class="incoming-request-list">
+      <div class="error-message" *ngIf="friendRequestErrorMessage">{{friendRequestErrorMessage}}</div>
+      <ul>
+        <li *ngFor="let friend of friendRequests">
+          <app-friend-list [friend]="friend"></app-friend-list>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
