@@ -11,29 +11,12 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
 })
 export class FriendsComponent {
   searchResults: FriendshipDto[] = [];
-  mayKnowList: FriendshipDto[] = [];
 
-  fofErrorMessage: string | null = null;
   searchErrorMessage: string | null = null;
 
   searchInput: string | null = null;
 
   constructor(private friendService: FriendService) {
-  }
-
-  ngOnInit(): void {
-    this.loadMayKnowList();
-  }
-
-  getFriends(): void {
-    this.friendService.getFriendsOfFriends().subscribe(data => {
-        this.mayKnowList = data;
-        this.fofErrorMessage = null;
-      },
-      error => {
-        console.error("Error in subscribing to Friends of Friends: " + error);
-        this.fofErrorMessage = error.message;
-      })
   }
 
   findFriend(){
@@ -58,17 +41,4 @@ export class FriendsComponent {
     //   this.searchErrorMessage = error.message;
     // })
   }
-
-  loadMayKnowList(): void {
-    this.friendService.getFriendsOfFriends().subscribe(
-      data => {
-        this.mayKnowList = data;
-        this.fofErrorMessage = null;
-      }, error => {
-        this.mayKnowList = [];
-        this.fofErrorMessage = error.message;
-      })
-  }
-
-
 }

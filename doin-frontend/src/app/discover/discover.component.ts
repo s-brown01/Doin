@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { EventService } from "../services/event.service";
 import { EventDTO } from "../dtos/event.dto";
+import {FriendService} from "../services/friend.service";
+import {FriendshipDto} from "../dtos/friendship.dto";
 
 @Component({
   selector: 'app-discover',
@@ -9,11 +11,37 @@ import { EventDTO } from "../dtos/event.dto";
 })
 export class DiscoverComponent {
   events: EventDTO[] = [];
+  mayKnowList: FriendshipDto[] = [];
+  mayKnowErrorMessage: string | null = null;
 
-  constructor(private eventService: EventService) {}
+
+  constructor(private eventService: EventService, private friendService: FriendService) {}
 
   ngOnInit(): void {
     this.getEvents();
+    this.loadMayKnowList();
+  }
+
+  getFriends(): void {
+    this.friendService.getFriendsOfFriends().subscribe(data => {
+        this.mayKnowList = data;
+        this.mayKnowErrorMessage = "baseball";
+      },
+      error => {
+        console.error("Error in subscribing to Friends of Friends: " + error);
+        this.mayKnowErrorMessage = error.message;
+      })
+  }
+
+  loadMayKnowList(): void {
+    this.friendService.getFriendsOfFriends().subscribe(
+      data => {
+        this.mayKnowList = data;
+        this.mayKnowErrorMessage = "baseball";
+      }, error => {
+        this.mayKnowList = [];
+        this.mayKnowErrorMessage = error.message;
+      })
   }
 
   trackByEventID(index: number, event: any){

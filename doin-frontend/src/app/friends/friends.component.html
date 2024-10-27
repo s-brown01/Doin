@@ -14,15 +14,4 @@
     </div>
 
   </div>
-  <div class="may-know">
-    <h3>You may know:</h3>
-    <div class="may-know-list">
-      <ul>
-        <li *ngFor = "let friend of mayKnowList">
-          <app-friend-list [friend]="friend"></app-friend-list>
-        </li>
-        <div class="error-message" *ngIf="fofErrorMessage">{{fofErrorMessage}}</div>
-      </ul>
-    </div>
-  </div>
 </div>
