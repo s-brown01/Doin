@@ -27,10 +27,7 @@ export class DiscoverComponent {
     this.friendService.getFriendsOfFriends().subscribe(
       data => {
         this.mayKnowList = data;
-        this.mayKnowList.push(new FriendshipDto("discover1", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend1", "test"), 1));
-        this.mayKnowList.push(new FriendshipDto("discover2", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend1", "test"), 1));
-        this.mayKnowList.push(new FriendshipDto("discover3", FriendshipStatus.NOTADDED, new ImageDTO(1, "friend1", "test"), 1));
-        this.mayKnowErrorMessage = "baseball";
+        this.mayKnowErrorMessage = null;
       }, error => {
         this.mayKnowList = [];
         this.mayKnowErrorMessage = error.message;
