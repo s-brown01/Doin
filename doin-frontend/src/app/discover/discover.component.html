@@ -2,10 +2,8 @@
   <h1> More on Doin! </h1>
   <div class="may-know">
     <h3>You may know:</h3>
-    <div id="mayKnowError" *ngIf="mayKnowErrorMessage">
-      {{mayKnowErrorMessage}}
-    </div>
     <div class="may-know-list">
+      <div id="mayKnowError" *ngIf="mayKnowErrorMessage"> {{mayKnowErrorMessage}} </div>
       <ul>
         <li *ngFor = "let friend of mayKnowList">
           <app-friend-list [friend]="friend"></app-friend-list>
