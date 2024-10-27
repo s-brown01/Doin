@@ -115,3 +115,7 @@ ul > * {
   justify-content: center;
 }
 
+.incoming-request-list li {
+  width: 75%;
+}
+
