@@ -2,10 +2,20 @@
   <div class="avatar"></div>
 <!--  <img class="avatar" [src]="friend.profilePic.data" alt="{{friend.username}}'s pfp"></img>-->
   <div class="friend-name">{{friend.username}}</div>
-  <div *ngIf="friend.status != FriendshipStatus.NOTADDED">
-    <button class="remove-button" (click)="removeFriend()">Remove friend</button>
-  </div>
-  <div *ngIf="friend.status == FriendshipStatus.NOTADDED">
-    <button class="add-button" (click)="addFriend()">Add friend</button>
+
+  <div class="buttons">
+    <ng-container [ngSwitch]="friend.status">
+      <div *ngSwitchCase="FriendshipStatus.CONFIRMED">
+        <button class="remove-button" (click)="removeFriend()">Remove friend</button>
+      </div>
+
+      <div *ngSwitchCase="FriendshipStatus.PENDING">
+        <button class="remove-button" (click)="removeFriend()">Remove friend</button>
+        <button class="add-button" (click)="addFriend()">Add friend</button>    </div>
+
+      <div *ngSwitchCase="FriendshipStatus.NOTADDED">
+        <button class="add-button" (click)="addFriend()">Add friend</button>
+      </div>
+    </ng-container>
   </div>
 </div>
