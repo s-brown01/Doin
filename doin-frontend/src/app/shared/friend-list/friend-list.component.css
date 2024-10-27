@@ -32,7 +32,7 @@
   align-items: center;
 }
 
-.remove-button, .add-button {
+.remove-button, .add-button, .confirm-button {
   padding: 5px;
   border-radius: 20px;
   /*background-color: transparent;*/
@@ -49,7 +49,6 @@
 .remove-button {
   border: 1px solid #c0392b;
   color: #c0392b;
-
 }
 
 .remove-button:hover {
@@ -63,6 +62,16 @@
 }
 
 .add-button:hover {
+  background-color: #1c7b0b;
+  color: #fff;
+}
+
+.confirm-button {
+  border: 1px solid #1c7b0b;
+  color: #1c7b0b;
+}
+
+.confirm-button:hover {
   background-color: #1c7b0b;
   color: #fff;
 }

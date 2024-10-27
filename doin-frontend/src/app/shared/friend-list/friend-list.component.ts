@@ -14,6 +14,10 @@ export class FriendListComponent {
     console.log("Removing friend: " + this.friend.username);
   }
 
+  confirmFriend(){
+    console.log("Confirming friend: " + this.friend.username);
+  }
+
   addFriend(){
     console.log("Adding friend: " + this.friend.username);
   }

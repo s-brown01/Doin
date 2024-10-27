@@ -6,15 +6,16 @@
   <div class="buttons">
     <ng-container [ngSwitch]="friend.status">
       <div *ngSwitchCase="FriendshipStatus.CONFIRMED">
-        <button class="remove-button" (click)="removeFriend()">Remove friend</button>
+        <button class="remove-button" (click)="removeFriend()">Remove Friend</button>
       </div>
 
       <div *ngSwitchCase="FriendshipStatus.PENDING">
-        <button class="remove-button" (click)="removeFriend()">Remove friend</button>
-        <button class="add-button" (click)="addFriend()">Add friend</button>    </div>
+        <button class="confirm-button" (click)="confirmFriend()">Confirm Friend</button>
+        <button class="remove-button" (click)="removeFriend()">Remove Friend</button>
+      </div>
 
       <div *ngSwitchCase="FriendshipStatus.NOTADDED">
-        <button class="add-button" (click)="addFriend()">Add friend</button>
+        <button class="add-button" (click)="addFriend()">Add Friend</button>
       </div>
     </ng-container>
   </div>
