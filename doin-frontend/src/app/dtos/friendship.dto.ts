@@ -4,8 +4,6 @@ import { ImageDTO } from "./image.dto";
 export enum FriendshipStatus {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',
-  BLOCKED = 'BLOCKED',
-  REMOVED = 'REMOVED',
   NOTADDED = 'NOT-ADDED'
 }
 
