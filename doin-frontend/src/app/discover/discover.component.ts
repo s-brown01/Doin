@@ -22,17 +22,6 @@ export class DiscoverComponent {
     this.loadMayKnowList();
   }
 
-  getFriends(): void {
-    this.friendService.getFriendsOfFriends().subscribe(data => {
-        this.mayKnowList = data;
-        this.mayKnowErrorMessage = "baseball";
-      },
-      error => {
-        console.error("Error in subscribing to Friends of Friends: " + error);
-        this.mayKnowErrorMessage = error.message;
-      })
-  }
-
   loadMayKnowList(): void {
     this.friendService.getFriendsOfFriends().subscribe(
       data => {
