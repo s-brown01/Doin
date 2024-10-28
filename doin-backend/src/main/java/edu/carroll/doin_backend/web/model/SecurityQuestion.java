@@ -15,8 +15,7 @@ public class SecurityQuestion {
     public SecurityQuestion() {
     }
 
-    public SecurityQuestion(int id, String question) {
-        this.id = id;
+    public SecurityQuestion(String question) {
         this.question = question;
     }
 

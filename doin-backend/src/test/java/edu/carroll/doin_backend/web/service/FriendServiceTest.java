@@ -47,7 +47,7 @@ public class FriendServiceTest {
         loginRepository.deleteAll();
         securityQuestionRepo.deleteAll();
 
-        securityQuestionRepo.save(new SecurityQuestion(1, "pet"));
+        securityQuestionRepo.save(new SecurityQuestion("pet"));
         loginRepository.save(createNewUser(username1));
         loginRepository.save(createNewUser(username2));
         loginRepository.save(createNewUser(username3));

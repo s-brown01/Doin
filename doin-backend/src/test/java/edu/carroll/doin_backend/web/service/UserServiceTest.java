@@ -30,7 +30,7 @@ public class UserServiceTest {
         // clear all repos
         securityQuestionRepo.deleteAll();
         // put in the shared data for the tables
-        securityQuestionRepo.save(new SecurityQuestion(1, "pet"));
+        securityQuestionRepo.save(new SecurityQuestion("pet"));
     }
 
     @Test
