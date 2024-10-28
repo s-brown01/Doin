@@ -127,10 +127,10 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendshipDTO[] getUser(String otherUsername) {
+    public Set<FriendshipDTO> getUser(String otherUsername) {
         // if an exact match return just that user
         // if no exact match return an array with similar usernames
-        return null;
+        return new HashSet<>();
     }
 
     /**

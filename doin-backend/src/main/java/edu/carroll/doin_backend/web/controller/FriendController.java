@@ -36,9 +36,9 @@ public class FriendController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<FriendshipDTO[]> getUserByUsername(@PathVariable String username){
+    public ResponseEntity<Set<FriendshipDTO>> getUserByUsername(@PathVariable String username){
         log.info("FriendController: starting to get User with username: {}", username);
-        FriendshipDTO[] newFriend = friendService.getUser(username);
+        Set<FriendshipDTO> newFriend = friendService.getUser(username);
         return ResponseEntity.ok(newFriend);
     }
 
