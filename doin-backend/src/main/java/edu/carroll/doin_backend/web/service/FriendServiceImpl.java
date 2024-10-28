@@ -177,6 +177,30 @@ public class FriendServiceImpl implements FriendService {
         return foundUsers;
     }
 
+    @Override
+    public Set<FriendshipDTO> getFriendRequests(String userUsername){
+        log.trace("getFriendRequests: validating user username {}", userUsername);
+        if (!validUsername(userUsername)) {
+            log.warn("getFriendRequests: invalid user username {}", userUsername);
+            return new HashSet<>();
+        }
+        log.trace("getFriendRequests: validated user username {}", userUsername);
+        User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
+
+        log.trace("getFriendRequests: getting all requests from repo for user: {}" , userUsername);
+        Set<FriendshipDTO> requests = new HashSet<>();
+        Set<Friendship> incomingRequests = friendRepo.findByFriendAndStatus(currentUser, FriendshipStatus.PENDING);
+        for (Friendship friendship : incomingRequests) {
+            User friend = friendship.getUser();
+            requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), friend.getProfilePicture()));
+        }
+
+//        if (requests.isEmpty()) {
+        requests.add(new FriendshipDTO(1, "Test", FriendshipStatus.PENDING, null));
+//        }
+        return requests;
+    }
+
     /**
      * Adds a friend for the user specified by the username.
      *

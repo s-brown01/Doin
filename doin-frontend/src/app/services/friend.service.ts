@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs'
+import {catchError, Observable, of} from 'rxjs'
 import {FriendshipDto} from "../dtos/friendship.dto";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { ApiService } from './api.service';
@@ -18,8 +18,24 @@ export class FriendService {
     return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends", { headers });
   }
 
-  getFriendByUsername(username: string): Observable<FriendshipDto[]> {
-    return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/${username}`);
+  getUserByUsername(otherUsername: string): Observable<FriendshipDto[]> {
+    const headers = this.getHeaders();
+    return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/${otherUsername}`, { headers }).pipe(
+      catchError(error => {
+        console.error("Error getting username " + otherUsername + ": " + error.message);
+        return of([]);
+      })
+    );
+  }
+
+  getFriendRequests(): Observable<FriendshipDto[]> {
+    const headers = this.getHeaders();
+    return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/friend-requests`, { headers }).pipe(
+      catchError(error => {
+        console.error("Error when getting friend requests: " + error.message);
+        return of([]);
+      })
+    )
   }
 
   addFriend(friend : FriendshipDto): Observable<any>{
@@ -32,7 +48,7 @@ export class FriendService {
     return this.apiService.post("/confirm-friend", friend, headers);
   }
 
-  removeFriend(friend : FriendshipDto): Observable<any>{
+  removeFriend(friend : FriendshipDto): Observable<any> {
     const headers = this.getHeaders();
     return this.apiService.post("/friends/remove-friend", friend, headers);
   }
