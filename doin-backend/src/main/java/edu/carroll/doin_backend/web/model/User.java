@@ -162,4 +162,9 @@ public class User implements UserDetails {
                 this.createdAt.equals(otherUser.createdAt)
                 );
     }
+
+    @Override
+    public String toString(){
+        return "ID #" + id + ", Username: " + username + " created at " + createdAt;
+    }
 }
