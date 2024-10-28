@@ -4,10 +4,12 @@ import edu.carroll.doin_backend.web.dto.FriendshipDTO;
 import edu.carroll.doin_backend.web.dto.ValidateResult;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 
 @Service
 public interface FriendService {
-    FriendshipDTO[] getFriendsOfFriends(String userUsername);
+    Set<FriendshipDTO> getFriendsOfFriends(String userUsername);
     FriendshipDTO[] getUser(String userUsername);
 
     ValidateResult addFriend(String userUsername, String friendUsername);

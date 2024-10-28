@@ -10,6 +10,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -24,13 +25,13 @@ public class FriendController {
     }
 
     @GetMapping()
-    public ResponseEntity<FriendshipDTO[]> getFriendsOfFriends(@RequestHeader("Username") String username) {
+    public ResponseEntity<Set<FriendshipDTO>> getFriendsOfFriends(@RequestHeader("Username") String username) {
         // check that's not null and not blank (empty or just whitespace)
         if (username == null || username.isBlank()) {
-            return ResponseEntity.badRequest().body(new FriendshipDTO[0]);
+            return ResponseEntity.badRequest().body(new HashSet<>());
         }
         log.info("FriendController: starting to get Friends-of-Friends for user: {}", username);
-        FriendshipDTO[] friends = friendService.getFriendsOfFriends(username);
+        Set<FriendshipDTO> friends = friendService.getFriendsOfFriends(username);
         return ResponseEntity.ok(friends);
     }
 

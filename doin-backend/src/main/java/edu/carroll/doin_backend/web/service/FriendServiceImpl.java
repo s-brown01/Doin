@@ -53,15 +53,15 @@ public class FriendServiceImpl implements FriendService {
      * Ensures that no null values are returned and logs the process.
      *
      * @param userUsername the username of the person to get mutual friends for.
-     * @return A set of users who are friends of the user's friends, or an empty set if none found.
+     * @return A {@link Set} of users who are friends of the user's friends, or an empty set if none found.
      */
     @Override
-    public FriendshipDTO[] getFriendsOfFriends(String userUsername) {
+    public Set<FriendshipDTO> getFriendsOfFriends(String userUsername) {
         log.trace("getFriendsOfFriends: getting the friends of friends for username {}", userUsername);
         log.trace("getFriendsOfFriends: validating username {}", userUsername);
         if (!validUsername(userUsername)) {
             log.warn("getFriendsOfFriends: invalid username {}", userUsername);
-            return new FriendshipDTO[0];
+            return new HashSet<>();
         }
         // get the user that was found with the valid username
         User initialUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
@@ -80,12 +80,12 @@ public class FriendServiceImpl implements FriendService {
                 friends.addAll(randomUsers);
             }
 
-            log.trace("FriendController: converting set to a FriendshipDTO[] and returning it for user: {}", userUsername);
-            return friends.toArray(new FriendshipDTO[0]);
+            log.trace("FriendController: returning friends for user: {}", userUsername);
+            return friends;
         } catch (Exception e) {
             // if there are any Exceptions, return an empty Set
             log.warn("getFriendsOfFriends: error while getting friends of friends for username {}", userUsername);
-            return new FriendshipDTO[0];
+            return new HashSet<>();
         }
     }
 
