@@ -36,6 +36,9 @@ public class UserServiceImpl implements UserService {
      */
     private final TokenService tokenService;
 
+    /**
+     * a SecurityQuestionSerivce to interact with the SecurityQuestion JPA-Repository
+     */
     private final SecurityQuestionService sqService;
 
     /**
@@ -81,15 +84,6 @@ public class UserServiceImpl implements UserService {
             log.info("createNewUser: Invalid security question {}", registerDTO.getSecurityQuestionString());
             return false;
         }
-//        final Integer securityQID = sqService.findIDBySecurityQuestionValue(registerDTO.getSecurityQuestionString());
-//        // make sure the Security Question exists in the database
-//        if (securityQID == null) {
-//            log.warn("createNewUser: Invalid security question ID {}, new Register {}", registerDTO.getSecurityQuestionString(), registerDTO.getUsername());
-//            return false;
-//        }
-//        // set SecurityQuestionID
-//        registerDTO.setSecurityQuestionId(securityQID);
-//        final SecurityQuestion securityQuestion = sqService.findSecurityQuestionByID(securityQID);
 
         // create hashed password
         String hashedPassword = passwordService.hashPassword(registerDTO.getPassword());
@@ -254,10 +248,8 @@ public class UserServiceImpl implements UserService {
         Optional<User> user;
         if (id != null) {
             user = loginRepo.findById(id);
-//            user = userRepository.findById(id);
         } else {
             user = Optional.ofNullable(loginRepo.findByUsernameIgnoreCase(username).get(0));
-//            user = Optional.ofNullable(userRepository.findByUsername(username));
         }
 
         return user.map(UserDTO::new).orElse(null);
