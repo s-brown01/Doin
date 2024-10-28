@@ -3,6 +3,8 @@ package edu.carroll.doin_backend.web.dto;
 import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 import edu.carroll.doin_backend.web.model.Image;
 
+import java.util.Objects;
+
 public class FriendshipDTO {
     private int id;
     private String username;
@@ -62,7 +64,12 @@ public class FriendshipDTO {
         FriendshipDTO that = (FriendshipDTO) o;
         return id == that.id &&
                 username.equals(that.getUsername()) &&
-                status.equals(that.getStatus());
+                status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, status);
     }
 
 
