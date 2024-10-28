@@ -28,7 +28,7 @@ public class FriendController {
     public ResponseEntity<Set<FriendshipDTO>> getFriendsOfFriends(@RequestHeader("Username") String username) {
         log.info("FriendController: starting to get Friends-of-Friends for user: {}", username);
         // validate the username
-        if (!validateUsername(username)) {
+        if (!isValidUsername(username)) {
             log.error("getFriendsOfFriends: - Invalid username {}", username);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
         }
@@ -42,7 +42,7 @@ public class FriendController {
     public ResponseEntity<Set<FriendshipDTO>> getUserByUsername(@PathVariable String username) {
         log.info("FriendController: starting to get User with username: {}", username);
         // validate the username
-        if (!validateUsername(username)) {
+        if (!isValidUsername(username)) {
             log.warn("getUserByUsername: - Invalid username {}", username);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
         }
@@ -56,12 +56,12 @@ public class FriendController {
     public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username) {
         log.info("FriendController: starting to save user: {}", username);
         // validate the username
-        if (!validateUsername(username)) {
+        if (!isValidUsername(username)) {
             log.error("addFriend: - Invalid user username {}", username);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
         // validate the friendUsername
-        if (!validateUsername(friendDTO.getUsername())) {
+        if (!isValidUsername(friendDTO.getUsername())) {
             log.error("addFriend: - Invalid friend username {}", friendDTO.getUsername());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
@@ -80,12 +80,12 @@ public class FriendController {
     public ResponseEntity<Boolean> confirmFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username){
         log.info("FriendController: starting to confirm friends between friend {} and user: {}", friendDTO.getUsername(), username);
         // validate the username
-        if (!validateUsername(username)) {
+        if (!isValidUsername(username)) {
             log.error("confirmFriend: - Invalid user username {}", username);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
         // validate the friendUsername
-        if (!validateUsername(friendDTO.getUsername())) {
+        if (!isValidUsername(friendDTO.getUsername())) {
             log.error("confirmFriend: - Invalid friend username {}", friendDTO.getUsername());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
@@ -103,12 +103,12 @@ public class FriendController {
     public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username) {
         log.info("removeFriend: starting to remove friendship between friend {} and user: {}", friendDTO.getUsername(), username);
         // validate the username
-        if (!validateUsername(username)) {
+        if (!isValidUsername(username)) {
             log.error("removeFriend: - Invalid user username {}", username);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
         // validate the friendUsername
-        if (!validateUsername(friendDTO.getUsername())) {
+        if (!isValidUsername(friendDTO.getUsername())) {
             log.error("removeFriend: - Invalid friend username {}", friendDTO.getUsername());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
@@ -122,7 +122,7 @@ public class FriendController {
         return ResponseEntity.ok(false);
     }
 
-    private boolean validateUsername(String username) {
+    private boolean isValidUsername(String username) {
         if (username == null || username.isBlank()) {
             return false;
         }
