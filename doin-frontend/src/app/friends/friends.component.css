@@ -79,6 +79,10 @@ ul > * {
   width: 75%;
 }
 
+.search-result-list li {
+  margin: 10px;
+}
+
 .error-message {
   text-align: center;
   color: black;
