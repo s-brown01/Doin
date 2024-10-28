@@ -1,6 +1,9 @@
 <div class="friend-item ">
   <div class="avatar"></div>
-<!--  <img class="avatar" [src]="friend.profilePic.data" alt="{{friend.username}}'s pfp"></img>-->
+  <div class="avatar-wrapper">
+    <app-image class="avatar" [borderRadius]="'50%'" [image]="friend.profilePic"></app-image>
+  </div>
+
   <div class="friend-name">{{friend.username}}</div>
 
   <div class="buttons">
