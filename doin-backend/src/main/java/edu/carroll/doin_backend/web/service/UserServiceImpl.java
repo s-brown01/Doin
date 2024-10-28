@@ -4,8 +4,6 @@ import edu.carroll.doin_backend.web.dto.*;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
-import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
-//import edu.carroll.doin_backend.web.repository.UserRepository;
 import edu.carroll.doin_backend.web.security.PasswordService;
 import edu.carroll.doin_backend.web.security.TokenService;
 import org.slf4j.Logger;
@@ -38,8 +36,7 @@ public class UserServiceImpl implements UserService {
      */
     private final TokenService tokenService;
 
-    private final SecurityQuestionRepository securityQuestionRepo;
-//    private final UserRepository userRepository;
+    private final SecurityQuestionService sqService;
 
     /**
      * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order. The parameters in constructor allow Springboot to automatically inject dependencies.
@@ -49,15 +46,13 @@ public class UserServiceImpl implements UserService {
      */
     public UserServiceImpl(LoginRepository loginRepo,
                            PasswordService passwordService,
-                           SecurityQuestionRepository securityQuestionRepo,
+                           SecurityQuestionService sqService,
                            TokenService tokenService
-//                           , UserRepository userRepository
     ) {
         this.loginRepo = loginRepo;
         this.passwordService = passwordService;
-        this.securityQuestionRepo = securityQuestionRepo;
+        this.sqService = sqService;
         this.tokenService = tokenService;
-//        this.userRepository = userRepository;
     }
 
     /**
@@ -81,15 +76,18 @@ public class UserServiceImpl implements UserService {
             return false;
         }
 
-        final Integer securityQID = securityQuestionRepo.findIdByQuestion(registerDTO.getSecurityQuestionString());
-        // make sure the Security Question exists in the database
-        if (securityQID == null) {
-            log.warn("createNewUser: Invalid security question ID {}, new Register {}", registerDTO.getSecurityQuestionString(), registerDTO.getUsername());
-            return false;
-        }
-        // set SecurityQuestionID
-        registerDTO.setSecurityQuestionId(securityQID);
-        SecurityQuestion securityQuestion = securityQuestionRepo.getReferenceById(securityQID);
+        final SecurityQuestion userSecurityQuestion = sqService.getSecurityQuestionByValue(registerDTO.getSecurityQuestionString());
+
+//        final Integer securityQID = sqService.findIDBySecurityQuestionValue(registerDTO.getSecurityQuestionString());
+//        // make sure the Security Question exists in the database
+//        if (securityQID == null) {
+//            log.warn("createNewUser: Invalid security question ID {}, new Register {}", registerDTO.getSecurityQuestionString(), registerDTO.getUsername());
+//            return false;
+//        }
+//        // set SecurityQuestionID
+//        registerDTO.setSecurityQuestionId(securityQID);
+//        final SecurityQuestion securityQuestion = sqService.findSecurityQuestionByID(securityQID);
+
         // create hashed password
         String hashedPassword = passwordService.hashPassword(registerDTO.getPassword());
 
@@ -98,7 +96,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             log.info("createNewUser: validated and saving new User {}", registerDTO.getUsername());
-            User newUser = new User(registerDTO, hashedPassword, securityQuestion);
+            User newUser = new User(registerDTO, hashedPassword, userSecurityQuestion);
             loginRepo.save(newUser);
         } catch (Exception e) {
             // make sure no error when saving/creating the user
