@@ -2,6 +2,7 @@ package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,14 +12,14 @@ import java.util.List;
 
 @Service
 public class SecurityQuestionServiceImpl implements SecurityQuestionService {
-    private final Logger log = LoggerFactory.getLogger(SecurityQuestionServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SecurityQuestionServiceImpl.class);
 
     private final SecurityQuestionRepository securityQuestionRepo;
 
     public SecurityQuestionServiceImpl(SecurityQuestionRepository securityQuestionRepo) {
         this.securityQuestionRepo = securityQuestionRepo;
         // make sure the repository is filled
-        this.checkAndFillRepo();
+//        this.checkAndFillRepo();
     }
 
     @Override
@@ -52,6 +53,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
         }
     }
 
+    @PostConstruct
     public void checkAndFillRepo() {
         log.trace("checkAndFillRepo: checking and populating repository");
         List<SecurityQuestion> securityQuestions = securityQuestionRepo.findAll();
