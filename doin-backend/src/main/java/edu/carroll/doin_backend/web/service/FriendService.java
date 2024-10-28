@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-
-@Service
 public interface FriendService {
     Set<FriendshipDTO> getFriendsOfFriends(String userUsername);
     Set<FriendshipDTO> getUser(String userUsername, String usernameToFind);
