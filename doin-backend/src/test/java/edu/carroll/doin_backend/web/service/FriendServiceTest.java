@@ -73,8 +73,8 @@ public class FriendServiceTest {
         friendRepository.save(new Friendship(user3, user2, FriendshipStatus.CONFIRMED));
 
         // get the friends of friends for user 1 - should be User 3
-        FriendshipDTO[] friendsOfUser1 = friendService.getFriendsOfFriends(username1);
-        FriendshipDTO[] friendsOfUser3 = friendService.getFriendsOfFriends(username3);
+        FriendshipDTO[] friendsOfUser1 = friendService.getFriendsOfFriends(username1).toArray(new FriendshipDTO[0]);
+        FriendshipDTO[] friendsOfUser3 = friendService.getFriendsOfFriends(username3).toArray(new FriendshipDTO[0]);
 
         assertEquals(1, friendsOfUser1.length, "User 1 should only have 1 friend of friend");
         assertEquals(1, friendsOfUser3.length, "User 3 should only have 1 friend of friend");
