@@ -35,4 +35,9 @@ public interface LoginRepository extends JpaRepository<User, Integer> {
    */
   List<User> findByUsernameContainingIgnoreCase(String username);
 
+  boolean existsByUsernameIgnoreCase(String username);
+
+//  void findBySimilarUsername(String usernameToFind);
+
+  List<User> findByUsernameLikeIgnoreCase(String username);
 }
