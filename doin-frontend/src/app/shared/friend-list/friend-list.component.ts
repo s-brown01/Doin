@@ -10,15 +10,15 @@ import {ImageDTO} from "../../dtos/image.dto";
 export class FriendListComponent {
   @Input() friend!: FriendshipDto;  // Marking as input so parent can pass it4
 
-  removeFriend(){
+  removeFriend() {
     console.log("Removing friend: " + this.friend.username);
   }
 
-  confirmFriend(){
+  confirmFriend() {
     console.log("Confirming friend: " + this.friend.username);
   }
 
-  addFriend(){
+  addFriend() {
     console.log("Adding friend: " + this.friend.username);
   }
 

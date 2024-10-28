@@ -14,7 +14,7 @@ export class FriendshipDto {
   id: number;
 
   constructor(username: string,
-              status: string,
+              status: FriendshipStatus | string,
               profilePic: ImageDTO,
               id: number) {
     this.username = username;
@@ -24,7 +24,7 @@ export class FriendshipDto {
     this.id = id;
   }
 
-  private mapFriendshipStatus(status: string): FriendshipStatus {
+  private mapFriendshipStatus(status: FriendshipStatus | string): FriendshipStatus {
     switch (status) {
       case FriendshipStatus.CONFIRMED:
         return FriendshipStatus.CONFIRMED;
