@@ -39,16 +39,23 @@ public class FriendController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<Set<FriendshipDTO>> getUserByUsername(@PathVariable String username) {
-        log.info("FriendController: starting to get User with username: {}", username);
-        // validate the username
-        if (!isValidUsername(username)) {
-            log.warn("getUserByUsername: - Invalid username {}", username);
+    public ResponseEntity<Set<FriendshipDTO>> getUserByUsername(@RequestHeader("Username") String userUsername, @PathVariable String friendUsername) {
+        log.info("FriendController: starting to get friend with username: {} for user {}", friendUsername, userUsername);
+        // validate the user username
+        if (!isValidUsername(userUsername)) {
+            log.error("getUserByUsername: - Invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
         }
-        log.trace("getUserByUsername: username {} validated", username);
-        Set<FriendshipDTO> newFriend = friendService.getUser(username);
-        log.trace("getUserByUsername: username {} returned {} friends", username, newFriend.size());
+        log.trace("getUserByUsername: username {} validated", userUsername);
+
+        // validate the friend username
+        if (!isValidUsername(friendUsername)) {
+            log.warn("getUserByUsername: - Invalid friend username {}", friendUsername);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        }
+        log.trace("getUserByUsername: username {} validated", friendUsername);
+        Set<FriendshipDTO> newFriend = friendService.getUser(userUsername, friendUsername);
+        log.trace("getUserByUsername: username {} returned {} friends", friendUsername, newFriend.size());
         return ResponseEntity.ok(newFriend);
     }
 
