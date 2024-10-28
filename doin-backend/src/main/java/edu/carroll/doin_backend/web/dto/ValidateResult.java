@@ -14,6 +14,7 @@ package edu.carroll.doin_backend.web.dto;
 public class ValidateResult {
     private final boolean valid;
     private final String message;
+    private final Object content;
 
     /**
      * Constructs a new instance of {@link ValidateResult}.
@@ -21,9 +22,14 @@ public class ValidateResult {
      * @param valid   a boolean indicating whether the validation was successful
      * @param message a string providing additional information about the validation result
      */
-    public ValidateResult(boolean valid, String message) {
+    public ValidateResult(boolean valid, String message, Object content) {
         this.valid = valid;
         this.message = message;
+        this.content = content;
+    }
+
+    public ValidateResult(boolean valid, String message) {
+        this(valid, message, null);
     }
 
     /**
@@ -42,5 +48,14 @@ public class ValidateResult {
      */
     public String getMessage() {
         return message;
+    }
+
+    /**
+     * Returns the content in the validate result
+     *
+     * @return a Java Object containing the content of the validate result (can be null)
+     */
+    public Object getContent() {
+        return content;
     }
 }
