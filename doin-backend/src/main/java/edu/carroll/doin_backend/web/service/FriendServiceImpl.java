@@ -187,17 +187,17 @@ public class FriendServiceImpl implements FriendService {
         log.trace("getFriendRequests: validated user username {}", userUsername);
         User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
 
-        log.trace("getFriendRequests: getting all requests from repo for user: {}" , userUsername);
         Set<FriendshipDTO> requests = new HashSet<>();
+        log.trace("getFriendRequests: getting all incoming requests from repo for user: {}" , userUsername);
         Set<Friendship> incomingRequests = friendRepo.findByFriendAndStatus(currentUser, FriendshipStatus.PENDING);
+        log.trace("getFriendRequests: found {} incoming requests for user {}", incomingRequests.size(), userUsername);
+        log.trace("getFriendsOfFriends: converting all Friendships into FriendshipDTOs for user {}", userUsername);
         for (Friendship friendship : incomingRequests) {
             User friend = friendship.getUser();
             requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), friend.getProfilePicture()));
         }
-
-//        if (requests.isEmpty()) {
+        log.trace("getFriendsOfFriends: returning {} FriendshipDTOs for user {}", requests.size(), userUsername);
         requests.add(new FriendshipDTO(1, "Test", FriendshipStatus.PENDING, null));
-//        }
         return requests;
     }
 
