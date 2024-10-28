@@ -10,7 +10,7 @@ import java.util.Set;
 @Service
 public interface FriendService {
     Set<FriendshipDTO> getFriendsOfFriends(String userUsername);
-    Set<FriendshipDTO> getUser(String userUsername);
+    Set<FriendshipDTO> getUser(String usernameToFind);
 
     ValidateResult addFriend(String userUsername, String friendUsername);
     ValidateResult removeFriend(String userUsername, String friendUsername);
