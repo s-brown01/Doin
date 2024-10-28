@@ -126,11 +126,55 @@ public class FriendServiceImpl implements FriendService {
         return randomUsers;
     }
 
+    /**
+     * Retrieves a set of {@link FriendshipDTO} objects representing users whose usernames
+     * match or are similar to the provided {@code usernameToFind} and who have a connection
+     * with the current user, identified by {@code userUsername}.
+     * <p>
+     * The result includes users whose usernames exactly match, partially match, or
+     * are similar to {@code usernameToFind} (case-insensitive), with a second lookup using
+     * wildcards if an exact match search yields no results.
+     * </p>
+     *
+     * @param userUsername   the username of the current user who is performing the search
+     * @param usernameToFind the username to search for, which may be a partial or full username
+     * @return a {@link Set} of {@link FriendshipDTO} objects representing the matched users.
+     */
     @Override
-    public Set<FriendshipDTO> getUser(String otherUsername) {
-        // if an exact match return just that user
-        // if no exact match return an array with similar usernames
-        return new HashSet<>();
+    public Set<FriendshipDTO> getUser(String userUsername, String usernameToFind) {
+        log.trace("getUser: validating user username {}", userUsername);
+        if (!validUsername(userUsername)) {
+            log.warn("getUser: invalid user username {}", userUsername);
+            return new HashSet<>();
+        }
+        log.trace("getUser: validating friend username {}", usernameToFind);
+        if (!validUsername(usernameToFind)) {
+            log.warn("getUser: invalid friend username {}", usernameToFind);
+            return new HashSet<>();
+        }
+        log.trace("getUser: finding User with username {}", usernameToFind);
+        if (!loginRepo.existsByUsernameIgnoreCase(userUsername)) {
+            log.error("getUser: user username {} not found", userUsername);
+            return new HashSet<>();
+        }
+        log.trace("getUser: getting the current User {}", userUsername);
+        final User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
+
+        final Set<FriendshipDTO> foundUsers = new HashSet<>();
+        log.trace("getUser: finding all Users with a username containing {} and ignoring case", usernameToFind);
+        List<User> listFriends = loginRepo.findByUsernameContainingIgnoreCase(usernameToFind);
+        log.trace("getUser: found {} Users", listFriends.size());
+        if (listFriends.isEmpty()) {
+            log.trace("getUser: no users found for username {}, using wildcards to find more users", usernameToFind);
+            listFriends.addAll(loginRepo.findByUsernameLikeIgnoreCase("%"+usernameToFind+"%"));
+        }
+        log.trace("getUser: found {} Users after both searches", listFriends.size());
+        for (User friend : listFriends) {
+            log.trace("getUser: adding friend {} to found users for user {}", friend.getId(), userUsername);
+            foundUsers.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), friend.getProfilePicture()));
+        }
+        log.trace("getUser: found {} unique Users adding creating FriendshipDTOs and now returning the Set", foundUsers.size());
+        return foundUsers;
     }
 
     /**
@@ -145,7 +189,7 @@ public class FriendServiceImpl implements FriendService {
      * @param userUsername  the username of the user who wants to add a friend.
      * @param friendUsername the username of the friend to be added.
      * @return a {@link ValidateResult} object containing the status of the operation.
-     *         The status is true if user successfully friended 'friendUsername'; false if unsuccessful,
+     *         The status of valid true if user successfully friended 'friendUsername'; valid is false if unsuccessful,
      *         along with a message indicating the result of the operation.
      */
     @Override
