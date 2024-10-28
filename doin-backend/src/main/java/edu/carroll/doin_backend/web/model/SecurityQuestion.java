@@ -42,8 +42,17 @@ public class SecurityQuestion {
         SecurityQuestion that = (SecurityQuestion) o;
         // id and question should be the same
         return (
+                this.id != null &&
                 this.id.equals(that.id) &&
                 this.question.equals(that.question)
                 );
+    }
+
+    @Override
+    public String toString() {
+        return "SecurityQuestion{" +
+                "id=" + id +
+                ", question='" + question + '\'' +
+                '}';
     }
 }
