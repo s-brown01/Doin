@@ -25,6 +25,10 @@ public class FriendController {
 
     @GetMapping()
     public ResponseEntity<FriendshipDTO[]> getFriendsOfFriends(@RequestHeader("Username") String username) {
+        // check that's not null and not blank (empty or just whitespace)
+        if (username == null || username.isBlank()) {
+            return ResponseEntity.badRequest().body(new FriendshipDTO[0]);
+        }
         log.info("FriendController: starting to get Friends-of-Friends for user: {}", username);
         FriendshipDTO[] friends = friendService.getFriendsOfFriends(username);
         return ResponseEntity.ok(friends);
