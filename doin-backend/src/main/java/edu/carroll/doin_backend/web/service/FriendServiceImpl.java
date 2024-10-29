@@ -37,15 +37,19 @@ public class FriendServiceImpl implements FriendService {
      */
     private final LoginRepository loginRepo;
 
+    private final ImageService imageService;
+
     /**
      * Constructor to initialize FriendServiceImpl with the necessary repositories.
      *
      * @param friendRepository The repository for managing Friendship entities.
      * @param loginRepository  The repository for managing User entities.
+     * @param imageService     The repository for managing Image entities
      */
-    public FriendServiceImpl(FriendRepository friendRepository, LoginRepository loginRepository) {
+    public FriendServiceImpl(FriendRepository friendRepository, LoginRepository loginRepository, ImageService imageService) {
         this.friendRepo = friendRepository;
         this.loginRepo = loginRepository;
+        this.imageService = imageService;
     }
 
     /**
@@ -197,7 +201,7 @@ public class FriendServiceImpl implements FriendService {
             requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), friend.getProfilePicture()));
         }
         log.trace("getFriendsOfFriends: returning {} FriendshipDTOs for user {}", requests.size(), userUsername);
-        requests.add(new FriendshipDTO(1, "Test", FriendshipStatus.PENDING, null));
+        requests.add(new FriendshipDTO(1, "Test", FriendshipStatus.PENDING, imageService.get(4L)));
         return requests;
     }
 
@@ -238,7 +242,6 @@ public class FriendServiceImpl implements FriendService {
             return new ValidateResult(false, "user and friend are the same");
         }
 
-
         // checking connection from friend to user
         log.trace("addFriend: getting the current status from friend {} to user {}", friendUsername, userUsername);
         FriendshipStatus friendToUserStatus = statusBetween(friend, user);
@@ -277,6 +280,28 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public ValidateResult removeFriend(String userUsername, String friendUsername) {
+        log.trace("removeFriend: removing friend {} for user {}", friendUsername, userUsername);
+        log.trace("removeFriend: validating user username {}", userUsername);
+        if (!validUsername(userUsername)) {
+            log.warn("removeFriend: invalid user username {}", userUsername);
+            return new ValidateResult(false, "invalid user username");
+        }
+        log.trace("removeFriend: validating friend username {}", friendUsername);
+        if (!validUsername(friendUsername)) {
+            log.warn("removeFriend: invalid friend username {}", friendUsername);
+            return new ValidateResult(false, "invalid friend username");
+        }
+        User user = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
+        User friend = loginRepo.findByUsernameIgnoreCase(friendUsername).get(0);
+        if (user.equals(friend)) {
+            log.warn("removeFriend: user {} and friend {} are the same", userUsername, friendUsername);
+            return new ValidateResult(false, "user and friend are the same: " + user.getUsername() + " and " + friend.getUsername());
+        }
+        if (!friendRepo.existsFriendshipByUserAndFriend(user, friend)) {
+            log.debug("removeFriend: user {} and friend {} are not friends", userUsername, friendUsername);
+            return new ValidateResult(false, "user "+userUsername+" does not have friendship with friend "+friend.getUsername());
+        }
+
         return new ValidateResult(false, "false for now");
     }
 
