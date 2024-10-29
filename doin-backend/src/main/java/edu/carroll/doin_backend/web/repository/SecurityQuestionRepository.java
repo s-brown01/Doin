@@ -37,4 +37,6 @@ public interface SecurityQuestionRepository extends JpaRepository<SecurityQuesti
     @Query("SELECT sq.id FROM SecurityQuestion sq WHERE sq.question = :question")
     Integer findIdByQuestion(@Param("question") String question);
 
+
+    boolean existsByQuestion(String question);
 }
