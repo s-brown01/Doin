@@ -52,7 +52,11 @@ export class FriendsComponent {
     this.friendService.getFriendRequests().subscribe(
       data => {
         this.friendRequests = data;
-        this.friendRequestErrorMessage = "WORKING SO FAR";
+        if (this.friendRequests.length == 0){
+          this.friendRequestErrorMessage = "No incoming friend requests!";
+        } else {
+          this.friendRequestErrorMessage = null;
+        }
       }, error => {
         this.friendRequests = [];
         this.friendRequestErrorMessage = error.message;
