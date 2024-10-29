@@ -21,11 +21,14 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
 
     @Override
     public SecurityQuestion getSecurityQuestionByValue(String securityQuestionValue) {
+        log.trace("getSecurityQuestionByValue: starting for question value {}", securityQuestionValue);
         if (securityQuestionValue == null || securityQuestionValue.isBlank()) {
+            log.warn("getSecurityQuestionByValue: securityQuestionValue is null or blank");
             return null;
         }
         log.trace("getSecurityQuestionByValue: getting question {}", securityQuestionValue);
         final Integer id = securityQuestionRepo.findIdByQuestion(securityQuestionValue);
+        log.debug("getSecurityQuestionByValue: getting question {}", id);
         if (id == null) {
             log.warn("getSecurityQuestionByValue: could not find question {}", securityQuestionValue);
             return null;
@@ -56,23 +59,26 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     private void checkAndFillRepo() {
         log.trace("checkAndFillRepo: checking and populating repository");
         addSecurityQuestion("pet");
-        addSecurityQuestion("dog");
-        addSecurityQuestion("cat");
+        addSecurityQuestion("city");
+        addSecurityQuestion("school");
         log.trace("checkAndFillRepo: security questions repo filled with {} questions", securityQuestionRepo.count());
 
     }
 
     @Override
     public boolean addSecurityQuestion(String questionValue) {
+        log.trace("addSecurityQuestion: validating question {}", questionValue);
         // make sure new question isn't null or blank
         if (questionValue == null || questionValue.isBlank()) {
             return false;
         }
         // make sure question doesn't already exist
         if (securityQuestionRepo.existsByQuestion(questionValue)) {
+            log.warn("addSecurityQuestion: question {} already exists", questionValue);
             return false;
         }
         // if not null and not exist, create the new SecurityQuestion
+        log.info("addSecurityQuestion: adding question {}", questionValue);
         securityQuestionRepo.save(new SecurityQuestion(questionValue));
         return true;
     }
