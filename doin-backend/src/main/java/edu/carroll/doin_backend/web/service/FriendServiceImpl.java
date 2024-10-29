@@ -73,6 +73,12 @@ public class FriendServiceImpl implements FriendService {
         log.trace("getFriendsOfFriends: getting friends from friendsRepository for username {}", userUsername);
         try {
             Set<FriendshipDTO> friends = friendRepo.findFriendsOfFriends(initialUser);
+            for (FriendshipDTO friend : friends) {
+                // only if the image is null replace it
+                if (friend.getProfilePic() == null) {
+                    friend.setProfilePic(imageService.get(4L));
+                }
+            }
             log.trace("getFriendsOfFriends: found {} friends for username {}", friends.size(), userUsername);
 
             // if less than 5 friends of friends were found, populate the rest with random users
