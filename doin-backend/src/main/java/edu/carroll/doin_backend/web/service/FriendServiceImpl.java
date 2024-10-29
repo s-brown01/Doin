@@ -198,7 +198,11 @@ public class FriendServiceImpl implements FriendService {
         log.trace("getFriendsOfFriends: converting all Friendships into FriendshipDTOs for user {}", userUsername);
         for (Friendship friendship : incomingRequests) {
             User friend = friendship.getUser();
-            requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), friend.getProfilePicture()));
+            if (friend.getProfilePicture() == null) {
+                requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), imageService.get(4L)));
+            } else {
+                requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), friend.getProfilePicture()));
+            }
         }
         log.trace("getFriendsOfFriends: returning {} FriendshipDTOs for user {}", requests.size(), userUsername);
         requests.add(new FriendshipDTO(1, "Test", FriendshipStatus.PENDING, imageService.get(4L)));
