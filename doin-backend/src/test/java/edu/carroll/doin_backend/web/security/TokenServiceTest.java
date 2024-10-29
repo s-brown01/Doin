@@ -58,11 +58,16 @@ public class TokenServiceTest {
     }
 
     /**
-     * Test for generating a token and asserting that it's not null.
-     * This test verifies that the generated token is valid and contains the correct username.
+     * Test for successfully generating a token and asserting that it's not null.
+     * <p>
+     * This test verifies that the method {@link TokenService#generateToken(String)}
+     * successfully creates a token for a given username. It checks that the generated
+     * token is not null and that the username extracted from the token matches the
+     * expected username.
+     * </p>
      */
     @Test
-    public void generateToken() {
+    public void generateToken_Successful() {
         // Generate a token for the given username
         String token = tokenService.generateToken(username);
         // Assert that the generated token is not null
@@ -73,10 +78,10 @@ public class TokenServiceTest {
 
     /**
      * Test for validating a token and ensuring the username can be extracted correctly.
-     * This test verifies that a valid token corresponds to the correct username.
+     * This tests {@link TokenService#generateToken(String)}
      */
     @Test
-    public void validateToken() {
+    public void validateToken_Successful() {
         // Generate a token for the given username
         String token = tokenService.generateToken(username);
         // Extract the username from the token and validate it
