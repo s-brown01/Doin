@@ -123,7 +123,11 @@ public class FriendServiceImpl implements FriendService {
             // if the randomUser is not already a friend, add them
             if (!allFriends.contains(randomUser) &&
                 !randomUser.equals(user)) {
-                randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
+                if (randomUser.getProfilePicture() == null) {
+                    randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
+                } else {
+                    randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
+                }
             }
         }
 
