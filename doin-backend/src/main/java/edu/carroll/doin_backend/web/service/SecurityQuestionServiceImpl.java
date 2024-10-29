@@ -2,13 +2,10 @@ package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SecurityQuestionServiceImpl implements SecurityQuestionService {
@@ -19,11 +16,14 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     public SecurityQuestionServiceImpl(SecurityQuestionRepository securityQuestionRepo) {
         this.securityQuestionRepo = securityQuestionRepo;
         // make sure the repository is filled
-//        this.checkAndFillRepo();
+        this.checkAndFillRepo();
     }
 
     @Override
     public SecurityQuestion getSecurityQuestionByValue(String securityQuestionValue) {
+        if (securityQuestionValue == null || securityQuestionValue.isBlank()) {
+            return null;
+        }
         log.trace("getSecurityQuestionByValue: getting question {}", securityQuestionValue);
         final Integer id = securityQuestionRepo.findIdByQuestion(securityQuestionValue);
         if (id == null) {
@@ -53,32 +53,28 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
         }
     }
 
-    @PostConstruct
-    public void checkAndFillRepo() {
+    private void checkAndFillRepo() {
         log.trace("checkAndFillRepo: checking and populating repository");
-        List<SecurityQuestion> securityQuestions = securityQuestionRepo.findAll();
-        log.trace("checkAndFillRepo: found {} security questions", securityQuestions.size());
-        // create all the SQ's that will be used in the repo
-        SecurityQuestion petSQ = new SecurityQuestion("pet");
-        SecurityQuestion schoolSQ = new SecurityQuestion("school");
-        SecurityQuestion citySQ = new SecurityQuestion("city");
+        addSecurityQuestion("pet");
+        addSecurityQuestion("dog");
+        addSecurityQuestion("cat");
+        log.trace("checkAndFillRepo: security questions repo filled with {} questions", securityQuestionRepo.count());
 
-        log.trace("checkAndFillRepo: checking what security questions exist");
-        // make sure all 3 SecurityQuestions exist in repo
-        if (!securityQuestions.contains(petSQ)) {
-            log.trace("checkAndFillRepo: adding security question {}", petSQ);
-            securityQuestionRepo.save(petSQ);
-        }
-        if (!securityQuestions.contains(schoolSQ)) {
-            log.trace("checkAndFillRepo: adding security question {}", schoolSQ);
-            securityQuestionRepo.save(schoolSQ);
-        }
-        if (!securityQuestions.contains(citySQ)) {
-            log.trace("checkAndFillRepo: adding security question {}", citySQ);
-            securityQuestionRepo.save(citySQ);
-        }
-        log.trace("checkAndFillRepo: security questions repo filled with {} questions", securityQuestions.size());
+    }
 
+    @Override
+    public boolean addSecurityQuestion(String questionValue) {
+        // make sure new question isn't null or blank
+        if (questionValue == null || questionValue.isBlank()) {
+            return false;
+        }
+        // make sure question doesn't already exist
+        if (securityQuestionRepo.existsByQuestion(questionValue)) {
+            return false;
+        }
+        // if not null and not exist, create the new SecurityQuestion
+        securityQuestionRepo.save(new SecurityQuestion(questionValue));
+        return true;
     }
 
 }
