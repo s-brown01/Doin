@@ -1,23 +1,65 @@
 package edu.carroll.doin_backend.web.security;
 
+import edu.carroll.doin_backend.web.dto.RegisterDTO;
+import edu.carroll.doin_backend.web.model.SecurityQuestion;
+import edu.carroll.doin_backend.web.service.SecurityQuestionService;
+import edu.carroll.doin_backend.web.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test class for the {@link TokenService} to ensure token generation and validation.
+ */
 @SpringBootTest
+@Transactional
 public class TokenServiceTest {
 
     /**
-     * The tokenService we're testing
+     * The {@link TokenService} instance being tested.
      */
     @Autowired
     private TokenService tokenService;
 
+    /**
+     * The {@link UserService} instance used for user-related operations in tests.
+     */
+    @Autowired
+    private UserService userService;
+
+    /**
+     * The {@link SecurityQuestionService} instance used for security question-related operations in tests.
+     */
+    @Autowired
+    private SecurityQuestionService securityQuestionService;
+
+    /**
+     * A sample username used for testing purposes.
+     */
     private static final String username = "testUsername";
 
     /**
+     * A sample security question value used for testing purposes.
+     */
+    private static final String sqValue = "pet";
+
+    /**
+     * Sets up the test environment by adding a security question and creating a new user
+     * before each test case.
+     */
+    @BeforeEach
+    public void setUp() {
+        securityQuestionService.addSecurityQuestion(sqValue);
+        userService.createNewUser(new RegisterDTO(username, "password", sqValue, "answer"));
+    }
+
+    /**
      * Test for generating a token and asserting that it's not null.
+     * This test verifies that the generated token is valid and contains the correct username.
      */
     @Test
     public void generateToken() {
@@ -31,6 +73,7 @@ public class TokenServiceTest {
 
     /**
      * Test for validating a token and ensuring the username can be extracted correctly.
+     * This test verifies that a valid token corresponds to the correct username.
      */
     @Test
     public void validateToken() {
