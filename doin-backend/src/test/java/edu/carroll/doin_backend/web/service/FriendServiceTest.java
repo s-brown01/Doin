@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class FriendServiceTest {
     private static final String username1 = "User1_Username";
     private static final String username2 = "User2_Username";
