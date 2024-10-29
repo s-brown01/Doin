@@ -19,18 +19,7 @@ public class UserServiceTest {
     private static final String password = "testPassword";
 
     @Autowired
-    private SecurityQuestionRepository securityQuestionRepo;
-
-    @Autowired
     private UserService userService;
-
-    @BeforeEach
-    public void loadTables(){
-        // clear all repos
-        securityQuestionRepo.deleteAll();
-        // put in the shared data for the tables
-        securityQuestionRepo.save(new SecurityQuestion("pet"));
-    }
 
     @Test
     public void validateCredentials(){
