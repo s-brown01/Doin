@@ -23,7 +23,18 @@ export class FriendListComponent {
 
   confirmFriend() {
     console.log("Confirming friend: " + this.friend.username);
-    this.response = `Confirmed '${this.friend.username}'`
+
+    this.friendService.confirmFriend(this.friend).subscribe(
+      response => {
+        if (response) {
+          this.response = `Confirmed '${this.friend.username}'`
+        } else {
+          this.response = `Unable to confirm '${this.friend.username}'`;
+        }
+      }, error => {
+        this.response = `:( Error occurred while confirming '${this.friend.username}'`;
+      }
+    )
   }
 
   addFriend() {
