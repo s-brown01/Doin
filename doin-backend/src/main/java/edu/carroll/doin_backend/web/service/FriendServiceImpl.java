@@ -191,19 +191,13 @@ public class FriendServiceImpl implements FriendService {
             return new HashSet<>();
         }
         final User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
-        final Set<FriendshipDTO> friendshipDTOSet = new HashSet<>();
         // find all friendships both ways (currentUser = Friend and = User)
+        log.trace("getFriends: getting friends for user {}", userUsername);
         Set<Friendship> foundFriends = friendRepo.findByFriendAndStatus(currentUser, FriendshipStatus.CONFIRMED);
         foundFriends.addAll(friendRepo.findByUserAndStatus(currentUser, FriendshipStatus.CONFIRMED));
-
-        for (Friendship friendship : foundFriends) {
-            User friend = friendship.getUser();
-            FriendshipStatus status = statusBetween(friend, currentUser);
-            Long profilePicId = (friend.getProfilePicture() == null) ? 4L : friend.getProfilePicture().getId();
-            friendshipDTOSet.add(new FriendshipDTO(friend.getId(), friend.getUsername(), status, imageService.get(profilePicId)));
-        }
-
-        return friendshipDTOSet;
+        log.trace("getFriends: found {} friends for user {}", foundFriends.size(), userUsername);
+        // convert Friendships into FriendshipDTO using the helper method
+        return convertFriendshipIntoDTOS(currentUser, foundFriends);
     }
 
     @Override
@@ -218,23 +212,11 @@ public class FriendServiceImpl implements FriendService {
         log.debug("getFriendRequests: validated user username {}", userUsername);
         User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
 
-        Set<FriendshipDTO> requests = new HashSet<>();
         log.debug("getFriendRequests: fetching all incoming requests for user: {}", userUsername);
-
         Set<Friendship> incomingRequests = friendRepo.findByFriendAndStatus(currentUser, FriendshipStatus.PENDING);
-        log.debug("getFriendRequests: found {} incoming requests for user {}", incomingRequests.size(), userUsername);
-
-        for (Friendship friendship : incomingRequests) {
-            User friend = friendship.getUser();
-            FriendshipStatus status = statusBetween(friend, currentUser);
-            Long profilePicId = (friend.getProfilePicture() == null) ? 4L : friend.getProfilePicture().getId();
-
-            requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), status, imageService.get(profilePicId)));
-        }
-
+        // convert Friendships into FriendshipDTO using the helper method
+        Set<FriendshipDTO> requests = convertFriendshipIntoDTOS(currentUser, incomingRequests);
         log.debug("getFriendRequests: returning {} FriendshipDTOs for user {}", requests.size(), userUsername);
-
-        // Remove the placeholder unless necessary
         return requests;
     }
 
@@ -376,5 +358,16 @@ public class FriendServiceImpl implements FriendService {
         }
         // there is a current friendship, return the current status
         return friendRepo.findByUserAndFriend(user, friend).getStatus();
+    }
+
+    private Set<FriendshipDTO> convertFriendshipIntoDTOS(User user, Set<Friendship> friends) {
+        Set<FriendshipDTO> friendDTOs = new HashSet<>();
+        for (Friendship friendship : friends) {
+            User friend = friendship.getUser();
+            FriendshipStatus status = statusBetween(friend, user);
+            Long profilePicId = (friend.getProfilePicture() == null) ? 4L : friend.getProfilePicture().getId();
+            friendDTOs.add(new FriendshipDTO(friend.getId(), friend.getUsername(), status, imageService.get(profilePicId)));
+        }
+        return friendDTOs;
     }
 }
