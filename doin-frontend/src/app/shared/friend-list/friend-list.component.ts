@@ -24,11 +24,19 @@ export class FriendListComponent {
 
   addFriend() {
     console.log("Adding friend: " + this.friend.username);
-    if (this.friendService.addFriend(this.friend)) {
-      console.log("Successfully Added friend: " + this.friend.username);
-    } else {
-      console.warn("Unsuccessful added friend: " + this.friend.username);
-    }z
+
+    this.friendService.addFriend(this.friend).subscribe(
+      response => {
+        if (response) {
+          console.log("Successfully Added friend: " + this.friend.username);
+        } else {
+          console.log("Unsuccessfully Added friend: " + this.friend.username);
+        }
+      }, error => {
+        console.error("Error occurred while adding friend: " + this.friend.username);
+
+      }
+    )
 
   }
 
