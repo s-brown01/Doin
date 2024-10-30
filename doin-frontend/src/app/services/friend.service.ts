@@ -47,9 +47,10 @@ export class FriendService {
     return this.apiService.post(`friends/add-friend`, friend, headers );
   }
 
-  confirmFriend(friend : FriendshipDto): Observable<any>{
-    const headers = this.getHeaders();
-    return this.apiService.post("confirm-friend", friend, headers);
+  confirmFriend(friend : FriendshipDto): Observable<any> {
+    // const headers = this.getHeaders();
+    // return this.apiService.post("confirm-friend", friend, headers);
+    return this.addFriend(friend);
   }
 
   removeFriend(friend : FriendshipDto): Observable<any> {
