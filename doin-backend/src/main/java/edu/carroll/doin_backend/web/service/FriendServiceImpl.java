@@ -269,10 +269,11 @@ public class FriendServiceImpl implements FriendService {
             log.error("addFriend: user {} is already friends with {}", userUsername, friendUsername);
             return new ValidateResult(false, "You are already friends with " + friendUsername);
         }
+        // if PENDING, confirm the friendships
         if (friendToUserStatus == FriendshipStatus.PENDING) {
             log.debug("addFriend: friend {} has already sent a request to user {}", friendUsername, userUsername);
             log.trace("addFriend: setting Friendship.Status to CONFIRMED between friend {} and user {}", friendUsername, userUsername);
-            Friendship friendship = friendRepo.findByUserAndFriend(user, friend);
+            Friendship friendship = friendRepo.findByUserAndFriend(friend, user);
             // if both add friendship is CONFIRMED
             friendship.setStatus(FriendshipStatus.CONFIRMED);
             // Set confirmedAt to current date/time
