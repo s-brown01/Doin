@@ -26,6 +26,10 @@ public class FriendController {
 
     @GetMapping()
     public ResponseEntity<Set<FriendshipDTO>> getFriendsOfFriends(@RequestHeader("Username") String username) {
+        if (username == null || username.isEmpty()) {
+            log.error("getFriendsOfFriends: Username is null or empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        }
         log.info("FriendController: starting to get Friends-of-Friends for user: {}", username);
         // validate the username
         if (!isValidUsername(username)) {
@@ -40,6 +44,13 @@ public class FriendController {
 
     @GetMapping("/{otherUsername}")
     public ResponseEntity<Set<FriendshipDTO>> getUserByUsername(@RequestHeader("Username") String userUsername, @PathVariable String otherUsername) {
+        if (userUsername == null ||
+                userUsername.isEmpty() ||
+                otherUsername == null ||
+                otherUsername.isEmpty()) {
+            log.error("getUserByUsername: - Invalid username {}", userUsername);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        }
         log.info("FriendController: starting to get friend with username: {} for user {}", otherUsername, userUsername);
         // validate the user username
         if (!isValidUsername(userUsername)) {
@@ -61,6 +72,10 @@ public class FriendController {
 
     @GetMapping("/friend-requests")
     public ResponseEntity<Set<FriendshipDTO>> getFriendRequests(@RequestHeader("Username") String username) {
+        if (username == null || username.isEmpty()) {
+            log.error("getFriendRequests: - Invalid username {}", username);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        }
         log.info("FriendController: starting to get friend requests for user: {}", username);
         if (!isValidUsername(username)) {
             log.error("getFriendRequests: - Invalid username {}", username);
@@ -74,6 +89,12 @@ public class FriendController {
 
     @PostMapping("/add-friend")
     public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username) {
+        if (friendDTO == null ||
+                username == null ||
+                username.isEmpty()) {
+            log.error("addFriend: - Invalid user username {} or invalid friendDTO", username);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        }
         log.info("FriendController: username {} trying to friend {}", username, friendDTO.getUsername());
         // validate the username
         if (!isValidUsername(username)) {
@@ -100,6 +121,12 @@ public class FriendController {
 
     @PostMapping("/confirm-friend")
     public ResponseEntity<Boolean> confirmFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username){
+        if (friendDTO == null ||
+                username == null ||
+                username.isEmpty()) {
+            log.error("confirmFriend: - Invalid user username {} or invalid friendDTO", username);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        }
         log.info("FriendController: starting to confirm friends between friend {} and user: {}", friendDTO.getUsername(), username);
         // validate the username
         if (!isValidUsername(username)) {
@@ -123,6 +150,12 @@ public class FriendController {
 
     @PostMapping("/remove-friend")
     public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username) {
+        if (friendDTO == null ||
+                username == null ||
+                username.isEmpty()) {
+            log.error("removeFriend: - Invalid user username {} or invalid friendDTO", username);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        }
         log.info("removeFriend: starting to remove friendship between friend {} and user: {}", friendDTO.getUsername(), username);
         // validate the username
         if (!isValidUsername(username)) {
