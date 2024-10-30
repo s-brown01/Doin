@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {FriendshipDto, FriendshipStatus} from "../../dtos/friendship.dto";
 import {ImageDTO} from "../../dtos/image.dto";
+import {FriendService} from "../../services/friend.service";
 
 @Component({
   selector: 'app-friend-list',
@@ -8,6 +9,9 @@ import {ImageDTO} from "../../dtos/image.dto";
   styleUrl: './friend-list.component.css'
 })
 export class FriendListComponent {
+  constructor(private friendService: FriendService) {
+  }
+
   @Input() friend!: FriendshipDto;  // Marking as input so parent can pass it4
 
   removeFriend() {
@@ -20,6 +24,12 @@ export class FriendListComponent {
 
   addFriend() {
     console.log("Adding friend: " + this.friend.username);
+    if (this.friendService.addFriend(this.friend)) {
+      console.log("Successfully Added friend: " + this.friend.username);
+    } else {
+      console.warn("Unsuccessful added friend: " + this.friend.username);
+    }z
+
   }
 
   protected readonly FriendshipStatus = FriendshipStatus;
