@@ -324,7 +324,8 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public ValidateResult confirmFriend(String userUsername, String friendUsername) {
         // the addFriend already handles what happens when 2 different users send each other friend requests, so use that method
-        log.trace("confirmFriend: confirming friendship betwen user {} and friend {}", userUsername, friendUsername);
+        log.trace("confirmFriend: confirming friendship between user {} and friend {}", userUsername, friendUsername);
+        log.trace("confirmFriend: sending request to addFriend for user {} and friend {}", userUsername, friendUsername);
         return addFriend(userUsername, friendUsername);
     }
 
