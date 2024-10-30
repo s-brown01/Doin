@@ -40,7 +40,6 @@ export class FriendService {
 
   addFriend(friend : FriendshipDto): Observable<any>{
     const headers = this.getHeaders();
-    console.log("Sending request to add friend: ", friend, " with headers: ", headers);
     return this.apiService.post(`friends/add-friend`, friend, headers );
   }
 
