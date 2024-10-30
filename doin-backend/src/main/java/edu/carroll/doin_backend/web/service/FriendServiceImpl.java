@@ -63,7 +63,7 @@ public class FriendServiceImpl implements FriendService {
     public Set<FriendshipDTO> getFriendsOfFriends(String userUsername) {
         log.trace("getFriendsOfFriends: getting the friends of friends for username {}", userUsername);
         log.trace("getFriendsOfFriends: validating username {}", userUsername);
-        if (!validUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("getFriendsOfFriends: invalid username {}", userUsername);
             return new HashSet<>();
         }
@@ -157,12 +157,12 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public Set<FriendshipDTO> getUser(String userUsername, String usernameToFind) {
         log.trace("getUser: validating user username {}", userUsername);
-        if (!validUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("getUser: invalid user username {}", userUsername);
             return new HashSet<>();
         }
         log.trace("getUser: validating friend username {}", usernameToFind);
-        if (!validUsername(usernameToFind)) {
+        if (!isValidUsername(usernameToFind)) {
             log.warn("getUser: invalid friend username {}", usernameToFind);
             return new HashSet<>();
         }
@@ -194,7 +194,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public Set<FriendshipDTO> getFriendRequests(String userUsername){
         log.trace("getFriendRequests: validating user username {}", userUsername);
-        if (!validUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("getFriendRequests: invalid user username {}", userUsername);
             return new HashSet<>();
         }
@@ -209,9 +209,9 @@ public class FriendServiceImpl implements FriendService {
         for (Friendship friendship : incomingRequests) {
             User friend = friendship.getUser();
             if (friend.getProfilePicture() == null) {
-                requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), imageService.get(4L)));
+                requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(friend, currentUser), imageService.get(4L)));
             } else {
-                requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), friend.getProfilePicture()));
+                requests.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(friend, currentUser), friend.getProfilePicture()));
             }
         }
         log.trace("getFriendsOfFriends: returning {} FriendshipDTOs for user {}", requests.size(), userUsername);
@@ -237,71 +237,66 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public ValidateResult addFriend(String userUsername, String friendUsername) {
         log.trace("addFriend: adding friend {} for user {}", friendUsername, userUsername);
-        log.trace("addFriend: validating user username {}", userUsername);
-        if (!validUsername(userUsername)) {
+        // Validate user username
+        if (!isValidUsername(userUsername)) {
             log.warn("addFriend: invalid user username {}", userUsername);
             return new ValidateResult(false, "invalid user username");
         }
-        log.trace("addFriend: validating friend username {}", friendUsername);
-        if (!validUsername(friendUsername)) {
+        // Validate friend username
+        if (!isValidUsername(friendUsername)) {
             log.warn("addFriend: invalid friend username {}", friendUsername);
             return new ValidateResult(false, "invalid friend username");
         }
+        // Fetching user and friend from repository
         User user = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
         User friend = loginRepo.findByUsernameIgnoreCase(friendUsername).get(0);
 
-        log.trace("addFriend: checking user {} and friend {} are not the same", userUsername, friendUsername);
         if (user.equals(friend)) {
-            log.info("addFriend: user {} and friend {} are the same", user, friend);
-            return new ValidateResult(false, "user and friend are the same");
+            log.info("addFriend: user {} cannot add themselves as a friend", userUsername);
+            return new ValidateResult(false, "You cannot add yourself as a friend");
         }
 
-        // checking connection from friend to user
-        log.trace("addFriend: getting the current status from friend {} to user {}", friendUsername, userUsername);
+        // Check friendship status
         FriendshipStatus friendToUserStatus = statusBetween(friend, user);
-        // check if already friends (CONFIRMED)
         if (friendToUserStatus == FriendshipStatus.CONFIRMED) {
-            log.error("addFriend: friend {} and user {} are already friends", userUsername, friendUsername);
-            return new ValidateResult(false, "user and friend are already friends");
+            log.error("addFriend: user {} is already friends with {}", userUsername, friendUsername);
+            return new ValidateResult(false, "You are already friends with " + friendUsername);
         }
-        // check if friend has sent a request to user
         if (friendToUserStatus == FriendshipStatus.PENDING) {
-            log.warn("addFriend: friend {} has already sent user {} a friend request, making friends", friendUsername, friendUsername);
+            log.warn("addFriend: friend {} has already sent a request to user {}", friendUsername, userUsername);
             Friendship newFriendship = new Friendship(user, friend, FriendshipStatus.CONFIRMED);
             friendRepo.save(newFriendship);
-            return new ValidateResult(true, "user " + userUsername + "  has now friended " + friendUsername);
+            return new ValidateResult(true, "You are now friends with " + friendUsername);
         }
-        // friendToUserStatus has to be NOTADDED now check connection user to friend
-        log.trace("addFriend: getting the current status from user {} to friend {}", userUsername, friendUsername);
+
         FriendshipStatus currentStatus = statusBetween(user, friend);
-        // check if already friends
         if (currentStatus == FriendshipStatus.CONFIRMED) {
             log.error("addFriend: user {} is already friends with friend {}", userUsername, friendUsername);
-            return new ValidateResult(false, userUsername + " is already friends with " + friendUsername);
+            return new ValidateResult(false, "You are already friends with " + friendUsername);
         }
-        // check if already requested
         if (currentStatus == FriendshipStatus.PENDING) {
             log.warn("addFriend: user {} has already sent a request to friend {}", userUsername, friendUsername);
-            return new ValidateResult(false, userUsername + " has already sent a request to " + friendUsername);
+            return new ValidateResult(false, "You have already sent a request to " + friendUsername);
         }
-        // if both are not added, then create a new PENDING request
-        log.trace("addFriend: creating user {} and friend {} friendship", userUsername, friendUsername);
+
+        // Create new friendship
         Friendship newFriendship = new Friendship(user, friend, FriendshipStatus.PENDING);
         friendRepo.save(newFriendship);
 
-        return new ValidateResult(true, userUsername + " has sent " + friendUsername + " a friend request");
+        log.info("addFriend: user {} has sent a friend request to {}", userUsername, friendUsername);
+        return new ValidateResult(true, userUsername + " has sent a friend request to " + friendUsername);
     }
 
     @Override
     public ValidateResult removeFriend(String userUsername, String friendUsername) {
         log.trace("removeFriend: removing friend {} for user {}", friendUsername, userUsername);
         log.trace("removeFriend: validating user username {}", userUsername);
-        if (!validUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("removeFriend: invalid user username {}", userUsername);
             return new ValidateResult(false, "invalid user username");
         }
         log.trace("removeFriend: validating friend username {}", friendUsername);
-        if (!validUsername(friendUsername)) {
+        if (!isValidUsername(friendUsername)) {
             log.warn("removeFriend: invalid friend username {}", friendUsername);
             return new ValidateResult(false, "invalid friend username");
         }
@@ -330,7 +325,7 @@ public class FriendServiceImpl implements FriendService {
      * @param username - the username to check against the database
      * @return true if the username is valid, false if not (not found, more than 1 user with that username, and any errors)
      */
-    private boolean validUsername(String username) {
+    private boolean isValidUsername(String username) {
         try {
             List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
             if (foundUsers == null || foundUsers.isEmpty()) {
