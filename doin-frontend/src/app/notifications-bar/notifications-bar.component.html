@@ -1,10 +1,16 @@
 <div class="wrapper">
   <div class="profile-wrapper">
     <div class="profile-img-wrapper">
-      <app-image class="profile-img" [borderRadius]="'50%'" [image]="user?.profilePicture"></app-image>    </div>
-    <div><a href="login" (click)="logout()">Logout</a></div>
+      <a [routerLink]="['/user', user?.id]" class="username-link">
+        <app-image
+          class="profile-img"
+          [borderRadius]="'50%'"
+          [image]="user?.profilePicture"
+        ></app-image>
+      </a>
+    </div>
+    <a href="login" (click)="logout()">Logout</a>
   </div>
-
   <div class="notifications">
     <ul>
       <li>
