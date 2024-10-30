@@ -55,7 +55,7 @@ public class FriendController {
         }
         log.trace("getUserByUsername: username {} validated", otherUsername);
         Set<FriendshipDTO> newFriend = friendService.getUser(userUsername, otherUsername);
-        log.trace("getUserByUsername: username {} returned {} friends", otherUsername, newFriend.size());
+        log.info("getUserByUsername: username {} returned {} friends", otherUsername, newFriend.size());
         return ResponseEntity.ok(newFriend);
     }
 
@@ -68,13 +68,13 @@ public class FriendController {
         }
         log.trace("getFriendRequests: username {} validated", username);
         Set<FriendshipDTO> requests = friendService.getFriendRequests(username);
-        log.trace("getFriendRequests: username {} has {} requests", username, requests.size());
+        log.info("getFriendRequests: username {} has {} requests", username, requests.size());
         return ResponseEntity.ok(requests);
     }
 
     @PostMapping("/add-friend")
     public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username) {
-        log.info("FriendController: starting to save user: {}", username);
+        log.info("FriendController: username {} trying to friend {}", username, friendDTO.getUsername());
         // validate the username
         if (!isValidUsername(username)) {
             log.error("addFriend: - Invalid user username {}", username);
@@ -89,11 +89,13 @@ public class FriendController {
         log.trace("addFriend: user username {} and friend username {} validated", username, friendDTO.getUsername());
         ValidateResult result = friendService.addFriend(username, friendDTO.getUsername());
         if (result.isValid()) {
-            log.debug("addFriend: adding friend {} was unsuccessful for user {}", friendDTO.getUsername(), username);
+            log.trace("addFriend: adding friend {} was successful for user {}", friendDTO.getUsername(), username);
             return ResponseEntity.ok(true);
+        } else {
+            log.debug("addFriend: adding friend {} was unsuccessful for user {}", friendDTO.getUsername(), username);
+            return ResponseEntity.ok(false);
         }
-        log.trace("addFriend: adding friend {} was successful for user {}", friendDTO.getUsername(), username);
-        return ResponseEntity.ok(false);
+
     }
 
     @PostMapping("/confirm-friend")
