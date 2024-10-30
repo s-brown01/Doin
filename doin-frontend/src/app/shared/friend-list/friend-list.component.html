@@ -6,7 +6,9 @@
 
   <div class="friend-name">{{friend.username}}</div>
 
-  <div class="buttons">
+  <div *ngIf="response">{{response}}</div>
+
+  <div *ngIf="!response" class="buttons">
     <ng-container [ngSwitch]="friend.status">
       <div *ngSwitchCase="FriendshipStatus.CONFIRMED">
         <button class="remove-button" (click)="removeFriend()">Remove Friend</button>
