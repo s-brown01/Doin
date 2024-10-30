@@ -80,7 +80,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        log.debug("Authorization header: {}", header);
+        log.debug("Authorization header present.");
 
         // Check if the Authorization header is present and valid
         if (isEmpty(header) || !header.startsWith("Bearer ")) {
@@ -90,11 +90,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         final String token = header.split(" ")[1].trim();
-        log.debug("Extracted token: {}", token);
+        log.debug("JWT token has been processed.");
 
         // Validate the JWT token
         if (!jwtTokenUtil.validateToken(token)) {
-            log.warn("Invalid JWT token: {}", token);
+            log.warn("Invalid JWT token.");
             chain.doFilter(request, response);
             return;
         }
@@ -119,9 +119,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 new UsernamePasswordAuthenticationToken(userDetails, null, List.of());
 
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        log.info("User authenticated successfully: {}", userDetails.getUsername());
+        log.info("User authenticated successfully.");
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
     }
+
 }
