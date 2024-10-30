@@ -25,7 +25,7 @@ public class FriendController {
         this.friendService = friendService;
     }
 
-    @GetMapping()
+    @GetMapping("/of-friends")
     public ResponseEntity<Set<FriendshipDTO>> getFriendsOfFriends(@RequestHeader("Username") String username) {
         if (username == null || username.isEmpty()) {
             log.error("getFriendsOfFriends: Username is null or empty");
