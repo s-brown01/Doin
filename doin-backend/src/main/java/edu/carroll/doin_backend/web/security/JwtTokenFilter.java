@@ -6,6 +6,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +29,8 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
  */
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenFilter.class);
 
     private final JwtTokenService jwtTokenUtil;
     private final LoginRepository loginRepository;
@@ -63,28 +67,34 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
         String uri = request.getRequestURI();
+        log.trace("doFilterInternal: Filtering request for URI: {}", uri);
 
         // Allow unauthenticated access to register and login and forgot-password endpoints
         if ("/api/register".equals(uri) ||
                 "/api/login".equals(uri) ||
                 "/api/forgot-password".equals(uri) ||
                 "/api/change-password".equals(uri)) {
+            log.debug("Allowing access to public endpoint: {}", uri);
             chain.doFilter(request, response);
             return;
         }
 
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        log.debug("Authorization header: {}", header);
 
         // Check if the Authorization header is present and valid
         if (isEmpty(header) || !header.startsWith("Bearer ")) {
+            log.warn("Authorization header is empty or does not start with 'Bearer'");
             chain.doFilter(request, response);
             return;
         }
 
         final String token = header.split(" ")[1].trim();
+        log.debug("Extracted token: {}", token);
 
         // Validate the JWT token
         if (!jwtTokenUtil.validateToken(token)) {
+            log.warn("Invalid JWT token: {}", token);
             chain.doFilter(request, response);
             return;
         }
@@ -99,6 +109,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         // If no user details found, continue the filter chain
         if (userDetails == null) {
+            log.warn("No user details found for the username extracted from token.");
             chain.doFilter(request, response);
             return;
         }
@@ -108,6 +119,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 new UsernamePasswordAuthenticationToken(userDetails, null, List.of());
 
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        log.info("User authenticated successfully: {}", userDetails.getUsername());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
