@@ -4,6 +4,7 @@ import edu.carroll.doin_backend.web.dto.FriendshipDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.dto.ValidateResult;
 import edu.carroll.doin_backend.web.service.FriendService;
+import edu.carroll.doin_backend.web.service.FriendServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -68,6 +69,23 @@ public class FriendController {
         Set<FriendshipDTO> newFriend = friendService.getUser(userUsername, otherUsername);
         log.info("getUserByUsername: username {} returned {} friends", otherUsername, newFriend.size());
         return ResponseEntity.ok(newFriend);
+    }
+
+    @GetMapping
+    public ResponseEntity<Set<FriendshipDTO>> getFriends(@RequestHeader("Username") String username) {
+        if (username == null || username.isEmpty()) {
+            log.error("getFriends: Username is null or empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        }
+        log.info("getFriends: starting to get Friends for user: {}", username);
+        if (!isValidUsername(username)) {
+            log.error("getFriends: - Invalid username {}", username);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        }
+        log.trace("getFriends: username {} validated", username);
+        Set<FriendshipDTO> friends = friendService.getFriends(username);
+        log.trace("getFriends: username {} returned {} friends", username, friends.size());
+        return ResponseEntity.ok(friends);
     }
 
     @GetMapping("/friend-requests")

@@ -167,11 +167,6 @@ public class FriendServiceImpl implements FriendService {
             log.warn("getUser: invalid friend username {}", usernameToFind);
             return new HashSet<>();
         }
-        log.trace("getUser: finding User with username {}", usernameToFind);
-        if (!loginRepo.existsByUsernameIgnoreCase(userUsername)) {
-            log.error("getUser: user username {} not found", userUsername);
-            return new HashSet<>();
-        }
         log.trace("getUser: getting the current User {}", userUsername);
         final User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
 
@@ -179,17 +174,36 @@ public class FriendServiceImpl implements FriendService {
         log.trace("getUser: finding all Users with a username containing {} and ignoring case", usernameToFind);
         List<User> listFriends = loginRepo.findByUsernameContainingIgnoreCase(usernameToFind);
         log.trace("getUser: found {} Users", listFriends.size());
-        if (listFriends.isEmpty()) {
-            log.trace("getUser: no users found for username {}, using wildcards to find more users", usernameToFind);
-            listFriends.addAll(loginRepo.findByUsernameLikeIgnoreCase("%"+usernameToFind+"%"));
-        }
-        log.trace("getUser: found {} Users after both searches", listFriends.size());
+
         for (User friend : listFriends) {
             log.trace("getUser: adding friend {} to found users for user {}", friend.getId(), userUsername);
             foundUsers.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), friend.getProfilePicture()));
         }
         log.trace("getUser: found {} unique Users adding creating FriendshipDTOs and now returning the Set", foundUsers.size());
         return foundUsers;
+    }
+
+    @Override
+    public Set<FriendshipDTO> getFriends(String userUsername) {
+        log.trace("getFriends: validating user username {}", userUsername);
+        if (!isValidUsername(userUsername)) {
+            log.warn("getFriends: invalid user username {}", userUsername);
+            return new HashSet<>();
+        }
+        final User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
+        final Set<FriendshipDTO> friendshipDTOSet = new HashSet<>();
+        // find all friendships both ways (currentUser = Friend and = User)
+        Set<Friendship> foundFriends = friendRepo.findByFriendAndStatus(currentUser, FriendshipStatus.CONFIRMED);
+        foundFriends.addAll(friendRepo.findByUserAndStatus(currentUser, FriendshipStatus.CONFIRMED));
+
+        for (Friendship friendship : foundFriends) {
+            User friend = friendship.getUser();
+            FriendshipStatus status = statusBetween(friend, currentUser);
+            Long profilePicId = (friend.getProfilePicture() == null) ? 4L : friend.getProfilePicture().getId();
+            friendshipDTOSet.add(new FriendshipDTO(friend.getId(), friend.getUsername(), status, imageService.get(profilePicId)));
+        }
+
+        return friendshipDTOSet;
     }
 
     @Override
