@@ -52,6 +52,10 @@ public class Friendship {
         return friend;
     }
 
+    public void setStatus(FriendshipStatus status) {
+        this.status = status;
+    }
+
     public FriendshipStatus getStatus() {
         return status;
     }
