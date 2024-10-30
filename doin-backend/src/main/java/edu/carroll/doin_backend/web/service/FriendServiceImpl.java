@@ -265,7 +265,7 @@ public class FriendServiceImpl implements FriendService {
             log.error("addFriend: user {} is already friends with {}", userUsername, friendUsername);
             return new ValidateResult(false, "You are already friends with " + friendUsername);
         }
-        // if PENDING, confirm the friendships
+        // if friend to user is already PENDING: confirm friendship
         if (friendToUserStatus == FriendshipStatus.PENDING) {
             log.debug("addFriend: friend {} has already sent a request to user {}", friendUsername, userUsername);
             log.trace("addFriend: setting Friendship.Status to CONFIRMED between friend {} and user {}", friendUsername, userUsername);
@@ -278,6 +278,7 @@ public class FriendServiceImpl implements FriendService {
             log.trace("addFriend: CONFIRMED Friendship saved between user {} and friend {}", userUsername, friendUsername);
             return new ValidateResult(true, "You are now friends with " + friendUsername);
         }
+        // if user to friend is already pending, don't make another friendship
         if (currentStatus == FriendshipStatus.PENDING) {
             log.warn("addFriend: user {} has already sent a request to friend {}", userUsername, friendUsername);
             return new ValidateResult(false, "You have already sent a request to " + friendUsername);
@@ -310,10 +311,18 @@ public class FriendServiceImpl implements FriendService {
             log.warn("removeFriend: user {} and friend {} are the same", userUsername, friendUsername);
             return new ValidateResult(false, "user and friend are the same: " + user.getUsername() + " and " + friend.getUsername());
         }
-        if (!friendRepo.existsFriendshipByUserAndFriend(user, friend)) {
-            log.debug("removeFriend: user {} and friend {} are not friends", userUsername, friendUsername);
-            return new ValidateResult(false, "user "+userUsername+" does not have friendship with friend "+friend.getUsername());
+        // get the current status (check first if it is user -> friend
+        FriendshipStatus currentStatus = statusBetween(user, friend);
+        if (currentStatus == FriendshipStatus.NOTADDED) {
+            // if it's not added, check the friend -> user
+            currentStatus = statusBetween(friend, user);
+            // if NOTADDED both ways
+            if (currentStatus == FriendshipStatus.NOTADDED) {
+                log.warn("removeFriend: user {} and friend {} are not friends", user, friendUsername);
+                return new ValidateResult(false, "user " + user.getUsername() + " and friend " + friend.getUsername() + " are not usernames");
+            }
         }
+
 
         return new ValidateResult(false, "false for now");
     }
