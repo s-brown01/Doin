@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -262,21 +263,23 @@ public class FriendServiceImpl implements FriendService {
 
         // Check friendship status
         FriendshipStatus friendToUserStatus = statusBetween(friend, user);
-        if (friendToUserStatus == FriendshipStatus.CONFIRMED) {
+        FriendshipStatus currentStatus = statusBetween(user, friend);
+
+        if (friendToUserStatus == FriendshipStatus.CONFIRMED || currentStatus == FriendshipStatus.CONFIRMED) {
             log.error("addFriend: user {} is already friends with {}", userUsername, friendUsername);
             return new ValidateResult(false, "You are already friends with " + friendUsername);
         }
         if (friendToUserStatus == FriendshipStatus.PENDING) {
-            log.warn("addFriend: friend {} has already sent a request to user {}", friendUsername, userUsername);
-            Friendship newFriendship = new Friendship(user, friend, FriendshipStatus.CONFIRMED);
-            friendRepo.save(newFriendship);
+            log.debug("addFriend: friend {} has already sent a request to user {}", friendUsername, userUsername);
+            log.trace("addFriend: setting Friendship.Status to CONFIRMED between friend {} and user {}", friendUsername, userUsername);
+            Friendship friendship = friendRepo.findByUserAndFriend(user, friend);
+            // if both add friendship is CONFIRMED
+            friendship.setStatus(FriendshipStatus.CONFIRMED);
+            // Set confirmedAt to current date/time
+            friendship.setConfirmedAt(LocalDate.now().atTime(0, 0));
+            friendRepo.save(friendship);
+            log.trace("addFriend: CONFIRMED Friendship saved between user {} and friend {}", userUsername, friendUsername);
             return new ValidateResult(true, "You are now friends with " + friendUsername);
-        }
-
-        FriendshipStatus currentStatus = statusBetween(user, friend);
-        if (currentStatus == FriendshipStatus.CONFIRMED) {
-            log.error("addFriend: user {} is already friends with friend {}", userUsername, friendUsername);
-            return new ValidateResult(false, "You are already friends with " + friendUsername);
         }
         if (currentStatus == FriendshipStatus.PENDING) {
             log.warn("addFriend: user {} has already sent a request to friend {}", userUsername, friendUsername);
@@ -320,7 +323,9 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public ValidateResult confirmFriend(String userUsername, String friendUsername) {
-        return new ValidateResult(false, "default response");
+        // the addFriend already handles what happens when 2 different users send each other friend requests, so use that method
+        log.trace("confirmFriend: confirming friendship betwen user {} and friend {}", userUsername, friendUsername);
+        return addFriend(userUsername, friendUsername);
     }
 
     /**
