@@ -101,47 +101,6 @@ public class FriendServiceImpl implements FriendService {
     }
 
     /**
-     * Retrieves a set of random users who are not already friends with the given user.
-     * The number of random users returned is specified by amtOfUsers.
-     *
-     * @param user        The user for whom to find random non-friends.
-     * @param amtOfUsers  The number of random users to retrieve.
-     * @return A set of FriendshipDTO representing random users who are not friends.
-     */
-    private Set<FriendshipDTO> getRandomUsers(User user, int amtOfUsers) {
-        // create an empty set to store all random users
-        Set<FriendshipDTO> randomUsers = new HashSet<>();
-
-        // a list of all users in the repository
-        List<User> allUsers = loginRepo.findAll();
-
-        // Create a Set for faster lookup of existing friends
-        Set<User> allFriends = new HashSet<>(friendRepo.findByUser(user).stream()
-                .map(Friendship::getFriend)
-                .toList());
-        // shuffle the list to create random selection of users
-        Collections.shuffle(allUsers);
-
-        for (User randomUser : allUsers) {
-            // if we have collected enough random users, break the for loop
-            if (randomUsers.size() >= amtOfUsers) {
-                break;
-            }
-            // if the randomUser is not already a friend, add them
-            if (!allFriends.contains(randomUser) &&
-                !randomUser.equals(user)) {
-                if (randomUser.getProfilePicture() == null) {
-                    randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
-                } else {
-                    randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
-                }
-            }
-        }
-
-        return randomUsers;
-    }
-
-    /**
      * Retrieves a set of {@link FriendshipDTO} objects representing users whose usernames
      * match or are similar to the provided {@code usernameToFind} and who have a connection
      * with the current user, identified by {@code userUsername}.
@@ -335,6 +294,47 @@ public class FriendServiceImpl implements FriendService {
         return addFriend(userUsername, friendUsername);
     }
 
+    /**
+     * Retrieves a set of random users who are not already friends with the given user.
+     * The number of random users returned is specified by amtOfUsers.
+     *
+     * @param user        The user for whom to find random non-friends.
+     * @param amtOfUsers  The number of random users to retrieve.
+     * @return A set of FriendshipDTO representing random users who are not friends.
+     */
+    private Set<FriendshipDTO> getRandomUsers(User user, int amtOfUsers) {
+        // create an empty set to store all random users
+        Set<FriendshipDTO> randomUsers = new HashSet<>();
+
+        // a list of all users in the repository
+        List<User> allUsers = loginRepo.findAll();
+
+        // Create a Set for faster lookup of existing friends
+        Set<User> allFriends = new HashSet<>(friendRepo.findByUser(user).stream()
+                .map(Friendship::getFriend)
+                .toList());
+        // shuffle the list to create random selection of users
+        Collections.shuffle(allUsers);
+
+        for (User randomUser : allUsers) {
+            // if we have collected enough random users, break the for loop
+            if (randomUsers.size() >= amtOfUsers) {
+                break;
+            }
+            // if the randomUser is not already a friend, add them
+            if (!allFriends.contains(randomUser) &&
+                    !randomUser.equals(user)) {
+                if (randomUser.getProfilePicture() == null) {
+                    randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
+                } else {
+                    randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
+                }
+            }
+        }
+
+        return randomUsers;
+    }
+    
     /**
      * A helper method that checks if a specific username is valid in the database. It checks that the username is in the database and that there is only 1 user with that username. Also, it catches any errors that may occur.
      *
