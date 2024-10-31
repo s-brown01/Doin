@@ -64,7 +64,7 @@ public class FriendServiceImpl implements FriendService {
     public Set<FriendshipDTO> getFriendsOfFriends(String userUsername) {
         log.trace("getFriendsOfFriends: getting the friends of friends for username {}", userUsername);
         log.trace("getFriendsOfFriends: validating username {}", userUsername);
-        if (!isValidUsername(userUsername)) {
+        if (!isValidExistingUsername(userUsername)) {
             log.warn("getFriendsOfFriends: invalid username {}", userUsername);
             return new HashSet<>();
         }
@@ -117,12 +117,12 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public Set<FriendshipDTO> getUser(String userUsername, String usernameToFind) {
         log.trace("getUser: validating user username {}", userUsername);
-        if (!isValidUsername(userUsername)) {
+        if (!isValidExistingUsername(userUsername)) {
             log.warn("getUser: invalid user username {}", userUsername);
             return new HashSet<>();
         }
         log.trace("getUser: validating friend username {}", usernameToFind);
-        if (!isValidUsername(usernameToFind)) {
+        if (!isValidExistingUsername(usernameToFind)) {
             log.warn("getUser: invalid friend username {}", usernameToFind);
             return new HashSet<>();
         }
@@ -145,7 +145,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public Set<FriendshipDTO> getFriends(String userUsername) {
         log.trace("getFriends: validating user username {}", userUsername);
-        if (!isValidUsername(userUsername)) {
+        if (!isValidExistingUsername(userUsername)) {
             log.warn("getFriends: invalid user username {}", userUsername);
             return new HashSet<>();
         }
@@ -163,7 +163,7 @@ public class FriendServiceImpl implements FriendService {
     public Set<FriendshipDTO> getFriendRequests(String userUsername) {
         log.debug("getFriendRequests: validating user username {}", userUsername);
 
-        if (!isValidUsername(userUsername)) {
+        if (!isValidExistingUsername(userUsername)) {
             log.warn("getFriendRequests: invalid user username {}", userUsername);
             return Collections.emptySet();
         }
@@ -198,12 +198,12 @@ public class FriendServiceImpl implements FriendService {
     public ValidateResult addFriend(String userUsername, String friendUsername) {
         log.trace("addFriend: adding friend {} for user {}", friendUsername, userUsername);
         // Validate user username
-        if (!isValidUsername(userUsername)) {
+        if (!isValidExistingUsername(userUsername)) {
             log.warn("addFriend: invalid user username {}", userUsername);
             return new ValidateResult(false, "invalid user username");
         }
         // Validate friend username
-        if (!isValidUsername(friendUsername)) {
+        if (!isValidExistingUsername(friendUsername)) {
             log.warn("addFriend: invalid friend username {}", friendUsername);
             return new ValidateResult(false, "invalid friend username");
         }
@@ -255,12 +255,12 @@ public class FriendServiceImpl implements FriendService {
     public ValidateResult removeFriend(String userUsername, String friendUsername) {
         log.trace("removeFriend: removing friend {} for user {}", friendUsername, userUsername);
         log.trace("removeFriend: validating user username {}", userUsername);
-        if (!isValidUsername(userUsername)) {
+        if (!isValidExistingUsername(userUsername)) {
             log.warn("removeFriend: invalid user username {}", userUsername);
             return new ValidateResult(false, "invalid user username");
         }
         log.trace("removeFriend: validating friend username {}", friendUsername);
-        if (!isValidUsername(friendUsername)) {
+        if (!isValidExistingUsername(friendUsername)) {
             log.warn("removeFriend: invalid friend username {}", friendUsername);
             return new ValidateResult(false, "invalid friend username");
         }
@@ -270,19 +270,20 @@ public class FriendServiceImpl implements FriendService {
             log.warn("removeFriend: user {} and friend {} are the same", userUsername, friendUsername);
             return new ValidateResult(false, "user and friend are the same: " + user.getUsername() + " and " + friend.getUsername());
         }
-        // get the current status (check first if it is user -> friend
-        FriendshipStatus currentStatus = statusBetween(user, friend);
-        if (currentStatus == FriendshipStatus.NOTADDED) {
-            // if it's not added, check the friend -> user
-            currentStatus = statusBetween(friend, user);
-            // if NOTADDED both ways
-            if (currentStatus == FriendshipStatus.NOTADDED) {
-                log.warn("removeFriend: user {} and friend {} are not friends", user, friendUsername);
-                return new ValidateResult(false, "user " + user.getUsername() + " and friend " + friend.getUsername() + " are not usernames");
-            }
+        // make sure it exists (either direction)
+        Friendship currentFriendship;
+        // check Friendship from user to friend
+        if (friendRepo.existsFriendshipByUserAndFriend(user, friend)) {
+            log.trace("removeFriend: user {} is friends with friend {}", userUsername, friendUsername);
+            currentFriendship = friendRepo.findByUserAndFriend(user, friend);
+        } else if (friendRepo.existsFriendshipByUserAndFriend(friend, user)) {
+            log.trace("removeFriend: friend {} is friends with user {}", friendUsername, friendUsername);
+            currentFriendship = friendRepo.findByUserAndFriend(friend, user);
+        } else {
+            log.warn("removeFriend: user {} and friend {} are not friends", userUsername, friendUsername);
+            return new ValidateResult(false, "user and friend are not friends");
         }
-
-
+        friendRepo.delete(currentFriendship);
         return new ValidateResult(false, "false for now");
     }
 
@@ -341,20 +342,24 @@ public class FriendServiceImpl implements FriendService {
      * @param username - the username to check against the database
      * @return true if the username is valid, false if not (not found, more than 1 user with that username, and any errors)
      */
-    private boolean isValidUsername(String username) {
+    private boolean isValidExistingUsername(String username) {
         try {
             List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
+            // make sure the user exists in the repo
             if (foundUsers == null || foundUsers.isEmpty()) {
                 log.warn("validateUsername: no users found for username {}", username);
                 return false;
             }
+            // make sure that only 1 user with the username
             if (foundUsers.size() > 1) {
                 log.warn("validateUsername: more than one user found for username {}", username);
                 return false;
             }
+            // should be 1 existing user with the username
+            log.trace("validateUsername: only {} User found with username {}", foundUsers.size(), username);
             return true;
         } catch (Exception e) {
-            log.warn("validateUsername: error while validating username {}", username);
+            log.error("validateUsername: error while validating username {} - {}", username, e.getStackTrace());
             return false;
         }
     }
