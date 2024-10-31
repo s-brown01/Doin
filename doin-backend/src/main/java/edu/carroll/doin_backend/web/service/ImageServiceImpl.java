@@ -6,8 +6,11 @@ import edu.carroll.doin_backend.web.repository.ImageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -20,11 +23,15 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void save(Image image) {
-        image.setCreatedAt(LocalDateTime.now());
-        logger.info("Saving new image with details: {}", image);
-        imageRepository.save(image);
+    public Image save(MultipartFile file) throws IOException {
+        Image img = new Image();
+        img.setName(file.getOriginalFilename());
+        img.setData(Base64.getEncoder().encodeToString(file.getBytes()));
+        img.setCreatedAt(LocalDateTime.now());
+        logger.info("Saving new image with details: {}", img);
+        Image image = imageRepository.save(img);
         logger.info("Image saved successfully with ID: {}", image.getId());
+        return image;
     }
 
     @Override

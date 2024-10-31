@@ -1,6 +1,9 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.model.Image;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * The {@code ImageService} interface provides methods for managing image entities in the application.
@@ -13,7 +16,7 @@ public interface ImageService {
      *
      * @param image the {@link Image} object to be saved.
      */
-    void save(Image image);
+    Image save(MultipartFile image) throws IOException;
 
     /**
      * Retrieves an image entity by its unique identifier.

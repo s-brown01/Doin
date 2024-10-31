@@ -44,14 +44,9 @@ public class ImageController {
      * @throws IOException if an I/O error occurs during file processing
      */
     @PostMapping()
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        Image img = new Image();
-        img.setName(file.getOriginalFilename());
-        img.setData(Base64.getEncoder().encodeToString(file.getBytes()));
-
-        imageService.save(img);
-
-        return ResponseEntity.ok("Image uploaded successfully!");
+    public ResponseEntity<Long> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+        Image image = imageService.save(file);
+        return ResponseEntity.ok(image.getId());
     }
 
     /**
