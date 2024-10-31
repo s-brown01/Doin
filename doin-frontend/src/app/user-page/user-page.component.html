@@ -5,6 +5,7 @@
         <a [routerLink]="['/user', user.id]" class="username-link">
             <span class="username">{{ user.username }}</span>
           </a>      </div>
+          <app-image-upload-modal [titile]='buttonTitle'></app-image-upload-modal>
     </div>
     <div class="events-container">
         <h3>{{user.username}}'s events:</h3>

@@ -13,6 +13,7 @@ import { EventService } from '../services/event.service';
 export class UserPageComponent {
   user: UserDTO | null = null; 
   events: EventDTO[] = [];
+  buttonTitle: string = 'Chanage Profile Pic'
 
   constructor(private userService: UserService, private route: ActivatedRoute, private eventService: EventService) {
   }
