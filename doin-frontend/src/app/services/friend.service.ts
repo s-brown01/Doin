@@ -14,8 +14,7 @@ export class FriendService {
   constructor(private http: HttpClient, private apiService : ApiService, private authService: AuthService) { }
 
   getFriendsOfFriends(): Observable<FriendshipDto[]> {
-    const headers = this.getHeaders();
-    return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends", { headers });
+    return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends");
   }
 
   getUserByUsername(otherUsername: string): Observable<FriendshipDto[]> {
@@ -23,8 +22,7 @@ export class FriendService {
       console.warn("OtherUsername is the same as current user's username");
       return of([]);
     }
-    const headers = this.getHeaders();
-    return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/${otherUsername}`, { headers }).pipe(
+    return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/${otherUsername}`).pipe(
       catchError(error => {
         console.error("Error getting username " + otherUsername + ": " + error.message);
         return of([]);
@@ -33,8 +31,7 @@ export class FriendService {
   }
 
   getFriendRequests(): Observable<FriendshipDto[]> {
-    const headers = this.getHeaders();
-    return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/friend-requests`, { headers }).pipe(
+    return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/friend-requests`).pipe(
       catchError(error => {
         console.error("Error when getting friend requests: " + error.message);
         return of([]);
@@ -43,23 +40,16 @@ export class FriendService {
   }
 
   addFriend(friend : FriendshipDto): Observable<any>{
-    const headers = this.getHeaders();
-    return this.apiService.post(`friends/add-friend`, friend, headers );
+    return this.apiService.post(`friends/add/${friend.username}`, friend );
   }
 
   confirmFriend(friend : FriendshipDto): Observable<any> {
     // const headers = this.getHeaders();
-    // return this.apiService.post("confirm-friend", friend, headers);
+    // return this.apiService.post(`confirm/${friend.username}`, friend, headers);
     return this.addFriend(friend);
   }
 
   removeFriend(friend : FriendshipDto): Observable<any> {
-    const headers = this.getHeaders();
-    return this.apiService.post("friends/remove-friend", friend, headers);
-  }
-
-  private getHeaders(): HttpHeaders{
-    const username = this.authService.getCurrentUser().username;
-    return new HttpHeaders().set('Username', username);
+    return this.apiService.delete(`friends/remove/${friend.username}`);
   }
 }
