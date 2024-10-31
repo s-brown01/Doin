@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller for managing events.
@@ -58,8 +59,12 @@ public class EventController {
      * @return the {@link EventDTO} representing the requested event
      */
     @GetMapping("/{id}")
-    public EventDTO getById(@PathVariable Integer id) {
-        return eventService.getById(id);
+    public ResponseEntity<EventDTO> getById(@PathVariable Integer id) {
+        EventDTO event = eventService.getById(id);
+        if(event == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(event);
     }
 
     /**
@@ -102,18 +107,5 @@ public class EventController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         eventService.delete(id);
-    }
-
-    /**
-     * Updates an existing event.
-     * <p>
-     * This endpoint accepts an {@link EventDTO} and updates the corresponding event in the system.
-     * </p>
-     *
-     * @param event the event data to update
-     */
-    @PutMapping
-    public void update(@RequestBody EventDTO event) {
-        eventService.update(event);
     }
 }
