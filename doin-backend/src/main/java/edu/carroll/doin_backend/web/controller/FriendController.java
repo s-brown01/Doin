@@ -3,6 +3,7 @@ package edu.carroll.doin_backend.web.controller;
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.dto.ValidateResult;
+import edu.carroll.doin_backend.web.security.TokenService;
 import edu.carroll.doin_backend.web.service.FriendService;
 import edu.carroll.doin_backend.web.service.FriendServiceImpl;
 import org.slf4j.Logger;
@@ -21,21 +22,25 @@ public class FriendController {
 
     private final FriendService friendService;
 
-    public FriendController(FriendService friendService) {
+    private final TokenService tokenService;
+
+    public FriendController(FriendService friendService, TokenService tokenService) {
         this.friendService = friendService;
+        this.tokenService = tokenService;
     }
 
     @GetMapping()
-    public ResponseEntity<Set<FriendshipDTO>> getFriendsOfFriends(@RequestHeader("Username") String username) {
-        if (username == null || username.isEmpty()) {
-            log.error("getFriendsOfFriends: Username is null or empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+    public ResponseEntity<Set<FriendshipDTO>> getFriendsOfFriends(@RequestHeader("Authorization") String authHeader) {
+        log.trace("getFriendsOfFriends: validating authHeader, extracting jwtToken and username");
+        ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
+        if (!tokenResult.isValid()) {
+            log.warn("getFriendsOfFriends: invalid jwtToken or authHeader");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
-        log.info("FriendController: starting to get Friends-of-Friends for user: {}", username);
-        // validate the username
-        if (!isValidUsername(username)) {
-            log.error("getFriendsOfFriends: - Invalid username {}", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        final String username = tokenResult.getMessage();
+        if (!validateUsername(username)) {
+            log.warn("getFriendsOfFriends: invalid username");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
         log.trace("getFriendsOfFriends: username {} validated", username);
         Set<FriendshipDTO> friends = friendService.getFriendsOfFriends(username);
@@ -44,26 +49,24 @@ public class FriendController {
     }
 
     @GetMapping("/{otherUsername}")
-    public ResponseEntity<Set<FriendshipDTO>> getUserByUsername(@RequestHeader("Username") String userUsername, @PathVariable String otherUsername) {
-        if (userUsername == null ||
-                userUsername.isEmpty() ||
-                otherUsername == null ||
-                otherUsername.isEmpty()) {
-            log.error("getUserByUsername: - Invalid username {}", userUsername);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+    public ResponseEntity<Set<FriendshipDTO>> getUserByUsername(@RequestHeader("Authorization") String authHeader, @PathVariable String otherUsername) {
+        log.trace("getUserByUsername: validating authHeader, extracting jwtToken and username");
+        ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
+        if (!tokenResult.isValid()) {
+            log.warn("getUserByUsername: invalid jwtToken or authHeader");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
-        log.info("FriendController: starting to get friend with username: {} for user {}", otherUsername, userUsername);
-        // validate the user username
-        if (!isValidUsername(userUsername)) {
-            log.error("getUserByUsername: - Invalid user username {}", userUsername);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        final String userUsername = tokenResult.getMessage();
+        // validating user username
+        if (!validateUsername(userUsername)) {
+            log.warn("getUserByUsername: invalid user username {}", userUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
         log.trace("getUserByUsername: username {} validated", userUsername);
-
         // validate the friend username
-        if (!isValidUsername(otherUsername)) {
+        if (!validateUsername(otherUsername)) {
             log.warn("getUserByUsername: - Invalid friend username {}", otherUsername);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
         log.trace("getUserByUsername: username {} validated", otherUsername);
         Set<FriendshipDTO> newFriend = friendService.getUser(userUsername, otherUsername);
@@ -72,138 +75,175 @@ public class FriendController {
     }
 
     @GetMapping
-    public ResponseEntity<Set<FriendshipDTO>> getFriends(@RequestHeader("Username") String username) {
-        if (username == null || username.isEmpty()) {
-            log.error("getFriends: Username is null or empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+    public ResponseEntity<Set<FriendshipDTO>> getFriends(@RequestHeader("Authorization") String authHeader) {
+        log.trace("getFriends: validating authHeader, extracting jwtToken and username");
+        ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
+        if (!tokenResult.isValid()) {
+            log.warn("getFriends: invalid jwtToken or authHeader");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
-        log.info("getFriends: starting to get Friends for user: {}", username);
-        if (!isValidUsername(username)) {
-            log.error("getFriends: - Invalid username {}", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        final String userUsername = tokenResult.getMessage();
+        if (!validateUsername(userUsername)) {
+            log.warn("getFriends: invalid user username {}", userUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
-        log.trace("getFriends: username {} validated", username);
-        Set<FriendshipDTO> friends = friendService.getFriends(username);
-        log.trace("getFriends: username {} returned {} friends", username, friends.size());
+        log.trace("getFriends: username {} validated", userUsername);
+        Set<FriendshipDTO> friends = friendService.getFriends(userUsername);
+        log.trace("getFriends: username {} returned {} friends", userUsername, friends.size());
         return ResponseEntity.ok(friends);
     }
 
     @GetMapping("/friend-requests")
-    public ResponseEntity<Set<FriendshipDTO>> getFriendRequests(@RequestHeader("Username") String username) {
-        if (username == null || username.isEmpty()) {
-            log.error("getFriendRequests: - Invalid username {}", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+    public ResponseEntity<Set<FriendshipDTO>> getFriendRequests(@RequestHeader("Authorization") String authHeader) {
+        log.trace("getFriendRequests: validating authHeader, extracting jwtToken and username");
+        ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
+        if (!tokenResult.isValid()) {
+            log.warn("getFriendRequests: invalid jwtToken or authHeader");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
-        log.info("FriendController: starting to get friend requests for user: {}", username);
-        if (!isValidUsername(username)) {
-            log.error("getFriendRequests: - Invalid username {}", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
+        final String userUsername = tokenResult.getMessage();
+        if (!validateUsername(userUsername)) {
+            log.warn("getFriendRequests: invalid user username {}", userUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
-        log.trace("getFriendRequests: username {} validated", username);
-        Set<FriendshipDTO> requests = friendService.getFriendRequests(username);
-        log.info("getFriendRequests: username {} has {} requests", username, requests.size());
+        log.trace("getFriendRequests: username {} validated", userUsername);
+        Set<FriendshipDTO> requests = friendService.getFriendRequests(userUsername);
+        log.info("getFriendRequests: username {} has {} requests", userUsername, requests.size());
         return ResponseEntity.ok(requests);
     }
 
     @PostMapping("/add-friend")
-    public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username) {
-        if (friendDTO == null ||
-                username == null ||
-                username.isEmpty()) {
-            log.error("addFriend: - Invalid user username {} or invalid friendDTO", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+    public ResponseEntity<Boolean> addFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Authorization") String authHeader) {
+        log.trace("addFriend: validating authHeader, extracting jwtToken and username");
+        if (friendDTO == null) {
+            log.error("addFriend: - Invalid friendDTO");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
-        log.info("FriendController: username {} trying to friend {}", username, friendDTO.getUsername());
-        // validate the username
-        if (!isValidUsername(username)) {
-            log.error("addFriend: - Invalid user username {}", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
+        if (!tokenResult.isValid()) {
+            log.warn("addFriend: invalid jwtToken or authHeader");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
+        final String userUsername = tokenResult.getMessage();
+        if (!validateUsername(userUsername)) {
+            log.warn("addFriend: invalid user username {}", userUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+        }
+        log.trace("addFriend: user username {} validated", userUsername);
         // validate the friendUsername
-        if (!isValidUsername(friendDTO.getUsername())) {
-            log.error("addFriend: - Invalid friend username {}", friendDTO.getUsername());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        if (!validateUsername(friendDTO.getUsername())) {
+            log.error("addFriend: Invalid friend username {}", friendDTO.getUsername());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
-
-        log.trace("addFriend: user username {} and friend username {} validated", username, friendDTO.getUsername());
-        ValidateResult result = friendService.addFriend(username, friendDTO.getUsername());
+        log.trace("addFriend: friend username {} validated", friendDTO.getUsername());
+        ValidateResult result = friendService.addFriend(userUsername, friendDTO.getUsername());
         if (result.isValid()) {
-            log.trace("addFriend: adding friend {} was successful for user {}", friendDTO.getUsername(), username);
+            log.trace("addFriend: adding friend {} was successful for user {}", friendDTO.getUsername(), userUsername);
             return ResponseEntity.ok(true);
         } else {
-            log.debug("addFriend: adding friend {} was unsuccessful for user {}", friendDTO.getUsername(), username);
+            log.debug("addFriend: adding friend {} was unsuccessful for user {}", friendDTO.getUsername(), userUsername);
             return ResponseEntity.ok(false);
         }
 
     }
 
     @PostMapping("/confirm-friend")
-    public ResponseEntity<Boolean> confirmFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username){
-        if (friendDTO == null ||
-                username == null ||
-                username.isEmpty()) {
-            log.error("confirmFriend: - Invalid user username {} or invalid friendDTO", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+    public ResponseEntity<Boolean> confirmFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Authorization") String authHeader){
+        if (friendDTO == null) {
+            log.error("confirmFriend: - Invalid friendDTO");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
-        log.info("FriendController: starting to confirm friends between friend {} and user: {}", friendDTO.getUsername(), username);
-        // validate the username
-        if (!isValidUsername(username)) {
-            log.error("confirmFriend: - Invalid user username {}", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
+        if (!tokenResult.isValid()) {
+            log.warn("confirmFriend: invalid jwtToken or authHeader");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
+        final String userUsername = tokenResult.getMessage();
+        if (!validateUsername(userUsername)) {
+            log.warn("confirmFriend: invalid user username {}", userUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+        }
+        log.trace("confirmFriend: user username {} validated", userUsername);
         // validate the friendUsername
-        if (!isValidUsername(friendDTO.getUsername())) {
+        if (!validateUsername(friendDTO.getUsername())) {
             log.error("confirmFriend: - Invalid friend username {}", friendDTO.getUsername());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
+        log.trace("confirmFriend: friend username {} validated", friendDTO.getUsername());
 
-        ValidateResult result = friendService.confirmFriend(username, friendDTO.getUsername());
+        ValidateResult result = friendService.confirmFriend(userUsername, friendDTO.getUsername());
         if (result.isValid()) {
-            log.debug("confirmFriend: confirming friend {} was unsuccessful for user {}", friendDTO.getUsername(), username);
+            log.debug("confirmFriend: confirming friend {} was unsuccessful for user {}", friendDTO.getUsername(), userUsername);
             return ResponseEntity.ok(true);
         }
-        log.trace("confirmFriend: confirming friend {} was successful for user {}", friendDTO.getUsername(), username);
+        log.trace("confirmFriend: confirming friend {} was successful for user {}", friendDTO.getUsername(), userUsername);
         return ResponseEntity.ok(false);
     }
 
     @PostMapping("/remove-friend")
-    public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Username") String username) {
-        if (friendDTO == null ||
-                username == null ||
-                username.isEmpty()) {
-            log.error("removeFriend: - Invalid user username {} or invalid friendDTO", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+    public ResponseEntity<Boolean> removeFriend(@RequestBody UserDTO friendDTO, @RequestHeader("Authorization") String authHeader) {
+        if (friendDTO == null) {
+            log.error("removeFriend: - Invalid user username {} or invalid friendDTO", authHeader);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
-        log.info("removeFriend: starting to remove friendship between friend {} and user: {}", friendDTO.getUsername(), username);
-        // validate the username
-        if (!isValidUsername(username)) {
-            log.error("removeFriend: - Invalid user username {}", username);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
+        if (!tokenResult.isValid()) {
+            log.warn("removeFriend: invalid jwtToken or authHeader");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
-        // validate the friendUsername
-        if (!isValidUsername(friendDTO.getUsername())) {
+        final String userUsername = tokenResult.getMessage();
+        if (!validateUsername(userUsername)) {
+            log.warn("removeFriend: invalid user username {}", userUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+        }
+        log.trace("removeFriend: user username {} validated", userUsername);
+        if (!validateUsername(friendDTO.getUsername())) {
             log.error("removeFriend: - Invalid friend username {}", friendDTO.getUsername());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
+        log.trace("removeFriend: friend username {} validated", friendDTO.getUsername());
 
-        ValidateResult result = friendService.removeFriend(username, friendDTO.getUsername());
+        ValidateResult result = friendService.removeFriend(userUsername, friendDTO.getUsername());
         if (result.isValid()) {
-            log.debug("removeFriend: removing friend {} was unsuccessful for user {}", friendDTO.getUsername(), username);
+            log.debug("removeFriend: removing friend {} was unsuccessful for user {}", friendDTO.getUsername(), userUsername);
             return ResponseEntity.ok(true);
         }
-        log.trace("removeFriend: removing friend {} was successful for user {}", friendDTO.getUsername(), username);
+        log.trace("removeFriend: removing friend {} was successful for user {}", friendDTO.getUsername(), userUsername);
         return ResponseEntity.ok(false);
     }
 
-    private boolean isValidUsername(String username) {
+    private ValidateResult validateTokenAndGetUsername(String header) {
+        if (header == null || header.isBlank() ||  !header.startsWith("Bearer ")) {
+            log.error("getFriendsOfFriends: Missing or invalid Authorization header");
+            return new ValidateResult(false, null);
+        }
+        // remove "Bearer " from header
+        final String jwtToken = header.substring(7);
+        log.trace("validateTokenAndGetUsername: retrieved jwt token from header");
+        if (!tokenService.validateToken(jwtToken)) {
+            log.error("validateTokenAndGetUsername: - invalid jwtToken");
+            return new ValidateResult(false, null);
+        }
+        final String username = tokenService.getUsername(jwtToken);
+        if (!validateUsername(username)) {
+            log.error("validateTokenAndGetUsername: - invalid username");
+            return new ValidateResult(false, null);
+        }
+        log.info("validateTokenAndGetUsername: username {} validated", username);
+        return new ValidateResult(true, username);
+    }
+
+    private boolean validateUsername(String username) {
         if (username == null || username.isBlank()) {
+            log.error("validateTokenAndGetUsername: - null or empty username");
             return false;
         }
         // make sure that the username only contains characters from the regex sequence
         if (!username.matches("^[a-zA-Z0-9_]+$")) {
+            log.warn("validateTokenAndGetUsername: - username {} has unexpected characters", username);
             return false;
         }
         return true;
-    }
 
+    }
 }
