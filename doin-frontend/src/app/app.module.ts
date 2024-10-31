@@ -27,6 +27,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AppRoutingModule } from './app.routes';
 import { UserPageComponent } from './user-page/user-page.component';
+import { ImageUploadModalComponent } from './app-image-upload-modal/app-image-upload-modal.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { UserPageComponent } from './user-page/user-page.component';
     AddPostPopupComponent,
     StoryPopupComponent,
     StoryBarComponent,
-    UserPageComponent
+    UserPageComponent,
+    ImageUploadModalComponent
   ],
   imports: [
     BrowserModule,
