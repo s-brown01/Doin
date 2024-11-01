@@ -2,18 +2,9 @@ package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
-import edu.carroll.doin_backend.web.dto.UserDTO;
-import edu.carroll.doin_backend.web.enums.FriendshipStatus;
-import edu.carroll.doin_backend.web.model.Friendship;
-import edu.carroll.doin_backend.web.model.SecurityQuestion;
-import edu.carroll.doin_backend.web.model.User;
-import edu.carroll.doin_backend.web.repository.FriendRepository;
-import edu.carroll.doin_backend.web.repository.LoginRepository;
-import edu.carroll.doin_backend.web.repository.SecurityQuestionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +18,7 @@ public class FriendServiceTest {
     private static final String username1 = "User1_Username";
     private static final String username2 = "User2_Username";
     private static final String username3 = "User3_Username";
+    private static final String securityQuestion = "pet";
 
     @Autowired
     private FriendService friendService;
@@ -36,34 +28,62 @@ public class FriendServiceTest {
     @Autowired
     private SecurityQuestionService securityQuestionService;
 
+
     @BeforeEach
     public void loadTables() {
+        loadSecurityQuestions();
         createNewUser(username1);
         createNewUser(username2);
         createNewUser(username3);
     }
 
+    private void loadSecurityQuestions() {
+        securityQuestionService.addSecurityQuestion(securityQuestion);
+    }
+
     private void createNewUser(String username) {
-        RegisterDTO data = new RegisterDTO(username, "password", "pet", "answer");
+        RegisterDTO data = new RegisterDTO(username, "password", securityQuestion, "answer");
         userService.createNewUser(data);
     }
 
     @Test
-    public void getFriendsOfFriendsTest() {
+    public void getFriendsOfFriendsTest_Normal() {
         // add the friendships into the repository (assuming they work)
-        // user1 -> user2 - user3
+        // user1 -> user2
         friendService.addFriend(username1, username2);
+        friendService.confirmFriend(username2, username1);
+        // user2 -> user3
         friendService.addFriend(username2, username3);
+        friendService.confirmFriend(username3, username2);
 
         // get the friends of friends for user 1 - should be User 3
-        FriendshipDTO[] friendsOfUser1 = friendService.getFriendsOfFriends(username1).toArray(new FriendshipDTO[0]);
-        FriendshipDTO[] friendsOfUser3 = friendService.getFriendsOfFriends(username3).toArray(new FriendshipDTO[0]);
+        Set<FriendshipDTO> fofUser1 = friendService.getFriendsOfFriends(username1);
+        Set<FriendshipDTO> fofUser3 = friendService.getFriendsOfFriends(username3);
 
-        assertEquals(1, friendsOfUser1.length, "User 1 should only have 1 friend of friend");
-        assertEquals(1, friendsOfUser3.length, "User 3 should only have 1 friend of friend");
+        assertEquals(1, fofUser1.size(), "User1 should only have 1 friend of friend");
+        assertEquals(1, fofUser3.size(), "User3 should only have 1 friend of friend");
 
-        assertEquals(username3, friendsOfUser1[0].getUsername(), "User 3 should be User1's mutual");
-        assertEquals(username1, friendsOfUser3[0].getUsername(), "User 1 should be User3's mutual");
+        boolean fofUser1ContainsUser3 = false;
+        // make sure that the fof of user1 contains user3
+        for (FriendshipDTO friendship : fofUser1) {
+            // if the username is in there, it is good enough
+            if (friendship.getUsername().equals(username3)) {
+                fofUser1ContainsUser3 = true;
+                break;
+            }
+        }
+        boolean fofUser3ContainsUser1 = false;
+        // make sure that the fof of user3 contains user1
+        for (FriendshipDTO friendship : fofUser3) {
+            System.out.println("FOF3 " + friendship);
+            // if the username is in there, it is good enough
+            if (friendship.getUsername().equals(username1)) {
+                fofUser3ContainsUser1 = true;
+                break;
+            }
+        }
+        assertTrue(fofUser1ContainsUser3, "User3 should be in User1's friends of friends");
+        assertTrue(fofUser3ContainsUser1, "User1 should be in User3's friends of friends");
     }
 
     @Test
@@ -133,12 +153,20 @@ public class FriendServiceTest {
     }
 
     @Test
-    public void blockUserTest() {
-
+    public void confirmFriendTest_Success() {
+        assertTrue(friendService.confirmFriend(username1, username2).isValid(), "User1 should be able to confirm User2");
+        assertTrue(friendService.confirmFriend(username2, username1).isValid(), "User1 should be able to confirm User2");
     }
 
     @Test
-    public void unblockUserTest() {
+    public void confirmFriendTest_Invalid() {
+        assertFalse(friendService.confirmFriend(username1, username1).isValid(), "User1 should not be able to confirm themselves");
+    }
 
+    @Test
+    public void confirmFriendTest_Null() {
+        assertFalse(friendService.confirmFriend(null, null).isValid(), "Null users should be able to confirm themselves");
+        assertFalse(friendService.confirmFriend(username1, null).isValid(), "User1 should not be able to confirm themselves");
+        assertFalse(friendService.confirmFriend(null, username1).isValid(), "Null users should be able to confirm User1");
     }
 }
