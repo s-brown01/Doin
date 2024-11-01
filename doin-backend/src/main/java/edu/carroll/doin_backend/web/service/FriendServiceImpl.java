@@ -159,7 +159,9 @@ public class FriendServiceImpl implements FriendService {
         final User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
         // find all friendships both ways (currentUser = Friend and = User)
         log.trace("getFriends: getting friends for user {}", userUsername);
+        // user -> friend
         Set<Friendship> foundFriends = friendRepo.findByFriendAndStatus(currentUser, FriendshipStatus.CONFIRMED);
+        // friend -> user
         foundFriends.addAll(friendRepo.findByUserAndStatus(currentUser, FriendshipStatus.CONFIRMED));
         log.trace("getFriends: found {} friends for user {}", foundFriends.size(), userUsername);
         // convert Friendships into FriendshipDTO using the helper method
@@ -384,10 +386,19 @@ public class FriendServiceImpl implements FriendService {
     private Set<FriendshipDTO> convertFriendshipIntoDTOS(User user, Set<Friendship> friends) {
         Set<FriendshipDTO> friendDTOs = new HashSet<>();
         for (Friendship friendship : friends) {
-            User friend = friendship.getUser();
-            FriendshipStatus status = statusBetween(friend, user);
-            Long profilePicId = (friend.getProfilePicture() == null) ? 4L : friend.getProfilePicture().getId();
-            friendDTOs.add(new FriendshipDTO(friend.getId(), friend.getUsername(), status, imageService.get(profilePicId)));
+            User friend;
+            // is user = Friendship's 'friend' or are they the 'user'
+            if (friendship.getFriend().equals(user)) {
+                // the 'user' is NOT the current user, the current user is the 'friend'
+                friend = friendship.getUser();
+                FriendshipStatus status = statusBetween(friend, user);
+                friendDTOs.add(new FriendshipDTO(friend.getId(), friend.getUsername(), status, friend.getProfilePicture()));
+            } else {
+                // the 'user' is the 'user', friend is 'friend'
+                friend = friendship.getFriend();
+                FriendshipStatus status = statusBetween(friend, user);
+                friendDTOs.add(new FriendshipDTO(friend.getId(), friend.getUsername(), status, friend.getProfilePicture()));
+            }
         }
         return friendDTOs;
     }
