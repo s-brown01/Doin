@@ -23,10 +23,9 @@
     </rollingPolicy>
   </appender>
 
-  <!-- level = "TRACE" is TEMPORARY. This should be changed once logging is more verbose  -->
   <root level = "INFO">
     <appender-ref ref = "Console" />
     <!-- Comment out logging to LogFile for now... -->
-    <!-- <appender-ref ref = "LogFile" /> -->
+     <appender-ref ref = "LogFile" />
   </root>
 </configuration>
