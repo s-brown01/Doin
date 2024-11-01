@@ -73,26 +73,30 @@ public class FriendServiceImpl implements FriendService {
         // get the friends of friends
         log.trace("getFriendsOfFriends: getting friends from friendsRepository for username {}", userUsername);
         try {
-            Set<FriendshipDTO> friends = friendRepo.findFriendsOfFriends(initialUser);
-            for (FriendshipDTO friend : friends) {
-                // only if the image is null replace it
-                if (friend.getProfilePic() == null) {
-                    friend.setProfilePic(imageService.get(4L));
+            Set<FriendshipDTO> immediateFriends = getFriends(userUsername);
+            Set<FriendshipDTO> mutualFriends = new HashSet<>();
+            for (FriendshipDTO friend : immediateFriends) {
+                Set<FriendshipDTO> friendFriends = getFriends(friend.getUsername());
+                for (FriendshipDTO friendFriend : friendFriends) {
+                    friendFriend.setStatus(FriendshipStatus.NOTADDED);
+                    mutualFriends.add(friendFriend);
                 }
             }
-            log.trace("getFriendsOfFriends: found {} friends for username {}", friends.size(), userUsername);
+            mutualFriends.removeIf(friend -> friend.getUsername().equalsIgnoreCase(userUsername));
+            log.info("getFriendsOfFriends: found {} friends for username {}", mutualFriends.size(), userUsername);
 
+                    /*
             // if less than 5 friends of friends were found, populate the rest with random users
             // > 5 is ok, but make sure to have some suggestions
-            if (friends.size() < 5) {
-                log.trace("getFriendsOfFriends: no friends-of-friends found for username {}, fetching random users", userUsername);
-                Set<FriendshipDTO> randomUsers = getRandomUsers(initialUser,5 - friends.size());
+            if (mutualFriends.size() < 5) {
+                log.info("getFriendsOfFriends: {} friends-of-friends found for username {}, fetching random users", mutualFriends.size(), userUsername);
+                Set<FriendshipDTO> randomUsers = getRandomUsers(initialUser,5 - mutualFriends.size());
                 // adding randomUsers to the friends Set
                 friends.addAll(randomUsers);
-            }
+            } */
 
-            log.trace("FriendController: returning friends for user: {}", userUsername);
-            return friends;
+            log.info("FriendController: returning {} mutual friends for user: {}", mutualFriends.size(), userUsername);
+            return mutualFriends;
         } catch (Exception e) {
             // if there are any Exceptions, return an empty Set
             log.warn("getFriendsOfFriends: error while getting friends of friends for username {}", userUsername);
@@ -332,13 +336,8 @@ public class FriendServiceImpl implements FriendService {
                 break;
             }
             // if the randomUser is not already a friend, add them
-            if (!allFriends.contains(randomUser) &&
-                    !randomUser.equals(user)) {
-                if (randomUser.getProfilePicture() == null) {
-                    randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
-                } else {
-                    randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
-                }
+            if (!allFriends.contains(randomUser) && !randomUser.equals(user)) {
+                randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
             }
         }
 
