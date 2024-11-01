@@ -31,18 +31,10 @@ public class FriendServiceTest {
     @Autowired
     private FriendService friendService;
 
-//    @Autowired
-//    private LoginRepository loginRepository;
-
     @Autowired
     private UserService userService;
     @Autowired
     private SecurityQuestionService securityQuestionService;
-
-//    @Autowired
-//    private SecurityQuestionRepository securityQuestionRepo;
-//    @Autowired
-//    private FriendRepository friendRepository;
 
     @BeforeEach
     public void loadTables() {
@@ -90,9 +82,6 @@ public class FriendServiceTest {
         // user3 confirms
         assertTrue(friendService.confirmFriend(username3, username1).isValid(), "User1 should be able to add User3 as a friend");
         // get the Friendships for each user
-        for (FriendshipDTO friend : friendService.getFriends(username1)){
-            System.out.println("\n\n" + friend + "\n\n");
-        }
         Set<FriendshipDTO> user1Friends = friendService.getFriends(username1);
         Set<FriendshipDTO> user2Friends = friendService.getFriends(username2);
         Set<FriendshipDTO> user3Friends = friendService.getFriends(username3);
@@ -118,7 +107,7 @@ public class FriendServiceTest {
         // make sure they are appropriate number of friends post-tests
         assertEquals(2, user1Friends.size(), "User1 should still only have 1 friend");
         assertEquals(1, user2Friends.size(), "User2 should still only have 1 friend");
-        assertEquals(0, user3Friends.size(), "User3 should still have 0 friends");
+        assertEquals(1, user3Friends.size(), "User3 should still only have 1 friends");
 
     }
 
