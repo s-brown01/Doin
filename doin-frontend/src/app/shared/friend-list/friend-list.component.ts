@@ -18,7 +18,19 @@ export class FriendListComponent {
 
   removeFriend() {
     console.log("Removing friend: " + this.friend.username);
-    this.response = `Rejected '${this.friend.username}'`
+    this.response = `Removed '${this.friend.username}'`
+
+    this.friendService.removeFriend(this.friend).subscribe(
+      response => {
+        if (response) {
+          this.response = `Removed '${this.friend.username}'`
+        } else {
+          this.response = `Unable to remove '${this.friend.username}'`;
+        }
+      }, error => {
+        this.response = `:( Error occurred while removing '${this.friend.username}'`;
+      }
+    )
   }
 
   confirmFriend() {

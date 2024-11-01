@@ -34,7 +34,7 @@ export class FriendsComponent {
     this.searchErrorMessage = null;
     this.friendService.getUserByUsername(this.searchInput).subscribe(data => {
       this.searchResults = data;
-
+      this.getFriendRequests();
       if (this.searchResults.length == 0){
         this.searchErrorMessage = "No users found with username:   '" + this.searchInput + "'";
       } else {
