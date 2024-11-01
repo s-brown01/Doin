@@ -1,7 +1,7 @@
 <div class="wrapper">
   <div class="profile-wrapper">
     <div class="profile-img-wrapper">
-      <a [routerLink]="['/user', user?.id]" class="username-link">
+      <a (click)="goToProfile()" class="username-link">
         <app-image
           class="profile-img"
           [borderRadius]="'50%'"
@@ -12,22 +12,6 @@
     <a href="login" (click)="logout()">Logout</a>
   </div>
   <div class="notifications">
-    <ul>
-      <li>
-        <img
-          src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
-        />Nate sent you a <a href="#">&nbsp;friend request</a> - 4h
-      </li>
-      <li>
-        <img
-          src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
-        />Endrew joined an <a href="#">&nbsp;event</a> - 4h
-      </li>
-      <li>
-        <img
-          src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
-        />Jack planned an <a href="#">&nbsp;event</a> - 4h
-      </li>
-    </ul>
+
   </div>
 </div>
