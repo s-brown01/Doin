@@ -134,10 +134,10 @@ public class FriendController {
         log.trace("addFriend: friend username {} validated", friendUsername);
         ValidateResult result = friendService.addFriend(userUsername, friendUsername);
         if (result.isValid()) {
-            log.trace("addFriend: adding friend {} was successful for user {}", friendUsername, userUsername);
+            log.info("addFriend: adding friend {} was successful for user {}", friendUsername, userUsername);
             return ResponseEntity.ok(true);
         } else {
-            log.debug("addFriend: adding friend {} was unsuccessful for user {} because {}", friendUsername, userUsername, result.getMessage());
+            log.info("addFriend: adding friend {} was unsuccessful for user {} because {}", friendUsername, userUsername, result.getMessage());
             return ResponseEntity.ok(false);
         }
 
@@ -165,11 +165,11 @@ public class FriendController {
         log.trace("confirmFriend: friend username {} validated", friendUsername);
 
         ValidateResult result = friendService.confirmFriend(userUsername, friendUsername);
-        if (result.isValid()) {
-            log.debug("confirmFriend: confirming friend {} was unsuccessful for user {}", friendUsername, userUsername);
+        if (!result.isValid()) {
+            log.info("confirmFriend: confirming friend {} was unsuccessful for user {}", friendUsername, userUsername);
             return ResponseEntity.ok(true);
         }
-        log.trace("confirmFriend: confirming friend {} was successful for user {}", friendUsername, userUsername);
+        log.info("confirmFriend: confirming friend {} was successful for user {}", friendUsername, userUsername);
         return ResponseEntity.ok(false);
     }
 
@@ -193,12 +193,12 @@ public class FriendController {
         log.trace("removeFriend: friend username {} validated", friendUsername);
 
         ValidateResult result = friendService.removeFriend(userUsername, friendUsername);
-        if (result.isValid()) {
-            log.debug("removeFriend: removing friend {} was unsuccessful for user {}", friendUsername, userUsername);
-            return ResponseEntity.ok(true);
+        if (!result.isValid()) {
+            log.info("removeFriend: removing friend {} was unsuccessful for user {}", friendUsername, userUsername);
+            return ResponseEntity.ok(false);
         }
-        log.trace("removeFriend: removing friend {} was successful for user {}", friendUsername, userUsername);
-        return ResponseEntity.ok(false);
+        log.info("removeFriend: removing friend {} was successful for user {}", friendUsername, userUsername);
+        return ResponseEntity.ok(true);
     }
 
     private ValidateResult validateTokenAndGetUsername(String header) {

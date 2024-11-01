@@ -291,7 +291,7 @@ public class FriendServiceImpl implements FriendService {
             return new ValidateResult(false, "user and friend are not friends");
         }
         friendRepo.delete(currentFriendship);
-        return new ValidateResult(false, "false for now");
+        return new ValidateResult(true, "user " + userUsername + " and friend " + friendUsername + " are no longer friends");
     }
 
     @Override
