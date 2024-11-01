@@ -136,7 +136,14 @@ public class FriendServiceImpl implements FriendService {
 
         for (User friend : listFriends) {
             log.trace("getUser: adding friend {} to found users for user {}", friend.getId(), userUsername);
-            foundUsers.add(new FriendshipDTO(friend.getId(), friend.getUsername(), statusBetween(currentUser, friend), friend.getProfilePicture()));
+            FriendshipStatus currentStatus;
+            // the friendship is either user -> friend, friend -> user, or NOTADDED
+            if (friendRepo.existsFriendshipByUserAndFriend(currentUser, friend)) {
+                currentStatus = statusBetween(currentUser, friend);
+            } else {
+                currentStatus = statusBetween(friend, currentUser);
+            }
+            foundUsers.add(new FriendshipDTO(friend.getId(), friend.getUsername(), currentStatus, friend.getProfilePicture()));
         }
         log.trace("getUser: found {} unique Users adding creating FriendshipDTOs and now returning the Set", foundUsers.size());
         return foundUsers;
