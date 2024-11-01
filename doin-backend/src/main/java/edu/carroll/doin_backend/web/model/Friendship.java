@@ -83,10 +83,14 @@ public class Friendship {
         Friendship that = (Friendship) o;
         // id, user, friend, and createdAt should all be the same
         return (
-                this.id.equals(that.id) &&
                 this.user.equals(that.user) &&
                 this.friend.equals(that.friend) &&
                 this.createdAt.equals(that.createdAt)
                 );
+    }
+
+    @Override
+    public String toString() {
+        return "Friendship between user " + user + " and friend " + friend + " with status " + status + ", created at " + createdAt;
     }
 }
