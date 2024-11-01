@@ -74,7 +74,7 @@ public class FriendController {
         return ResponseEntity.ok(newFriend);
     }
 
-    @GetMapping
+    @GetMapping("/get-friends")
     public ResponseEntity<Set<FriendshipDTO>> getFriends(@RequestHeader("Authorization") String authHeader) {
         log.trace("getFriends: validating authHeader, extracting jwtToken and username");
         ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
