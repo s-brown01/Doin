@@ -164,7 +164,7 @@ public class FriendController {
 
         ValidateResult result = friendService.confirmFriend(userUsername, friendUsername);
         if (result.isValid()) {
-            log.debug("confirmFriend: confirming friend {} was successful for user {}", friendDTO.getUsername(), username);
+            log.debug("confirmFriend: confirming friend {} was successful for user {}", friendUsername, userUsername);
             return ResponseEntity.ok(true);
         }
         log.info("confirmFriend: confirming friend {} was unsuccessful for user {}", friendUsername, userUsername);
