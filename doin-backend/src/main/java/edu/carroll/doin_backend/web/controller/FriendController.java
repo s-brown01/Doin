@@ -1,11 +1,9 @@
 package edu.carroll.doin_backend.web.controller;
 
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
-import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.dto.ValidateResult;
 import edu.carroll.doin_backend.web.security.TokenService;
 import edu.carroll.doin_backend.web.service.FriendService;
-import edu.carroll.doin_backend.web.service.FriendServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -38,7 +36,7 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
         final String username = tokenResult.getMessage();
-        if (!validateUsername(username)) {
+        if (!isValidUsername(username)) {
             log.warn("getFriendsOfFriends: invalid username");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
@@ -58,13 +56,13 @@ public class FriendController {
         }
         final String userUsername = tokenResult.getMessage();
         // validating user username
-        if (!validateUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("getUserByUsername: invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
         log.trace("getUserByUsername: username {} validated", userUsername);
         // validate the friend username
-        if (!validateUsername(otherUsername)) {
+        if (!isValidUsername(otherUsername)) {
             log.warn("getUserByUsername: - Invalid friend username {}", otherUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
@@ -83,7 +81,7 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
         final String userUsername = tokenResult.getMessage();
-        if (!validateUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("getFriends: invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
@@ -102,7 +100,7 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
         final String userUsername = tokenResult.getMessage();
-        if (!validateUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("getFriendRequests: invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
@@ -121,13 +119,13 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
         final String userUsername = tokenResult.getMessage();
-        if (!validateUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("addFriend: invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
         log.trace("addFriend: user username {} validated", userUsername);
         // validate the friendUsername
-        if (!validateUsername(friendUsername)) {
+        if (!isValidUsername(friendUsername)) {
             log.error("addFriend: Invalid friend username {}", friendUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
@@ -152,13 +150,13 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
         final String userUsername = tokenResult.getMessage();
-        if (!validateUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("confirmFriend: invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
         log.trace("confirmFriend: user username {} validated", userUsername);
         // validate the friendUsername
-        if (!validateUsername(friendUsername)) {
+        if (!isValidUsername(friendUsername)) {
             log.error("confirmFriend: - Invalid friend username {}", friendUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
@@ -181,12 +179,12 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
         final String userUsername = tokenResult.getMessage();
-        if (!validateUsername(userUsername)) {
+        if (!isValidUsername(userUsername)) {
             log.warn("removeFriend: invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
         log.trace("removeFriend: user username {} validated", userUsername);
-        if (!validateUsername(friendUsername)) {
+        if (!isValidUsername(friendUsername)) {
             log.error("removeFriend: - Invalid friend username {}", friendUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
@@ -214,7 +212,7 @@ public class FriendController {
             return new ValidateResult(false, null);
         }
         final String username = tokenService.getUsername(jwtToken);
-        if (!validateUsername(username)) {
+        if (!isValidUsername(username)) {
             log.error("validateTokenAndGetUsername: - invalid username");
             return new ValidateResult(false, null);
         }
@@ -222,7 +220,7 @@ public class FriendController {
         return new ValidateResult(true, username);
     }
 
-    private boolean validateUsername(String username) {
+    private boolean isValidUsername(String username) {
         if (username == null || username.isBlank()) {
             log.error("validateTokenAndGetUsername: - null or empty username");
             return false;
