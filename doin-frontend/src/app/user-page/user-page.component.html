@@ -2,12 +2,17 @@
     <div class="header">
       <div class="user-info">
         <app-image class="profile-img" [borderRadius]="'50%'" [image]="user.profilePicture"></app-image>
+        <div *ngIf="isCurrentUserPage">
+          <app-image-upload-modal [titile]='buttonTitle'></app-image-upload-modal>
+        </div>
         <a [routerLink]="['/user', user.id]" class="username-link">
             <span class="username">{{ user.username }}</span>
           </a>      </div>
     </div>
     <div class="events-container">
-        <h3>{{user.username}}'s events:</h3>
+        <h3 *ngIf="!isCurrentUserPage">{{user.username}}'s events:</h3>
+        <h3 *ngIf="isCurrentUserPage">your events:</h3>
+
         <div class="events">
             <div class="event" *ngFor="let event of events">
                 <div class="post-body">
@@ -21,14 +26,6 @@
                     <div class="footer">
                       <button class="join-button">Join</button>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="friends-container">
-        <h3>{{user.username}}'s friends:</h3>
-        <div class="friends">
-            <div class="friend">
-                <app-friend-list></app-friend-list>
             </div>
         </div>
     </div>

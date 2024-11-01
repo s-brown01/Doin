@@ -1,6 +1,7 @@
 package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.*;
+import edu.carroll.doin_backend.web.model.Image;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
@@ -9,6 +10,7 @@ import edu.carroll.doin_backend.web.security.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,9 @@ public class UserServiceImpl implements UserService {
      */
     private final PasswordService passwordService;
 
+    private final ImageService imageService;
+
+
     /**
      * a TokenService to validate tokens
      */
@@ -50,12 +55,14 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(LoginRepository loginRepo,
                            PasswordService passwordService,
                            SecurityQuestionService sqService,
-                           TokenService tokenService
+                           TokenService tokenService,
+                           ImageService imageService
     ) {
         this.loginRepo = loginRepo;
         this.passwordService = passwordService;
         this.sqService = sqService;
         this.tokenService = tokenService;
+        this.imageService = imageService;
     }
 
     /**
@@ -253,6 +260,29 @@ public class UserServiceImpl implements UserService {
         }
 
         return user.map(UserDTO::new).orElse(null);
+    }
+
+    @Override
+    public boolean updateProfilePicture(String userName, MultipartFile file) {
+        Optional<User> userOpt = loginRepo.findByUsername(userName);
+        if (userOpt.isEmpty())
+            return false;
+        User user = userOpt.get();
+        Image img;
+        try {
+            img =  imageService.save(file);
+        }
+        catch (Exception e) {
+            return false;
+        }
+        user.setProfilePicture(img);
+
+        try {
+            loginRepo.save(user);
+            return true;
+        } catch (Exception e) {
+            return false; // Handle user saving error
+        }
     }
 
     /**

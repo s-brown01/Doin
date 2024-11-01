@@ -11,9 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -39,13 +38,13 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDTO getById(Integer id) {
         logger.info("Retrieving event by ID: {}", id);
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Event with ID {} not found", id);
-                    return new ResourceNotFoundException("Event not found");
-                });
-        logger.info("Successfully retrieved event with ID: {}", id);
-        return new EventDTO(event);
+        Optional<Event> event = eventRepository.findById(id);
+        if(event.isPresent()) {
+            logger.info("Successfully retrieved event with ID: {}", id);
+            return new EventDTO(event.get());
+        }
+        logger.warn("Event not found with ID: {}", id);
+        return null;
     }
 
     @Override
@@ -69,18 +68,6 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(existing);
         logger.info("User with ID {} successfully joined event with ID {}", userId, eventId);
         return true;
-    }
-
-    @Override
-    public void update(EventDTO event) {
-        logger.info("Updating event with ID {}", event.getId());
-        Event existing = eventRepository.getById(event.getId());
-
-        existing.setDescription(event.getDescription());
-        existing.setImages(event.getImages());
-
-        eventRepository.save(existing);
-        logger.info("Successfully updated event with ID {}", event.getId());
     }
 
     @Override

@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
-import { ImageComponent } from '../image/image.component';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { UserDTO } from '../dtos/user.dto';
-import { Observable } from 'rxjs';
-import {FriendshipDto, FriendshipStatus} from "../dtos/friendship.dto";
-import {ImageDTO} from "../dtos/image.dto";
 
 @Component({
   selector: 'app-notifications-bar',
@@ -21,6 +17,13 @@ export class NotificationsBarComponent {
     this.authService.currentUser.subscribe((user: UserDTO | null) => {
       this.user = user;
     });
+  }
+  goToProfile(): void {
+    if (this.user) {
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['/user', this.user?.id]);
+      });
+    }
   }
 
   logout(){

@@ -163,11 +163,11 @@ public class FriendController {
         log.trace("confirmFriend: friend username {} validated", friendUsername);
 
         ValidateResult result = friendService.confirmFriend(userUsername, friendUsername);
-        if (!result.isValid()) {
-            log.info("confirmFriend: confirming friend {} was unsuccessful for user {}", friendUsername, userUsername);
+        if (result.isValid()) {
+            log.debug("confirmFriend: confirming friend {} was successful for user {}", friendDTO.getUsername(), username);
             return ResponseEntity.ok(true);
         }
-        log.info("confirmFriend: confirming friend {} was successful for user {}", friendUsername, userUsername);
+        log.info("confirmFriend: confirming friend {} was unsuccessful for user {}", friendUsername, userUsername);
         return ResponseEntity.ok(false);
     }
 

@@ -4,6 +4,7 @@ import edu.carroll.doin_backend.web.dto.*;
 import edu.carroll.doin_backend.web.dto.UserDTO;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,6 +32,8 @@ public interface UserService {
     boolean validateToken(TokenDTO tokenDTO);
 
     UserDTO findUser(Integer id, String username);
+
+    boolean updateProfilePicture(String userId, MultipartFile file);
 
     ValidateResult validateSecurityQuestion(ForgotPasswordDTO forgotPasswordDTO);
 
