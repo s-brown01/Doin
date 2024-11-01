@@ -15,7 +15,6 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
 
     public SecurityQuestionServiceImpl(SecurityQuestionRepository securityQuestionRepo) {
         this.securityQuestionRepo = securityQuestionRepo;
-        // make sure the repository is filled
     }
 
     @Override
