@@ -1,6 +1,7 @@
 package edu.carroll.doin_backend.web.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import edu.carroll.doin_backend.web.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +41,6 @@ public interface LoginRepository extends JpaRepository<User, Integer> {
 //  void findBySimilarUsername(String usernameToFind);
 
   List<User> findByUsernameLikeIgnoreCase(String username);
+  Optional<User> findByUsername(String username);
+
 }
