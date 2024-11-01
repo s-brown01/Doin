@@ -2,6 +2,7 @@ package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 import edu.carroll.doin_backend.web.model.Friendship;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
@@ -30,46 +31,37 @@ public class FriendServiceTest {
     @Autowired
     private FriendService friendService;
 
-    @Autowired
-    private LoginRepository loginRepository;
+//    @Autowired
+//    private LoginRepository loginRepository;
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private SecurityQuestionService securityQuestionService;
 
-    @Autowired
-    private SecurityQuestionRepository securityQuestionRepo;
-    @Autowired
-    private FriendRepository friendRepository;
+//    @Autowired
+//    private SecurityQuestionRepository securityQuestionRepo;
+//    @Autowired
+//    private FriendRepository friendRepository;
 
     @BeforeEach
     public void loadTables() {
-        loginRepository.deleteAll();
-        securityQuestionRepo.deleteAll();
-
-        securityQuestionRepo.save(new SecurityQuestion("pet"));
-        loginRepository.save(createNewUser(username1));
-        loginRepository.save(createNewUser(username2));
-        loginRepository.save(createNewUser(username3));
+        createNewUser(username1);
+        createNewUser(username2);
+        createNewUser(username3);
     }
 
-    private User createNewUser(String username) {
+    private void createNewUser(String username) {
         RegisterDTO data = new RegisterDTO(username, "password", "pet", "answer");
-        User newUser = new User(data, "password", securityQuestionRepo.findByQuestion("pet").get(0));
-        return newUser;
+        userService.createNewUser(data);
     }
 
     @Test
     public void getFriendsOfFriendsTest() {
-        // get all 3 users
-        User user1 = loginRepository.findByUsernameIgnoreCase(username1).get(0);
-        User user2 = loginRepository.findByUsernameIgnoreCase(username2).get(0);
-        User user3 = loginRepository.findByUsernameIgnoreCase(username3).get(0);
-
         // add the friendships into the repository (assuming they work)
         // user1 -> user2 - user3
-        // CHANGE TO friendService.addFriend(username1, username2);
-        friendRepository.save(new Friendship(user1, user2, FriendshipStatus.CONFIRMED));
-        friendRepository.save(new Friendship(user3, user2, FriendshipStatus.CONFIRMED));
+        friendService.addFriend(username1, username2);
+        friendService.addFriend(username2, username3);
 
         // get the friends of friends for user 1 - should be User 3
         FriendshipDTO[] friendsOfUser1 = friendService.getFriendsOfFriends(username1).toArray(new FriendshipDTO[0]);
@@ -89,18 +81,26 @@ public class FriendServiceTest {
 
     @Test
     public void addFriendTest() {
+        // user1 -> user2
         assertTrue(friendService.addFriend(username1, username2).isValid(), "User1 should be able to add User2 as a friend");
+        // user2 confirms
+        assertTrue(friendService.confirmFriend(username2, username1).isValid(), "User2 should not be able to add User1 as a friend");
+        // user1 -> user 3
         assertTrue(friendService.addFriend(username1, username3).isValid(), "User1 should be able to add User3 as a friend");
-        assertTrue(friendService.addFriend(username2, username1).isValid(), "User2 should be able to add User1 as a friend");
+        // user3 confirms
+        assertTrue(friendService.confirmFriend(username3, username1).isValid(), "User1 should be able to add User3 as a friend");
         // get the Friendships for each user
-        Set<Friendship> user1Friends = friendRepository.findByUser(loginRepository.findByUsernameIgnoreCase(username1).get(0));
-        Set<Friendship> user2Friends = friendRepository.findByUser(loginRepository.findByUsernameIgnoreCase(username2).get(0));
-        Set<Friendship> user3Friends = friendRepository.findByUser(loginRepository.findByUsernameIgnoreCase(username3).get(0));
+        for (FriendshipDTO friend : friendService.getFriends(username1)){
+            System.out.println("\n\n" + friend + "\n\n");
+        }
+        Set<FriendshipDTO> user1Friends = friendService.getFriends(username1);
+        Set<FriendshipDTO> user2Friends = friendService.getFriends(username2);
+        Set<FriendshipDTO> user3Friends = friendService.getFriends(username3);
 
         // make sure there is the appropriate number of friendships
-        assertEquals(2, user1Friends.size(), "User1 should only have 1 friend");
+        assertEquals(2, user1Friends.size(), "User1 should only have 2 friend");
         assertEquals(1, user2Friends.size(), "User2 should only have 1 friend");
-        assertEquals(0, user3Friends.size(), "User3 should have 0 friends");
+        assertEquals(1, user3Friends.size(), "User3 should only have 1 friends");
 
         // invalid tests
         final String invalidUsername = username1 + "FAKE";
@@ -111,9 +111,9 @@ public class FriendServiceTest {
         assertFalse(friendService.addFriend(username1, username1).isValid(), "User1 should not be able to friend themselves");
 
         // get the Friendship tests again
-        user1Friends = friendRepository.findByUser(loginRepository.findByUsernameIgnoreCase(username1).get(0));
-        user2Friends = friendRepository.findByUser(loginRepository.findByUsernameIgnoreCase(username2).get(0));
-        user3Friends = friendRepository.findByUser(loginRepository.findByUsernameIgnoreCase(username3).get(0));
+        user1Friends = friendService.getFriends(username1);
+        user2Friends = friendService.getFriends(username2);
+        user3Friends = friendService.getFriends(username3);
 
         // make sure they are appropriate number of friends post-tests
         assertEquals(2, user1Friends.size(), "User1 should still only have 1 friend");
