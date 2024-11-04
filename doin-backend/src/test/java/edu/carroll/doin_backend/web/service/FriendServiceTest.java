@@ -92,43 +92,71 @@ public class FriendServiceTest {
     }
 
     @Test
-    public void addFriendTest() {
-        // user1 -> user2
+    public void addFriendSuccessTest() {
+        // User1 adds User2 as a friend
         assertTrue(friendService.addFriend(username1, username2).isValid(), "User1 should be able to add User2 as a friend");
-        // user2 confirms
-        assertTrue(friendService.confirmFriend(username2, username1).isValid(), "User2 should not be able to add User1 as a friend");
-        // user1 -> user 3
+
+        // User2 confirms the friendship with User1
+        assertTrue(friendService.confirmFriend(username2, username1).isValid(), "User2 should confirm the friendship with User1");
+
+        // User1 adds User3 as a friend
         assertTrue(friendService.addFriend(username1, username3).isValid(), "User1 should be able to add User3 as a friend");
-        // user3 confirms
-        assertTrue(friendService.confirmFriend(username3, username1).isValid(), "User1 should be able to add User3 as a friend");
-        // get the Friendships for each user
+
+        // User3 confirms the friendship with User1
+        assertTrue(friendService.confirmFriend(username3, username1).isValid(), "User3 should confirm the friendship with User1");
+
+        // Verify the number of friends for each user
         Set<FriendshipDTO> user1Friends = friendService.getFriends(username1);
         Set<FriendshipDTO> user2Friends = friendService.getFriends(username2);
         Set<FriendshipDTO> user3Friends = friendService.getFriends(username3);
 
-        // make sure there is the appropriate number of friendships
-        assertEquals(2, user1Friends.size(), "User1 should only have 2 friend");
-        assertEquals(1, user2Friends.size(), "User2 should only have 1 friend");
-        assertEquals(1, user3Friends.size(), "User3 should only have 1 friends");
+        assertEquals(2, user1Friends.size(), "User1 should have 2 friends");
+        assertEquals(1, user2Friends.size(), "User2 should have 1 friend");
+        assertEquals(1, user3Friends.size(), "User3 should have 1 friend");
+    }
 
-        // invalid tests
+    @Test
+    public void addFriendBadInputTest() {
         final String invalidUsername = username1 + "FAKE";
+
+        // User1 tries to friend User2 again
         assertFalse(friendService.addFriend(username1, username2).isValid(), "User1 should not be able to friend User2 twice");
-        assertFalse(friendService.addFriend(username1, null).isValid(), "User1 should not be able to friend 'null'");
-        assertFalse(friendService.addFriend(null, null).isValid(), "'null' should not be able to friend 'null'");
+
+        // User1 tries to friend a non-existent user
         assertFalse(friendService.addFriend(username1, invalidUsername).isValid(), "User1 should not be able to friend a user who doesn't exist");
+
+        // User1 tries to friend themselves
         assertFalse(friendService.addFriend(username1, username1).isValid(), "User1 should not be able to friend themselves");
 
-        // get the Friendship tests again
-        user1Friends = friendService.getFriends(username1);
-        user2Friends = friendService.getFriends(username2);
-        user3Friends = friendService.getFriends(username3);
+        // Verify friendships remain unchanged after invalid attempts
+        Set<FriendshipDTO> user1Friends = friendService.getFriends(username1);
+        Set<FriendshipDTO> user2Friends = friendService.getFriends(username2);
+        Set<FriendshipDTO> user3Friends = friendService.getFriends(username3);
 
-        // make sure they are appropriate number of friends post-tests
-        assertEquals(2, user1Friends.size(), "User1 should still only have 1 friend");
-        assertEquals(1, user2Friends.size(), "User2 should still only have 1 friend");
-        assertEquals(1, user3Friends.size(), "User3 should still only have 1 friends");
+        assertEquals(2, user1Friends.size(), "User1 should still have 2 friends");
+        assertEquals(1, user2Friends.size(), "User2 should still have 1 friend");
+        assertEquals(1, user3Friends.size(), "User3 should still have 1 friend");
+    }
 
+    @Test
+    public void addFriendCrazyInputTest() {
+        // User1 tries to friend null
+        assertFalse(friendService.addFriend(username1, null).isValid(), "User1 should not be able to friend 'null'");
+
+        // Both users are null
+        assertFalse(friendService.addFriend(null, null).isValid(), "'null' should not be able to friend 'null'");
+
+        // User2 tries to friend null
+        assertFalse(friendService.addFriend(null, username1).isValid(), "'null' should not be able to friend User1");
+
+        // Verify friendships remain unchanged after null attempts
+        Set<FriendshipDTO> user1Friends = friendService.getFriends(username1);
+        Set<FriendshipDTO> user2Friends = friendService.getFriends(username2);
+        Set<FriendshipDTO> user3Friends = friendService.getFriends(username3);
+
+        assertEquals(2, user1Friends.size(), "User1 should still have 2 friends");
+        assertEquals(1, user2Friends.size(), "User2 should still have 1 friend");
+        assertEquals(1, user3Friends.size(), "User3 should still have 1 friend");
     }
 
     @Test
