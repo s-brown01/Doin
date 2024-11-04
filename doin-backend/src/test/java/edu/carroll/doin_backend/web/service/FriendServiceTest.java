@@ -13,24 +13,67 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test suite for FriendService functionality in the application.
+ * <p>
+ * This suite covers various aspects of friend-related operations such as:
+ * <ul>
+ *     <li>Getting friends of friends</li>
+ *     <li>Searching for a specific user</li>
+ *     <li>Getting the immediate friends</li>
+ *     <li>Getting incoming friend requests </li>
+ *     <li>Adding friends</li>
+ *     <li>Removing friends</li>
+ *     <li>Confirming friends</li>
+ * </ul>
+ * </p>
+ * Each test method is transactional, ensuring that no changes persist
+ * in the database after each test, which keeps tests isolated.
+ */
 @SpringBootTest
 @Transactional
 public class FriendServiceTest {
+    /**
+     * The unique username of a user, AKA User1
+     */
     private static final String username1 = "User1_Username";
+    /**
+     * The unique username of a user, AKA User2
+     */
     private static final String username2 = "User2_Username";
+    /**
+     * The unique username of a user, AKA User3
+     */
     private static final String username3 = "User3_Username";
+    /**
+     * The security question value to use for registering users
+     */
     private static final String securityQuestion = "pet";
+    /**
+     * A username to use for users that is invalid (not a real-created user)
+     */
     final String invalidUsername = username1 + "FAKE";
 
+    /**
+     * The FriendService to be tested
+     */
     @Autowired
     private FriendService friendService;
 
+    /**
+     * A UserService to create new Users
+     */
     @Autowired
     private UserService userService;
+    /**
+     * A SecurityQuestionService since creating newUsers require a valid SecurityQuestion
+     */
     @Autowired
     private SecurityQuestionService securityQuestionService;
 
-
+    /**
+     * Sets up required data tables for testing by adding security questions and registering test users.
+     */
     @BeforeEach
     public void loadTables() {
         // add a security question to the table
@@ -40,6 +83,12 @@ public class FriendServiceTest {
         createNewUser(username3);
     }
 
+    /**
+     * Helper method for creating a new user with a given username and a constant password, security question,
+     * and security question answer. This is used to create consistent Users in the repositories.
+     *
+     * @param username the username of the new user to create
+     */
     private void createNewUser(String username) {
         RegisterDTO data = new RegisterDTO(username, "password", securityQuestion, "answer");
         userService.createNewUser(data);
@@ -384,9 +433,9 @@ public class FriendServiceTest {
         Set<FriendshipDTO> user2Friends = friendService.getFriends(username2);
         Set<FriendshipDTO> user3Friends = friendService.getFriends(username3);
 
-        assertEquals(1, user1Friends.size(), "User1 should still have 2 friends");
-        assertEquals(1, user2Friends.size(), "User2 should still have 1 friend");
-        assertEquals(0, user3Friends.size(), "User3 should still have 1 friend");
+        assertEquals(1, user1Friends.size(), "User1 should have 1 friends");
+        assertEquals(1, user2Friends.size(), "User2 should have 1 friend");
+        assertEquals(0, user3Friends.size(), "User3 should have 1 friend");
     }
 
     @Test
