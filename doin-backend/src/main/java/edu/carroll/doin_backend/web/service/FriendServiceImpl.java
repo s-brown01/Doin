@@ -58,7 +58,7 @@ public class FriendServiceImpl implements FriendService {
      * Ensures that no null values are returned and logs the process.
      *
      * @param userUsername the username of the person to get mutual friends for.
-     * @return A {@link Set} of users who are friends of the user's friends, or an empty set if none found.
+     * @return A {@link Set} of users who are friends of the user's friends, or an empty set if none found or usernames are invalid.
      */
     @Override
     public Set<FriendshipDTO> getFriendsOfFriends(String userUsername) {
@@ -84,16 +84,6 @@ public class FriendServiceImpl implements FriendService {
             }
             mutualFriends.removeIf(friend -> friend.getUsername().equalsIgnoreCase(userUsername));
             log.info("getFriendsOfFriends: found {} friends for username {}", mutualFriends.size(), userUsername);
-
-                    /*
-            // if less than 5 friends of friends were found, populate the rest with random users
-            // > 5 is ok, but make sure to have some suggestions
-            if (mutualFriends.size() < 5) {
-                log.info("getFriendsOfFriends: {} friends-of-friends found for username {}, fetching random users", mutualFriends.size(), userUsername);
-                Set<FriendshipDTO> randomUsers = getRandomUsers(initialUser,5 - mutualFriends.size());
-                // adding randomUsers to the friends Set
-                friends.addAll(randomUsers);
-            } */
 
             log.info("FriendController: returning {} mutual friends for user: {}", mutualFriends.size(), userUsername);
             return mutualFriends;
