@@ -33,14 +33,11 @@ public class FriendServiceTest {
 
     @BeforeEach
     public void loadTables() {
-        loadSecurityQuestions();
+        // add a security question to the table
+        securityQuestionService.addSecurityQuestion(securityQuestion);
         createNewUser(username1);
         createNewUser(username2);
         createNewUser(username3);
-    }
-
-    private void loadSecurityQuestions() {
-        securityQuestionService.addSecurityQuestion(securityQuestion);
     }
 
     private void createNewUser(String username) {
