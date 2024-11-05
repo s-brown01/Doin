@@ -94,6 +94,9 @@ public class FriendServiceTest {
         userService.createNewUser(data);
     }
 
+    /**
+     * This method tests a successful query of getFriendsOfFriends
+     */
     @Test
     public void getFriendsOfFriendsTest_Success() {
         // add the friendships into the repository (assuming they work)
@@ -134,6 +137,9 @@ public class FriendServiceTest {
         assertTrue(fofUser3ContainsUser1, "User1 should be in User3's friends of friends");
     }
 
+    /**
+     * This methods tests a query of getFriendsOfFriends with invalid data
+     */
     @Test
     public void getFriendsOfFriendsTest_Invalid() {
         Set<FriendshipDTO> invalidSearchResults = friendService.getFriendsOfFriends(invalidUsername);
@@ -143,12 +149,18 @@ public class FriendServiceTest {
         assertEquals(0, validSearchResults.size(), "User1 should have no friends of friends");
     }
 
+    /**
+     * This method tests getFriendsOfFriends with 'null' data
+     */
     @Test
     public void getFriendsOfFriendsTest_Null(){
         Set<FriendshipDTO> invalidSearchResults = friendService.getFriendsOfFriends(null);
         assertEquals(0, invalidSearchResults.size(), "'null' should have no friends of friends");
     }
 
+    /**
+     * This method tests a successful query of getUser
+     */
     @Test
     public void getUserTest_Success() {
         Set<FriendshipDTO> searchResults = friendService.getUser(username1, username2);
@@ -167,6 +179,9 @@ public class FriendServiceTest {
         assertEquals(FriendshipStatus.NOTADDED, user2Status, "User1 and User1 should not be added");
     }
 
+    /**
+     * This methods tests a query of getUser with invalid data
+     */
     @Test
     public void getUserTest_Invalid() {
         Set<FriendshipDTO> searchResults = friendService.getUser(username1, invalidUsername);
@@ -175,6 +190,9 @@ public class FriendServiceTest {
         assertEquals(0, searchResults.size(), "An invalid user searching for User1 should return no users.");
     }
 
+    /**
+     * This method tests getUser with 'null' data
+     */
     @Test
     public void getUserTest_Null() {
         Set<FriendshipDTO> searchResults = friendService.getUser(username1, null);
@@ -185,6 +203,9 @@ public class FriendServiceTest {
         assertEquals(0, searchResults.size(), "'null' searching for User1 should return no users.");
     }
 
+    /**
+     * This method tests a successful query of getFriends
+     */
     @Test
     public void getFriends_Success() {
         // user1 <-> user2
@@ -288,6 +309,9 @@ public class FriendServiceTest {
         assertTrue(user2ContainsUser3, "User2 should be friends with User3");
     }
 
+    /**
+     * This methods tests a query of getFriends with invalid data
+     */
     @Test
     public void getFriends_Invalid() {
         // should be no friendships
@@ -302,6 +326,9 @@ public class FriendServiceTest {
         assertTrue(invalidFriends.isEmpty(), "Invalid username should have no friends");
     }
 
+    /**
+     * This method tests getFriends with 'null' data
+     */
     @Test
     public void getFriends_Null(){
         final Set<FriendshipDTO> nullFriends = friendService.getFriends(null);
@@ -315,6 +342,9 @@ public class FriendServiceTest {
         assertTrue(user1Friends.isEmpty(), "User1 friend should have no friends");
     }
 
+    /**
+     * This method tests a successful query of getRequests
+     */
     @Test
     public void getFriendRequests_Success() {
         // all users add user1
@@ -369,6 +399,9 @@ public class FriendServiceTest {
         assertFalse(user3ContainsUser3, "User3 should not have an incoming friend request from User3");
     }
 
+    /**
+     * This methods tests a query of getFriendRequests with invalid data
+     */
     @Test
     public void getFriendRequests_Invalid() {
         friendService.addFriend(invalidUsername, username1);
@@ -379,6 +412,9 @@ public class FriendServiceTest {
         assertTrue(invalidRequests.isEmpty(), "Invalid username should have no friend requests");
     }
 
+    /**
+     * This method tests getFriendRequests with 'null' data
+     */
     @Test
     public void getFriendRequests_Null() {
         friendService.addFriend(username1, null);
@@ -390,6 +426,9 @@ public class FriendServiceTest {
         assertTrue(nullRequests.isEmpty(), "'null' username should have no friend requests");
     }
 
+    /**
+     * This method tests a successful query of addFriend
+     */
     @Test
     public void addFriendTest_Success() {
         // User1 adds User2 as a friend
@@ -414,6 +453,9 @@ public class FriendServiceTest {
         assertEquals(1, user3Friends.size(), "User3 should have 1 friend");
     }
 
+    /**
+     * This methods tests a query of addFriend with invalid data
+     */
     @Test
     public void addFriendTest_Invalid() {
         assertTrue(friendService.addFriend(username1, username2).isValid(), "User1 should be able to add User2 as a friend");
@@ -438,6 +480,9 @@ public class FriendServiceTest {
         assertEquals(0, user3Friends.size(), "User3 should have 1 friend");
     }
 
+    /**
+     * This method tests addFriend with 'null' data
+     */
     @Test
     public void addFriendTest_Null() {
         // User1 tries to friend null
@@ -455,6 +500,9 @@ public class FriendServiceTest {
         assertEquals(0, user1Friends.size(), "User1 should have 0 friends");
     }
 
+    /**
+     * This method tests a successful query of removeFriend
+     */
     @Test
     public void removeFriendTest_Success() {
         friendService.addFriend(username1, username2);
@@ -468,17 +516,51 @@ public class FriendServiceTest {
         assertFalse(friendService.removeFriend(username1, username1).isValid(), "User1 should not be able to unfriend themselves");
     }
 
+    /**
+     * This methods tests a query of removeFriend with invalid data
+     */
+    @Test
+    public void removeFriendTest_Invalid() {
+        friendService.addFriend(username1, username2);
+        assertTrue(friendService.removeFriend(username1, username2).isValid(), "User1 should be able to unfriend User2");
+        assertFalse(friendService.removeFriend(username1, username2).isValid(), "User1 should not be able to unfriend User2 twice");
+
+        assertFalse(friendService.removeFriend(username1, invalidUsername).isValid(), "User1 should not be able to unfriend a user who doesn't exist");
+        assertFalse(friendService.removeFriend(username1, username1).isValid(), "User1 should not be able to unfriend themselves");
+        assertFalse(friendService.removeFriend(invalidUsername, username1).isValid(), "'Invalid' username should not be able to unfriend User1");
+        assertFalse(friendService.removeFriend(invalidUsername, invalidUsername).isValid(), "'Invalid' username should not be able to unfriend themselves");
+    }
+
+    /**
+     * This method tests removeFrend with 'null' data
+     */
+    @Test
+    public void removeFriendTest_Null() {
+        assertFalse(friendService.removeFriend(username1, null).isValid(), "User1 should not be able to unfriend 'null'");
+        assertFalse(friendService.removeFriend(null, username1).isValid(), "'null' should not be able to unfriend User1");
+        assertFalse(friendService.removeFriend(null, null).isValid(), "'null' should not be able to unfriend themselves");
+    }
+
+    /**
+     * This method tests a successful query of confirmFriend
+     */
     @Test
     public void confirmFriendTest_Success() {
         assertTrue(friendService.confirmFriend(username1, username2).isValid(), "User1 should be able to confirm User2");
         assertTrue(friendService.confirmFriend(username2, username1).isValid(), "User1 should be able to confirm User2");
     }
 
+    /**
+     * This methods tests a query of confirmFriend with invalid data
+     */
     @Test
     public void confirmFriendTest_Invalid() {
         assertFalse(friendService.confirmFriend(username1, username1).isValid(), "User1 should not be able to confirm themselves");
     }
 
+    /**
+     * This method tests confirmFriend with 'null' data
+     */
     @Test
     public void confirmFriendTest_Null() {
         assertFalse(friendService.confirmFriend(null, null).isValid(), "Null users should be able to confirm themselves");
