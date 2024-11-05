@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootTest
-@Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Transactional
 public class EventServiceImplTest {
 
@@ -35,7 +34,7 @@ public class EventServiceImplTest {
     private UserService userService;
 
     @Autowired
-    private SecurityQuestionRepository securityQuestionRepo;
+    private SecurityQuestionService securityQuestionService;
 
     private User user;
     private Event testEvent;
@@ -43,6 +42,9 @@ public class EventServiceImplTest {
     @BeforeEach
     public void setup() {
         // Create test user
+        securityQuestionService.addSecurityQuestion("pet");
+        securityQuestionService.addSecurityQuestion("city");
+        securityQuestionService.addSecurityQuestion("school");
         RegisterDTO data = new RegisterDTO("user1", "password", "pet", "answer");
         userService.createNewUser(data);
         user = new User(userService.findUser(null, "user1"));
