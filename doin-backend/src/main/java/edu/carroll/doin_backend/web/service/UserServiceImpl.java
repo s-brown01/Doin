@@ -211,41 +211,6 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    /**
-     * Validates the provided token by checking if it corresponds to a valid user.
-     * <p>
-     * This method first retrieves the username associated with the given token. It then checks if there is
-     * exactly one user associated with that username in the repository. If there are no users or multiple users,
-     * the token is considered invalid. Finally, if a valid user is found, it checks the validity of the token
-     * using the {@link TokenService}.
-     * </p>
-     *
-     * @param tokenDTO the {@link TokenDTO} object containing the token to validate.
-     * @return {@code true} if the token is valid and corresponds to exactly one user; {@code false} otherwise.
-     */
-    @Override
-    public boolean validateToken(TokenDTO tokenDTO) {
-        final String username = tokenService.getUsername(tokenDTO.getToken());
-        log.info("validateToken: for user {}", username);
-
-        final List<User> users = loginRepo.findByUsernameIgnoreCase(username);
-
-        if (users.isEmpty()) {
-            // Finding no users is expected, not horrid
-            log.debug("validateToken: found no users with username {}", username);
-            return false;
-        }
-
-        if (users.size() > 1) {
-            // Finding more than 1 user is a bigger issue than 0 users
-            log.warn("validateToken: JPA Repository found more than 1 users with username {}", username);
-            return false;
-        }
-
-        // If username is validated, see if the token is valid with tokenService
-        return tokenService.validateToken(tokenDTO.getToken());
-    }
-
     @Override
     public UserDTO findUser(Integer id, String username) {
         if (id == null && username == null) {

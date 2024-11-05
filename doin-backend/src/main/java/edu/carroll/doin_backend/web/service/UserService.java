@@ -29,8 +29,6 @@ public interface UserService {
      */
     boolean validateCredentials(String username, String password);
 
-    boolean validateToken(TokenDTO tokenDTO);
-
     UserDTO findUser(Integer id, String username);
 
     boolean updateProfilePicture(String userId, MultipartFile file);
