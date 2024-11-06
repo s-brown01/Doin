@@ -16,29 +16,43 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * This is a Utility class to create JWT Tokens and validate them.
- *
- * <BR>
- * The creation of this class was assisted by ChatGPT
+ * This service provides utility methods for creating and validating JWT (JSON Web Tokens) for user authentication.
+ * <p>
+ * The service uses HMAC256 algorithm with a secret key to generate and validate tokens. It also manages token expiration,
+ * which is set to one hour. The tokens include the username as a claim and are issued by the "doin" issuer.
+ * </p>
+ * <p>
+ * The service is used to generate a token when a user logs in, and to validate the token when making authenticated requests.
+ * </p>
  */
-
-
 @Service
 public class JwtTokenService implements TokenService {
-
+    /**
+     * A {@link Logger} to just for this class
+     */
     private static final Logger log = LoggerFactory.getLogger(JwtTokenService.class);
-
     /**
      * This is how long 1 hour is in milliseconds.
      */
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour in milliseconds
-    private static final long PASSWORD_RESET_EXPIRATION_TIME = 1000 * 60 * 15; // 15 minutes in milliseconds
+    /**
+     * A super secret security key to encode the JWT-Tokens with
+     */
     private static final String SECRET_KEY = "Super-Secret-Key";
+    /**
+     * The issuer of the tokens (in this case the issuer is doin)
+     */
     private static final String issuer = "doin";
 
-
+    /**
+     * a {@link LoginRepository} that interacts with {@link User} entities
+     */
     private final LoginRepository loginRepository;
 
+    /**
+     * A constructor to make a JwtTokenService
+     * @param loginRepository the repository containing all Users for the site
+     */
     public JwtTokenService(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
     }
@@ -87,24 +101,20 @@ public class JwtTokenService implements TokenService {
                     .build();
             // using the JWTVerifier's built-in verification method
             DecodedJWT jwt = verifier.verify(token);
-
             String tokenUsername = jwt.getClaim("username").asString();
             if (tokenUsername == null) {
                 log.warn("TokenServiceImpl: validate token - null username");
                 return false;
             }
-
             List<User> users = loginRepository.findByUsernameIgnoreCase(tokenUsername);
             if (users.isEmpty()) {
                 log.warn("TokenServiceImpl: validate token  - no users with token's username");
                 return false;
             }
-
             if (users.size() > 1) {
                 log.warn("TokenServiceImpl: validate token - too many users found");
                 return false;
             }
-
             return true;
         } catch (JWTVerificationException e) {
             log.warn("TokenServiceImpl: validate token - JWTVerificationException: {}", e.toString());
@@ -125,28 +135,5 @@ public class JwtTokenService implements TokenService {
     @Override
     public String getUsername(String token) {
         return JWT.decode(token).getClaim("username").asString();
-    }
-
-    @Override
-    public String generatePasswordResetToken(String username) {
-        try {
-            return JWT.create()
-                    .withSubject(username)
-                    .withClaim("password-reset", "password-reset")
-                    .withClaim("username", (Integer) null)
-                    .withIssuedAt(new Date())
-                    .withExpiresAt(new Date(System.currentTimeMillis() + PASSWORD_RESET_EXPIRATION_TIME))
-                    .withIssuer(issuer)
-                    .sign(Algorithm.HMAC256(SECRET_KEY));
-        } catch (JWTCreationException e) {
-            log.error("TokenServiceImpl: generating a passwordResertToken resulted in a JWTCreationException: {}", e.toString());
-            return null;
-        } catch (IllegalArgumentException e) {
-            log.error("TokenServiceImpl: generating a passwordResertToken resulted in an IllegalArgumentException: {}", e.toString());
-            return null;
-        } catch (Exception e) {
-            log.error("TokenServiceImpl: generating a passwordResertToken resulted in UNKNOWN error: {}", e.toString());
-            return null;
-        }
     }
 }

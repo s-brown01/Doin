@@ -32,6 +32,4 @@ public interface TokenService {
      * @return the username associated with the token
      */
     String getUsername(String token);
-
-    String generatePasswordResetToken(String username);
 }
