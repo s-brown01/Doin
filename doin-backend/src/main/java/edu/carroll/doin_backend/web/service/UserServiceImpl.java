@@ -17,51 +17,42 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-
     /**
-     * A Logger to just for this class
+     * A {@link Logger} to just for this class
      */
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
-
     /**
-     * a LoginRepository to get the findByUsername method
+     * a {@link LoginRepository} for interactions User entities
      */
     private final LoginRepository loginRepo;
-
     /**
-     * a password service to verify users
+     * a {@link PasswordService} service to verify users
      */
     private final PasswordService passwordService;
-
-    private final ImageService imageService;
-
-
     /**
-     * a TokenService to validate tokens
+     * an {@link ImageService} to interact with the Image repository
      */
-    private final TokenService tokenService;
-
+    private final ImageService imageService;
     /**
      * a SecurityQuestionSerivce to interact with the SecurityQuestion JPA-Repository
      */
     private final SecurityQuestionService sqService;
-
     /**
-     * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order. The parameters in constructor allow Springboot to automatically inject dependencies.
+     * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order.
+     * The parameters in constructor allow Springboot to automatically inject dependencies.
      *
      * @param loginRepo       - the LoginRepository which holds all registered Users
      * @param passwordService - the PasswordService to verify user's password
+     * @param sqService       - the SecurityQuestionService to handle security questions
+     * @param imageService    - the ImageService to handle image uploads
      */
     public UserServiceImpl(LoginRepository loginRepo,
                            PasswordService passwordService,
                            SecurityQuestionService sqService,
-                           TokenService tokenService,
-                           ImageService imageService
-    ) {
+                           ImageService imageService) {
         this.loginRepo = loginRepo;
         this.passwordService = passwordService;
         this.sqService = sqService;
-        this.tokenService = tokenService;
         this.imageService = imageService;
     }
 
@@ -71,7 +62,7 @@ public class UserServiceImpl implements UserService {
      * unique), hash the password, and hash the security question.
      *
      * @param registerDTO - the DTO that contains the necessary data to create a new user
-     * @return true is a new user was created, false if it wasn't for any reason
+     * @return true if a new user was created, false if it wasn't for any reason
      */
     @Override
     public boolean createNewUser(RegisterDTO registerDTO) {
@@ -80,24 +71,19 @@ public class UserServiceImpl implements UserService {
             log.info("createNewUser: Invalid username {}", registerDTO.getUsername());
             return false;
         }
-
         if (!isValidPassword(registerDTO.getPassword())) {
             log.info("createNewUser: Invalid password with username {}", registerDTO.getUsername());
             return false;
         }
-
         final SecurityQuestion userSecurityQuestion = sqService.getSecurityQuestionByValue(registerDTO.getSecurityQuestionString());
         if (userSecurityQuestion == null) {
             log.info("createNewUser: Invalid security question {}", registerDTO.getSecurityQuestionString());
             return false;
         }
-
         // create hashed password
         String hashedPassword = passwordService.hashPassword(registerDTO.getPassword());
-
         // store the hashed security answer
         registerDTO.setSecurityAnswer(passwordService.hashPassword(registerDTO.getSecurityAnswer()));
-
         try {
             log.info("createNewUser: validated and saving new User {}", registerDTO.getUsername());
             User newUser = new User(registerDTO, hashedPassword, userSecurityQuestion);
@@ -122,13 +108,11 @@ public class UserServiceImpl implements UserService {
             log.warn("createNewUser: isValidNewUsername - null or empty username");
             return false;
         }
-
         // make sure there are no other users with this username
         if (!loginRepo.findByUsernameIgnoreCase(username).isEmpty()) {
             log.warn("createNewUser: isValidNewUsername - non-unique username");
             return false;
         }
-
         // making sure there's no weird characters in the name
         String[] invalidChars = new String[]{"`", "'", "/", ";", ":", "*", "{", "}", "[", "]", "|"};
         for (String s : invalidChars) {
@@ -138,7 +122,6 @@ public class UserServiceImpl implements UserService {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -153,7 +136,6 @@ public class UserServiceImpl implements UserService {
             log.warn("createNewUser: isValidPassword - null or empty password");
             return false;
         }
-
         return true;
     }
 
@@ -173,9 +155,7 @@ public class UserServiceImpl implements UserService {
             log.warn("validateCredentials: username or password is null");
             return false;
         }
-
         List<User> foundUsers = loginRepo.findByUsernameIgnoreCase(username);
-
         // we expect 1 user found per username.
         // if we find less than 1 user...
         if (foundUsers.isEmpty()) {
@@ -190,43 +170,51 @@ public class UserServiceImpl implements UserService {
             log.info("validateCredentials: similar usernames to {} found in database", username);
             return false;
         }
-
         // if we find more than 1 user...
         if (foundUsers.size() > 1) {
             log.warn("validateCredentials: found more than 1 user ({})", foundUsers.size());
             return false;
         }
-
         // made sure only 1 user, now grab it
         User user = foundUsers.get(0);
-
         // now validate the password using the Service's built in validator
         if (!passwordService.validatePassword(password, user.getPassword())) {
             log.debug("validateCredentials: given password did not match with user's, {}, previously stored password", username);
             return false;
         }
-
         // if passed all checks, then finally return true
         log.info("validateCredentials: User {} successfully validated", username);
         return true;
     }
 
+    /**
+     * Finds a user by either their ID or username.
+     *
+     * @param id       the unique identifier of the user (optional).
+     * @param username the username of the user (optional).
+     * @return a {@link UserDTO} containing the user's information, or null if no user is found.
+     */
     @Override
     public UserDTO findUser(Integer id, String username) {
         if (id == null && username == null) {
             return null;
         }
-
         Optional<User> user;
         if (id != null) {
             user = loginRepo.findById(id);
         } else {
             user = Optional.ofNullable(loginRepo.findByUsernameIgnoreCase(username).get(0));
         }
-
         return user.map(UserDTO::new).orElse(null);
     }
 
+    /**
+     * Updates the user's profile picture by saving the uploaded file and associating it with the user.
+     *
+     * @param userName the username of the user whose profile picture is to be updated.
+     * @param file     the profile picture file to be uploaded.
+     * @return true if the profile picture was successfully updated, false otherwise.
+     */
     @Override
     public boolean updateProfilePicture(String userName, MultipartFile file) {
         Optional<User> userOpt = loginRepo.findByUsername(userName);
@@ -252,12 +240,11 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Validates the security question and answer for a user during the password reset process.
-     *<p>
+     * <p>
      * This method checks if the provided username exists, verifies that there is only one user
      * associated with that username, ensures that the security question is valid, and confirms
      * that the provided security answer matches the stored answer.
      * </p>
-     * <p>This javadoc was generated with help from ChatGPT</p>
      *
      * @param forgotPasswordDTO the data transfer object containing the user's username,
      *                          security question, and security answer
@@ -306,7 +293,19 @@ public class UserServiceImpl implements UserService {
         log.info("validateSecurityQuestion: User {} successfully validated", forgotPasswordDTO.getUsername());
         return new ValidateResult(true, "Successfully validated");
     }
-
+        
+    /**
+     * Resets the password for a user after validating the username, security question, and new password.
+     * <p>
+     * This method performs a series of validation checks: it ensures that the provided username exists,
+     * validates the new password according to predefined rules, and checks that the new password is not the same
+     * as the current password. If all checks pass, the user's password is updated and saved.
+     * </p>
+     *
+     * @param forgotPasswordDTO the data transfer object containing the user's username and new password
+     * @return a {@link ValidateResult} object containing the result of the password reset attempt.
+     *         If successful, it returns a success message; otherwise, it returns a failure message with the reason.
+     */
     @Override
     public ValidateResult resetPassword(ForgotPasswordDTO forgotPasswordDTO) {
         log.info("resetPassword: resetting for user {}", forgotPasswordDTO.getUsername());
