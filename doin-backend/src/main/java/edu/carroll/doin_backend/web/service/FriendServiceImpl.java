@@ -56,7 +56,8 @@ public class FriendServiceImpl implements FriendService {
      *
      * @param friendRepository The repository for managing Friendship entities.
      * @param loginRepository  The repository for managing User entities.
-=     */
+     *                         =
+     */
     public FriendServiceImpl(FriendRepository friendRepository, LoginRepository loginRepository) {
         this.friendRepo = friendRepository;
         this.loginRepo = loginRepository;
@@ -75,7 +76,7 @@ public class FriendServiceImpl implements FriendService {
      *
      * @param userUsername The username of the user whose mutual friends are being retrieved.
      * @return A {@link Set} of {@link FriendshipDTO} objects representing mutual friends (friends of friends),
-     *         or an empty set if the username is invalid or if an error occurs during processing.
+     * or an empty set if the username is invalid or if an error occurs during processing.
      */
     @Override
     public Set<FriendshipDTO> getFriendsOfFriends(String userUsername) {
@@ -128,7 +129,7 @@ public class FriendServiceImpl implements FriendService {
      * @param userUsername   the username of the user performing the search.
      * @param usernameToFind the partial or full username to search for.
      * @return a {@link Set} of {@link FriendshipDTO} objects representing matching users
-     *         and their friendship status with {@code userUsername}; empty if none found.
+     * and their friendship status with {@code userUsername}; empty if none found.
      */
     @Override
     public Set<FriendshipDTO> getUser(String userUsername, String usernameToFind) {
@@ -175,7 +176,7 @@ public class FriendServiceImpl implements FriendService {
      *
      * @param userUsername the username of the user whose friends are being retrieved.
      * @return a {@link Set} of {@link FriendshipDTO} objects representing confirmed friends;
-     *         empty if none found or username is invalid.
+     * empty if none found or username is invalid.
      */
     @Override
     public Set<FriendshipDTO> getFriends(String userUsername) {
@@ -206,7 +207,7 @@ public class FriendServiceImpl implements FriendService {
      *
      * @param userUsername the username of the user for whom friend requests are being retrieved.
      * @return a {@link Set} of {@link FriendshipDTO} objects representing pending friend requests;
-     *         empty if none found or if the username is invalid.
+     * empty if none found or if the username is invalid.
      */
     @Override
     public Set<FriendshipDTO> getFriendRequests(String userUsername) {
@@ -238,12 +239,12 @@ public class FriendServiceImpl implements FriendService {
      * the request is confirmed. If no connection exists, a new friendship request is created.
      * </p>
      *
-     * @param userUsername  the username of the user sending the friend request.
+     * @param userUsername   the username of the user sending the friend request.
      * @param friendUsername the username of the friend to whom the request is being sent.
      * @return a {@link ValidateResult} containing the status of the operation:
-     *         - {@code valid = true} if the friend request is successfully sent or confirmed,
-     *         - {@code valid = false} with a message indicating the reason for failure (e.g., already friends,
-     *           invalid username, or a pending request).
+     * - {@code valid = true} if the friend request is successfully sent or confirmed,
+     * - {@code valid = false} with a message indicating the reason for failure (e.g., already friends,
+     * invalid username, or a pending request).
      */
     @Override
     public ValidateResult addFriend(String userUsername, String friendUsername) {
@@ -314,9 +315,9 @@ public class FriendServiceImpl implements FriendService {
      * @param userUsername   the username of the user who wants to remove the friend.
      * @param friendUsername the username of the friend to be removed.
      * @return a {@link ValidateResult} object containing the result of the operation:
-     *         - {@code valid = true} if the friendship is successfully removed,
-     *         - {@code valid = false} with a message indicating why the removal failed
-     *           (e.g., the users are not friends, invalid usernames).
+     * - {@code valid = true} if the friendship is successfully removed,
+     * - {@code valid = false} with a message indicating why the removal failed
+     * (e.g., the users are not friends, invalid usernames).
      */
     @Override
     public ValidateResult removeFriend(String userUsername, String friendUsername) {
@@ -363,11 +364,11 @@ public class FriendServiceImpl implements FriendService {
      * {@link #addFriend(String, String)} to confirm the request.
      * </p>
      *
-     * @param userUsername  the username of the user who is confirming the friend request.
+     * @param userUsername   the username of the user who is confirming the friend request.
      * @param friendUsername the username of the friend whose request is being confirmed.
      * @return a {@link ValidateResult} object containing the result of the operation:
-     *         - {@code valid = true} if the friendship is successfully confirmed,
-     *         - {@code valid = false} with a message indicating any failure reason (e.g., no pending request).
+     * - {@code valid = true} if the friendship is successfully confirmed,
+     * - {@code valid = false} with a message indicating any failure reason (e.g., no pending request).
      */
     @Override
     public ValidateResult confirmFriend(String userUsername, String friendUsername) {
@@ -387,8 +388,8 @@ public class FriendServiceImpl implements FriendService {
      *
      * @param username the username to check.
      * @return {@code true} if the username exists and is unique in the database;
-     *         {@code false} if the username is not found, is associated with more than
-     *         one user, or if an error occurs during validation.
+     * {@code false} if the username is not found, is associated with more than
+     * one user, or if an error occurs during validation.
      */
     private boolean isValidExistingUsername(String username) {
         try {
@@ -423,7 +424,7 @@ public class FriendServiceImpl implements FriendService {
      * @param user   the first user in the relationship check.
      * @param friend the second user in the relationship check.
      * @return the {@link FriendshipStatus} between the two users,
-     *         or {@link FriendshipStatus#NOTADDED} if no friendship exists.
+     * or {@link FriendshipStatus#NOTADDED} if no friendship exists.
      */
     private FriendshipStatus statusBetween(User user, User friend) {
         log.debug("statusBetween: checking if there is a status between user {} and user {}", user, friend);
@@ -443,7 +444,7 @@ public class FriendServiceImpl implements FriendService {
      * {@link FriendshipDTO} objects for each friendship.
      * </p>
      *
-     * @param user   the current user whose friendship status will be checked.
+     * @param user    the current user whose friendship status will be checked.
      * @param friends the set of {@link Friendship} objects to be converted.
      * @return a {@link Set} of {@link FriendshipDTO} objects, representing the converted friendships.
      */

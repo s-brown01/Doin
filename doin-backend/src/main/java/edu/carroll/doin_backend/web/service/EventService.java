@@ -4,8 +4,6 @@ import edu.carroll.doin_backend.web.dto.EventDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 /**
  * The {@code EventService} interface provides methods for managing events
  * within the application. It allows clients to perform CRUD operations,
@@ -25,7 +23,7 @@ public interface EventService {
      *
      * @param id the unique identifier of the event to retrieve.
      * @return an {@link EventDTO} representing the event, or {@code null}
-     *         if no event with the specified ID exists.
+     * if no event with the specified ID exists.
      */
     EventDTO getById(Integer id);
 
@@ -40,7 +38,7 @@ public interface EventService {
     /**
      * Allows a user to join an event.
      *
-     * @param userId the unique identifier of the user joining the event.
+     * @param userId  the unique identifier of the user joining the event.
      * @param eventId the unique identifier of the event to join.
      * @throws IllegalArgumentException if the user or event ID is invalid.
      */

@@ -1,12 +1,14 @@
 package edu.carroll.doin_backend.web.service;
 
-import edu.carroll.doin_backend.web.dto.*;
+import edu.carroll.doin_backend.web.dto.ForgotPasswordDTO;
+import edu.carroll.doin_backend.web.dto.RegisterDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
+import edu.carroll.doin_backend.web.dto.ValidateResult;
 import edu.carroll.doin_backend.web.model.Image;
 import edu.carroll.doin_backend.web.model.SecurityQuestion;
 import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
 import edu.carroll.doin_backend.web.security.PasswordService;
-import edu.carroll.doin_backend.web.security.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService {
      * a SecurityQuestionSerivce to interact with the SecurityQuestion JPA-Repository
      */
     private final SecurityQuestionService sqService;
+
     /**
      * The constructor of a LoginServiceImpl. It needs a LoginRepository and a PasswordService in order.
      * The parameters in constructor allow Springboot to automatically inject dependencies.
@@ -151,7 +154,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean validateCredentials(String username, String password) {
         log.debug("validateCredentials: user '{}' attempting login", username);
-        if (username == null || password == null){
+        if (username == null || password == null) {
             log.warn("validateCredentials: username or password is null");
             return false;
         }
@@ -223,9 +226,8 @@ public class UserServiceImpl implements UserService {
         User user = userOpt.get();
         Image img;
         try {
-            img =  imageService.save(file);
-        }
-        catch (Exception e) {
+            img = imageService.save(file);
+        } catch (Exception e) {
             return false;
         }
         user.setProfilePicture(img);
@@ -249,8 +251,8 @@ public class UserServiceImpl implements UserService {
      * @param forgotPasswordDTO the data transfer object containing the user's username,
      *                          security question, and security answer
      * @return a {@link ValidateResult} object containing the validation outcome.
-     *         If the validation fails, the result will contain a message indicating the reason for the failure.
-     *         If the validation succeeds, the result will indicate success with a corresponding message.
+     * If the validation fails, the result will contain a message indicating the reason for the failure.
+     * If the validation succeeds, the result will indicate success with a corresponding message.
      */
     @Override
     public ValidateResult validateSecurityQuestion(ForgotPasswordDTO forgotPasswordDTO) {
@@ -293,7 +295,7 @@ public class UserServiceImpl implements UserService {
         log.info("validateSecurityQuestion: User {} successfully validated", forgotPasswordDTO.getUsername());
         return new ValidateResult(true, "Successfully validated");
     }
-        
+
     /**
      * Resets the password for a user after validating the username, security question, and new password.
      * <p>
@@ -304,7 +306,7 @@ public class UserServiceImpl implements UserService {
      *
      * @param forgotPasswordDTO the data transfer object containing the user's username and new password
      * @return a {@link ValidateResult} object containing the result of the password reset attempt.
-     *         If successful, it returns a success message; otherwise, it returns a failure message with the reason.
+     * If successful, it returns a success message; otherwise, it returns a failure message with the reason.
      */
     @Override
     public ValidateResult resetPassword(ForgotPasswordDTO forgotPasswordDTO) {

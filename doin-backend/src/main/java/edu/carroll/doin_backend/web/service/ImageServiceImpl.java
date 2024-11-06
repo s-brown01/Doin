@@ -15,8 +15,8 @@ import java.util.Base64;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    private final ImageRepository imageRepository;
     private static final Logger logger = LoggerFactory.getLogger(ImageServiceImpl.class);
+    private final ImageRepository imageRepository;
 
     public ImageServiceImpl(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;

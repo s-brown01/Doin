@@ -1,6 +1,9 @@
 package edu.carroll.doin_backend.web.service;
 
-import edu.carroll.doin_backend.web.dto.*;
+import edu.carroll.doin_backend.web.dto.ForgotPasswordDTO;
+import edu.carroll.doin_backend.web.dto.RegisterDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
+import edu.carroll.doin_backend.web.dto.ValidateResult;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -24,6 +27,7 @@ public interface UserService {
      * @return true if the new user was successfully created, false otherwise.
      */
     boolean createNewUser(RegisterDTO registerDTO);
+
     /**
      * Validates the provided login credentials.
      * <p>
@@ -35,6 +39,7 @@ public interface UserService {
      * @return true if both the username and password are valid; false if either is invalid.
      */
     boolean validateCredentials(String username, String password);
+
     /**
      * Retrieves the user details based on the given user ID or username.
      * <p>
@@ -46,6 +51,7 @@ public interface UserService {
      * @return a {@link UserDTO} containing the user information; may return null if no user is found.
      */
     UserDTO findUser(Integer id, String username);
+
     /**
      * Updates the user's profile picture.
      * <p>
@@ -58,6 +64,7 @@ public interface UserService {
      * @return true if the profile picture was successfully updated, false otherwise.
      */
     boolean updateProfilePicture(String userId, MultipartFile file);
+
     /**
      * Validates the user's security question and answer during the password recovery process.
      * <p>
@@ -68,6 +75,7 @@ public interface UserService {
      * @return a {@link ValidateResult} indicating whether the security question and answer are correct.
      */
     ValidateResult validateSecurityQuestion(ForgotPasswordDTO forgotPasswordDTO);
+
     /**
      * Resets the user's password based on the provided security question answer.
      * <p>

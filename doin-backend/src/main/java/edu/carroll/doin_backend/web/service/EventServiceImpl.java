@@ -17,8 +17,8 @@ import java.util.Optional;
 @Service
 public class EventServiceImpl implements EventService {
 
-    private final EventRepository eventRepository;
     private static final Logger logger = LoggerFactory.getLogger(EventServiceImpl.class);
+    private final EventRepository eventRepository;
 
     public EventServiceImpl(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
@@ -39,7 +39,7 @@ public class EventServiceImpl implements EventService {
     public EventDTO getById(Integer id) {
         logger.info("Retrieving event by ID: {}", id);
         Optional<Event> event = eventRepository.findById(id);
-        if(event.isPresent()) {
+        if (event.isPresent()) {
             logger.info("Successfully retrieved event with ID: {}", id);
             return new EventDTO(event.get());
         }
@@ -59,7 +59,7 @@ public class EventServiceImpl implements EventService {
     public boolean joinUser(Integer eventId, Integer userId) {
         logger.info("User with ID {} joining event with ID {}", userId, eventId);
         Event existing = eventRepository.getById(eventId);
-        if(existing.getJoiners().stream().anyMatch(a-> Objects.equals(a.getId(), userId))) {
+        if (existing.getJoiners().stream().anyMatch(a -> Objects.equals(a.getId(), userId))) {
             return false;
         }
         User user = new User();
