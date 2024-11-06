@@ -69,6 +69,17 @@
   text-decoration: underline;
 }
 
+.requirements {
+  text-align: center;
+  background-color: #bcbdbd;
+  padding: 10px;
+}
+
+.checkmark {
+  display: inline;
+  background-color: #000000;
+}
+
 .error-message {
   text-align: center;
   color: black;

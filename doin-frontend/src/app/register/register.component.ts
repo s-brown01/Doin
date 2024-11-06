@@ -18,6 +18,9 @@ export class RegisterComponent {
     securityAnswer: ''
   }
   errorMessage: string | null = null;
+  invalidPasswordLength: boolean = true;
+  invalidPasswordMatch: boolean = true;
+
 
 
   onRegister() {
@@ -26,21 +29,30 @@ export class RegisterComponent {
       !this.registerData.confirmPassword ||
       !this.registerData.securityQuestion ||
       !this.registerData.securityAnswer) {
-      this.errorMessage = "Please enter all information below";
+      this.errorMessage = "Please enter all information";
       return;
     }
 
+    this.invalidPasswordMatch = false;
+    this.invalidPasswordLength = false;
+
     if (this.registerData.password !== this.registerData.confirmPassword) {
+      this.invalidPasswordMatch = true;
       this.errorMessage = "Passwords need to match";
-      return;
     }
 
     if (this.registerData.password.length < 8) {
+      this.invalidPasswordLength = true;
       this.errorMessage = "Password must be at least 8 characters";
+    }
+
+    if (this.invalidPasswordLength || this.invalidPasswordMatch){
       return;
     }
 
     if (this.registerData.username && this.registerData.password) {
+      this.invalidPasswordMatch = false;
+      this.invalidPasswordLength = false;
       this.authService.register(this.registerData).subscribe(
         (response) => {
           this.errorMessage = null;

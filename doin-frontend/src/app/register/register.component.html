@@ -6,6 +6,15 @@
     <input type="password" placeholder="Password" [(ngModel)]="registerData.password" name="password" required>
     <input type="password" placeholder="Confirm Password" [(ngModel)]="registerData.confirmPassword" name="confirmPassword" required>
 
+    <div class="requirements">
+      * New Password must be 8 characters long.
+        <div class = "checkmark" *ngIf="invalidPasswordLength">&#x274C;</div>
+      <BR>
+
+      * Passwords must match.
+        <div class = "checkmark"*ngIf="invalidPasswordMatch">&#x274C;</div>
+    </div>
+
     <select [(ngModel)]="registerData.securityQuestion" name="securityQuestion" required>
       <option value="" disabled selected>Select a security question</option>
       <option value="pet">What was your first pet's name?</option>
