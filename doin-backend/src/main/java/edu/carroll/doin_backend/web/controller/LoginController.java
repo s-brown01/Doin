@@ -18,16 +18,24 @@ import java.util.Map;
 @RestController
 @RequestMapping("api")
 public class LoginController {
-
+    /**
+     * A {@link Logger} for logging messages
+     */
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
-
+    /**
+     * A {@link TokenService} for functions relating to JWT-Tokens
+     */
     private final TokenService tokenService;
+    /**
+     * A {@link UserService} for functions relating to the User repository
+     */
     private final UserService userService;
 
     /**
+     * Constructor for a new LoginController
      *
-     * @param tokenService
-     * @param userService
+     * @param tokenService the service responsible for token validations.
+     * @param userService the service responsible for user and login operations
      */
     public LoginController(TokenService tokenService, UserService userService) {
         this.tokenService = tokenService;
@@ -35,24 +43,27 @@ public class LoginController {
     }
 
     /**
-     * Handles POST requests to the /api/login endpoint.
+     * Handles login requests by validating user credentials and generating a JWT-Token
+     *      upon successful authentication. Logs the process at various steps, including
+     *      attempts, successes, and errors.
      *
-     * @param login A DTO object containing username and password fields.
-     * @return ResponseEntity with either the JWT-Token or a HttpStatus.Unauthorized
+     * @param login A {@link LoginDTO} object containing the user's login information
+     *                  (username and password).
+     * @return A {@link ResponseEntity} containing a {@link TokenDTO} with the generated
+     *              JWT token if login is successful, or a 401 Unauthorized status if
+     *              login fails or an error occurs.
      */
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> loginPost(@RequestBody LoginDTO login) {
         log.info("LoginController: user {} attempting login", login.getUsername());
         boolean isValidUser = false;
-
         try {
             isValidUser = userService.validateCredentials(login.getUsername(), login.getPassword());
         } catch (Exception e) {
             log.error("LoginController: user {} login errored {}", login.getUsername(), e.getStackTrace());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-
-        // if the user is validated by our loginService...
+        // if the user is validated by the loginService...
         if (isValidUser) {
             log.info("LoginController: user {} successfully logged in, generating JWT-Tokens", login.getUsername());
             // generate new token and store it in DTO
@@ -68,12 +79,19 @@ public class LoginController {
         }
     }
 
+    /**
+     * Handles user registration requests by creating a new user based on the provided registration details.
+     * Logs the registration process, including both successful and failed attempts.
+     *
+     * @param register A {@link RegisterDTO} object containing the new user's registration information
+     *                 (e.g., username, password, email).
+     * @return A {@link ResponseEntity} containing a success message if registration is successful, or a
+     *         406 Not Acceptable status with an error message if registration fails (e.g., invalid username or password).
+     */
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterDTO register) {
         log.info("LoginController: new user {} registering", register.getUsername());
-
         boolean registered = userService.createNewUser(register);
-
         // if the user is validated by our loginService...
         if (registered) {
             log.info("LoginController: user {} successfully registered", register.getUsername());
@@ -84,7 +102,18 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Invalid username or password");
         }
     }
-
+    
+    /**
+     * Handles forgot password requests by validating the user's security questions and, if valid,
+     * proceeding with a password reset. Logs each step of the process, including successful
+     * validations and failures.
+     *
+     * @param forgotPasswordDTO A {@link ForgotPasswordDTO} object containing the user's username
+     *                          and answers to security questions.
+     * @return A {@link ResponseEntity} containing a success message if password reset is successful,
+     *         a 406 Not Acceptable status if security question validation fails, or a 401 Unauthorized
+     *         status if password reset fails after successful security question validation.
+     */
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
         log.info("LoginController: validating security questions for username {}", forgotPasswordDTO.getUsername());
