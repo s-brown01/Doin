@@ -37,7 +37,6 @@ public class FriendController {
      */
     private final TokenService tokenService;
 
-
     /**
      * Constructor for a new FriendController
      *
@@ -164,7 +163,6 @@ public class FriendController {
         return ResponseEntity.ok(requests);
     }
 
-
     /**
      * Adds a friend to the user's friend list. The user is based on the username in the JWT-Token.
      *
@@ -201,7 +199,6 @@ public class FriendController {
             log.info("addFriend: adding friend {} was unsuccessful for user {} because {}", friendUsername, userUsername, result.getMessage());
             return ResponseEntity.ok(false);
         }
-
     }
 
     /**
