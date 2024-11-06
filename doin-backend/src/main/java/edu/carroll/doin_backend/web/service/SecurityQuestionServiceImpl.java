@@ -7,16 +7,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service implementation for managing SecurityQuestions.
+ * <p>
+ * This service provides functionality to retrieve and add security questions to the repository.
+ * It includes logging at various levels to provide insights into the process.
+ */
 @Service
 public class SecurityQuestionServiceImpl implements SecurityQuestionService {
+    /**
+     * A {@link Logger} to just for this class
+     */
     private static final Logger log = LoggerFactory.getLogger(SecurityQuestionServiceImpl.class);
 
     private final SecurityQuestionRepository securityQuestionRepo;
 
+    /**
+     * Constructor for SecurityQuestionServiceImpl.
+     *
+     * @param securityQuestionRepo the repository for performing CRUD operations on SecurityQuestions.
+     */
     public SecurityQuestionServiceImpl(SecurityQuestionRepository securityQuestionRepo) {
         this.securityQuestionRepo = securityQuestionRepo;
     }
 
+    /**
+     * Retrieves a SecurityQuestion by its value (question text).
+     * <p>
+     * This method first checks if the provided question value is valid. Then, it looks up the question in the repository by its ID.
+     * If found, it checks if the question matches the input value and returns it.
+     *
+     * @param securityQuestionValue the question value to look up.
+     * @return the SecurityQuestion if found and validated, or null if not found or invalid.
+     */
     @Override
     public SecurityQuestion getSecurityQuestionByValue(String securityQuestionValue) {
         log.trace("getSecurityQuestionByValue: starting for question value {}", securityQuestionValue);
@@ -40,7 +63,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
                 return null;
             }
             if (!securityQuestion.getQuestion().equals(securityQuestionValue)) {
-                log.warn("getSecurityQuestionByValue: question ({}) does not mach input value {}", securityQuestion.getQuestion(), securityQuestionValue);
+                log.warn("getSecurityQuestionByValue: question ({}) does not match input value {}", securityQuestion.getQuestion(), securityQuestionValue);
                 return null;
             }
             log.trace("getSecurityQuestionByValue: found and validated question {}", securityQuestionValue);
@@ -54,31 +77,30 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
         }
     }
 
-    private void checkAndFillRepo() {
-        log.trace("checkAndFillRepo: checking and populating repository");
-        addSecurityQuestion("pet");
-        addSecurityQuestion("city");
-        addSecurityQuestion("school");
-        log.trace("checkAndFillRepo: security questions repo filled with {} questions", securityQuestionRepo.count());
-
-    }
-
+    /**
+     * Adds a new security question to the repository.
+     * <p>
+     * The method validates the input question by checking if it's null or blank, and if it already exists in the repository.
+     * If the question is valid, it is saved to the repository.
+     *
+     * @param questionValue the security question to add.
+     * @return true if the question was successfully added, false otherwise.
+     */
     @Override
     public boolean addSecurityQuestion(String questionValue) {
         log.trace("addSecurityQuestion: validating question {}", questionValue);
-        // make sure new question isn't null or blank
+        // Make sure new question isn't null or blank
         if (questionValue == null || questionValue.isBlank()) {
             return false;
         }
-        // make sure question doesn't already exist
+        // Make sure the question doesn't already exist
         if (securityQuestionRepo.existsByQuestion(questionValue)) {
             log.warn("addSecurityQuestion: question {} already exists", questionValue);
             return false;
         }
-        // if not null and not exist, create the new SecurityQuestion
+        // If not null and doesn't exist, create the new SecurityQuestion
         log.info("addSecurityQuestion: adding question {}", questionValue);
         securityQuestionRepo.save(new SecurityQuestion(questionValue));
         return true;
     }
-
 }
