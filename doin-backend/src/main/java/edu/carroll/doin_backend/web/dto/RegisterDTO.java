@@ -1,21 +1,18 @@
 package edu.carroll.doin_backend.web.dto;
 
-import edu.carroll.doin_backend.web.model.SecurityQuestion;
-
 public class RegisterDTO {
-
-    public RegisterDTO(String username, String password, String securityQuestion, String securityAnswer) {
-        this.username = username;
-        this.password = password;
-        this.securityQuestionString = securityQuestion;
-        this.securityAnswer = securityAnswer;
-    }
 
     private String username;
     private String password;
     private String securityQuestionString;
     private String securityAnswer;
     private Integer securityQuestionId;
+    public RegisterDTO(String username, String password, String securityQuestion, String securityAnswer) {
+        this.username = username;
+        this.password = password;
+        this.securityQuestionString = securityQuestion;
+        this.securityAnswer = securityAnswer;
+    }
 
     public Integer getSecurityQuestionId() {
         return securityQuestionId;
@@ -33,19 +30,19 @@ public class RegisterDTO {
         return password;
     }
 
-    public void setSecurityAnswer(String securityAnswer) {
-        this.securityAnswer = securityAnswer;
-    }
-
     public String getSecurityAnswer() {
         return securityAnswer;
+    }
+
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
     }
 
     public String getSecurityQuestionString() {
         return securityQuestionString;
     }
 
-    public void clearData(){
+    public void clearData() {
         this.username = null;
         this.password = null;
         this.securityQuestionString = null;

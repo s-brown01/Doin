@@ -1,7 +1,5 @@
 package edu.carroll.doin_backend.web.dto;
 
-import edu.carroll.doin_backend.web.model.SecurityQuestion;
-
 /**
  * Represents the result of a validation process.
  *
