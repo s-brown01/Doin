@@ -6,7 +6,14 @@ import java.util.Optional;
 import edu.carroll.doin_backend.web.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
+/**
+ * Repository interface for accessing and managing {@link User} entities in the database.
+ * <p>
+ * This interface extends {@link JpaRepository}, providing CRUD operations and custom query methods
+ * for interacting with the user data in the underlying database. The methods here allow for searching users
+ * by their username, both in an exact case-insensitive manner and via partial matching.
+ * </p>
+ */
 public interface LoginRepository extends JpaRepository<User, Integer> {
   /**
    * Finds a list of users by their username, ignoring case.
@@ -36,11 +43,18 @@ public interface LoginRepository extends JpaRepository<User, Integer> {
    */
   List<User> findByUsernameContainingIgnoreCase(String username);
 
-  boolean existsByUsernameIgnoreCase(String username);
-
-//  void findBySimilarUsername(String usernameToFind);
-
-  List<User> findByUsernameLikeIgnoreCase(String username);
+  /**
+   * Finds a user by their username.
+   * <p>
+   * This method retrieves a {@link User} entity based on the provided username. The search is case-sensitive,
+   * meaning the username must exactly match the one stored in the database. The result is wrapped in an
+   * {@link Optional}, which will be empty if no user is found with the given username.
+   * </p>
+   *
+   * @param username the username of the user to search for.
+   * @return an {@link Optional} containing the {@link User} object if found, or an empty {@link Optional}
+   *         if no user exists with the given username.
+   */
   Optional<User> findByUsername(String username);
 
 }
