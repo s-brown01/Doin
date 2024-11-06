@@ -18,47 +18,64 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Implementation of the FriendService interface that handles operations related to friends and friendships.
- * This service provides functionalities to retrieve friends of friends, add or remove friends, and get friendship details.
+ * Implementation of the {@link FriendService} interface that manages friendship operations.
+ * <p>
+ * This service provides methods for:
+ * <ul>
+ *     <li>Retrieving a user's friends and their friends' details.</li>
+ *     <li>Managing friend requests (sending, accepting, and removing friends).</li>
+ *     <li>Checking and modifying the friendship status between users.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * It also handles validation of usernames, ensuring users cannot friend themselves, and prevents duplicate or invalid requests.
+ * </p>
+ * <p>
+ * All operations rely on data persistence through repositories such as {@code loginRepo} and {@code friendRepo}.
+ * </p>
  */
 @Service
 public class FriendServiceImpl implements FriendService {
     /**
-     * A Logger to just for this class
+     * A {@link Logger} for logging messages and operations
      */
     private static final Logger log = LoggerFactory.getLogger(FriendServiceImpl.class);
 
     /**
-     * A JPA Repository that connects to Friendship Model
+     * A {@link FriendRepository} (JPA Repository) that connects to Friendship Model
      */
     private final FriendRepository friendRepo;
 
     /**
-     * A JPA Repository that connects to the User model.
+     * A {@link LoginRepository} (JPA Repository) that connects to the User model.
      */
     private final LoginRepository loginRepo;
-
-    private final ImageService imageService;
 
     /**
      * Constructor to initialize FriendServiceImpl with the necessary repositories.
      *
      * @param friendRepository The repository for managing Friendship entities.
      * @param loginRepository  The repository for managing User entities.
-     * @param imageService     The repository for managing Image entities
-     */
-    public FriendServiceImpl(FriendRepository friendRepository, LoginRepository loginRepository, ImageService imageService) {
+=     */
+    public FriendServiceImpl(FriendRepository friendRepository, LoginRepository loginRepository) {
         this.friendRepo = friendRepository;
         this.loginRepo = loginRepository;
-        this.imageService = imageService;
     }
 
     /**
-     * Retrieves the set of "friends of friends" for the given user.
-     * Ensures that no null values are returned and logs the process.
+     * Retrieves the set of mutual friends (friends of friends) for a given user.
+     * <p>
+     * The method first validates the username. If the username is invalid, it returns an empty set.
+     * If valid, it fetches the user's direct friends, then retrieves and aggregates each friend's friends
+     * (excluding the initial user from the result).
+     * </p>
+     * <p>
+     * If an error occurs during processing (e.g., repository access failure), it logs a warning and returns an empty set.
+     * </p>
      *
-     * @param userUsername the username of the person to get mutual friends for.
-     * @return A {@link Set} of users who are friends of the user's friends, or an empty set if none found or usernames are invalid.
+     * @param userUsername The username of the user whose mutual friends are being retrieved.
+     * @return A {@link Set} of {@link FriendshipDTO} objects representing mutual friends (friends of friends),
+     *         or an empty set if the username is invalid or if an error occurs during processing.
      */
     @Override
     public Set<FriendshipDTO> getFriendsOfFriends(String userUsername) {
@@ -95,18 +112,23 @@ public class FriendServiceImpl implements FriendService {
     }
 
     /**
-     * Retrieves a set of {@link FriendshipDTO} objects representing users whose usernames
-     * match or are similar to the provided {@code usernameToFind} and who have a connection
-     * with the current user, identified by {@code userUsername}.
+     * Finds users with usernames similar to {@code usernameToFind} and retrieves their
+     * friendship status with the user identified by {@code userUsername}.
      * <p>
-     * The result includes users whose usernames exactly match, partially match, or
-     * are similar to {@code usernameToFind} (case-insensitive), with a second lookup using
-     * wildcards if an exact match search yields no results.
+     * Searches for usernames matching {@code usernameToFind} (case-insensitive) and determines the
+     * friendship status of each found user relative to {@code userUsername}. Possible statuses are:
+     * <ul>
+     *     <li>{@code user -> friend}</li>
+     *     <li>{@code friend -> user}</li>
+     *     <li>{@code NOTADDED} if no connection exists</li>
+     * </ul>
+     * Returns an empty set if usernames are invalid or no matches are found.
      * </p>
      *
-     * @param userUsername   the username of the current user who is performing the search
-     * @param usernameToFind the username to search for, which may be a partial or full username
-     * @return a {@link Set} of {@link FriendshipDTO} objects representing the matched users.
+     * @param userUsername   the username of the user performing the search.
+     * @param usernameToFind the partial or full username to search for.
+     * @return a {@link Set} of {@link FriendshipDTO} objects representing matching users
+     *         and their friendship status with {@code userUsername}; empty if none found.
      */
     @Override
     public Set<FriendshipDTO> getUser(String userUsername, String usernameToFind) {
@@ -143,6 +165,18 @@ public class FriendServiceImpl implements FriendService {
         return foundUsers;
     }
 
+    /**
+     * Retrieves a set of confirmed friends for the specified user, identified by {@code userUsername}.
+     * <p>
+     * Finds all users with a confirmed friendship status where the specified user is either
+     * the requester or recipient. Converts each friendship into a {@link FriendshipDTO} for return.
+     * </p>
+     * Returns an empty set if the username is invalid or no friends are found.
+     *
+     * @param userUsername the username of the user whose friends are being retrieved.
+     * @return a {@link Set} of {@link FriendshipDTO} objects representing confirmed friends;
+     *         empty if none found or username is invalid.
+     */
     @Override
     public Set<FriendshipDTO> getFriends(String userUsername) {
         log.trace("getFriends: validating user username {}", userUsername);
@@ -162,6 +196,18 @@ public class FriendServiceImpl implements FriendService {
         return convertFriendshipIntoDTOS(currentUser, foundFriends);
     }
 
+    /**
+     * Retrieves a set of pending friend requests for the specified user, identified by {@code userUsername}.
+     * <p>
+     * Finds all incoming friend requests where the specified user is the recipient with a status of
+     * {@code PENDING}. Converts each pending request into a {@link FriendshipDTO}.
+     * </p>
+     * Returns an empty set if the username is invalid or no requests are found.
+     *
+     * @param userUsername the username of the user for whom friend requests are being retrieved.
+     * @return a {@link Set} of {@link FriendshipDTO} objects representing pending friend requests;
+     *         empty if none found or if the username is invalid.
+     */
     @Override
     public Set<FriendshipDTO> getFriendRequests(String userUsername) {
         log.debug("getFriendRequests: validating user username {}", userUsername);
@@ -183,19 +229,21 @@ public class FriendServiceImpl implements FriendService {
     }
 
     /**
-     * Adds a friend for the user specified by the username.
+     * Sends a friend request from the user to the specified friend.
      *
      * <p>
-     * This method validates the user and friend usernames, checks if a user is trying to friend themselves,
-     * checks friend has not blocked user, and verifies that a connection
-     * does not already exist between them. If all validations pass, a new friendship is created.
+     * This method performs several validations: it ensures both the user and the friend exist, checks that
+     * the user is not attempting to friend themselves, verifies that no existing friendship exists, and
+     * ensures the user hasn't already sent a pending request. If the friend has already sent a request,
+     * the request is confirmed. If no connection exists, a new friendship request is created.
      * </p>
      *
-     * @param userUsername  the username of the user who wants to add a friend.
-     * @param friendUsername the username of the friend to be added.
-     * @return a {@link ValidateResult} object containing the status of the operation.
-     *         The status of valid true if user successfully friended 'friendUsername'; valid is false if unsuccessful,
-     *         along with a message indicating the result of the operation.
+     * @param userUsername  the username of the user sending the friend request.
+     * @param friendUsername the username of the friend to whom the request is being sent.
+     * @return a {@link ValidateResult} containing the status of the operation:
+     *         - {@code valid = true} if the friend request is successfully sent or confirmed,
+     *         - {@code valid = false} with a message indicating the reason for failure (e.g., already friends,
+     *           invalid username, or a pending request).
      */
     @Override
     public ValidateResult addFriend(String userUsername, String friendUsername) {
@@ -254,6 +302,22 @@ public class FriendServiceImpl implements FriendService {
         return new ValidateResult(true, userUsername + " has sent a friend request to " + friendUsername);
     }
 
+    /**
+     * Removes the friendship between the specified user and friend.
+     *
+     * <p>
+     * This method validates the user and friend usernames, checks that they are not the same person,
+     * and ensures that a friendship exists between the two. If all validations pass, the friendship is
+     * deleted, and the users are no longer considered friends.
+     * </p>
+     *
+     * @param userUsername   the username of the user who wants to remove the friend.
+     * @param friendUsername the username of the friend to be removed.
+     * @return a {@link ValidateResult} object containing the result of the operation:
+     *         - {@code valid = true} if the friendship is successfully removed,
+     *         - {@code valid = false} with a message indicating why the removal failed
+     *           (e.g., the users are not friends, invalid usernames).
+     */
     @Override
     public ValidateResult removeFriend(String userUsername, String friendUsername) {
         log.trace("removeFriend: removing friend {} for user {}", friendUsername, userUsername);
@@ -290,6 +354,21 @@ public class FriendServiceImpl implements FriendService {
         return new ValidateResult(true, "user " + userUsername + " and friend " + friendUsername + " are no longer friends");
     }
 
+    /**
+     * Confirms a pending friend request between the specified user and their friend.
+     *
+     * <p>
+     * This method checks if there is an existing pending friend request from the user to the friend.
+     * If such a request exists, it confirms the friendship. Essentially, this method calls
+     * {@link #addFriend(String, String)} to confirm the request.
+     * </p>
+     *
+     * @param userUsername  the username of the user who is confirming the friend request.
+     * @param friendUsername the username of the friend whose request is being confirmed.
+     * @return a {@link ValidateResult} object containing the result of the operation:
+     *         - {@code valid = true} if the friendship is successfully confirmed,
+     *         - {@code valid = false} with a message indicating any failure reason (e.g., no pending request).
+     */
     @Override
     public ValidateResult confirmFriend(String userUsername, String friendUsername) {
         // the addFriend already handles what happens when 2 different users send each other friend requests, so use that method
@@ -299,46 +378,17 @@ public class FriendServiceImpl implements FriendService {
     }
 
     /**
-     * Retrieves a set of random users who are not already friends with the given user.
-     * The number of random users returned is specified by amtOfUsers.
+     * Validates whether a given username exists in the database and is unique.
+     * <p>
+     * This method checks if the username exists in the database and ensures that
+     * there is exactly one user with that username. It handles any exceptions
+     * that may occur during the database query.
+     * </p>
      *
-     * @param user        The user for whom to find random non-friends.
-     * @param amtOfUsers  The number of random users to retrieve.
-     * @return A set of FriendshipDTO representing random users who are not friends.
-     */
-    private Set<FriendshipDTO> getRandomUsers(User user, int amtOfUsers) {
-        // create an empty set to store all random users
-        Set<FriendshipDTO> randomUsers = new HashSet<>();
-
-        // a list of all users in the repository
-        List<User> allUsers = loginRepo.findAll();
-
-        // Create a Set for faster lookup of existing friends
-        Set<User> allFriends = new HashSet<>(friendRepo.findByUser(user).stream()
-                .map(Friendship::getFriend)
-                .toList());
-        // shuffle the list to create random selection of users
-        Collections.shuffle(allUsers);
-
-        for (User randomUser : allUsers) {
-            // if we have collected enough random users, break the for loop
-            if (randomUsers.size() >= amtOfUsers) {
-                break;
-            }
-            // if the randomUser is not already a friend, add them
-            if (!allFriends.contains(randomUser) && !randomUser.equals(user)) {
-                randomUsers.add(new FriendshipDTO(randomUser.getId(), randomUser.getUsername(), FriendshipStatus.NOTADDED, randomUser.getProfilePicture()));
-            }
-        }
-
-        return randomUsers;
-    }
-    
-    /**
-     * A helper method that checks if a specific username is valid in the database. It checks that the username is in the database and that there is only 1 user with that username. Also, it catches any errors that may occur.
-     *
-     * @param username - the username to check against the database
-     * @return true if the username is valid, false if not (not found, more than 1 user with that username, and any errors)
+     * @param username the username to check.
+     * @return {@code true} if the username exists and is unique in the database;
+     *         {@code false} if the username is not found, is associated with more than
+     *         one user, or if an error occurs during validation.
      */
     private boolean isValidExistingUsername(String username) {
         try {
@@ -362,6 +412,19 @@ public class FriendServiceImpl implements FriendService {
         }
     }
 
+    /**
+     * Checks the current friendship status ({@link FriendshipStatus}) between two users.
+     * <p>
+     * This method checks whether a friendship exists between the given {@code user}
+     * and {@code friend}, and returns the current status of their relationship.
+     * If no relationship exists, the status returned is {@link FriendshipStatus#NOTADDED}.
+     * </p>
+     *
+     * @param user   the first user in the relationship check.
+     * @param friend the second user in the relationship check.
+     * @return the {@link FriendshipStatus} between the two users,
+     *         or {@link FriendshipStatus#NOTADDED} if no friendship exists.
+     */
     private FriendshipStatus statusBetween(User user, User friend) {
         log.debug("statusBetween: checking if there is a status between user {} and user {}", user, friend);
         // if there is no relationship return NOTADDED
@@ -372,6 +435,18 @@ public class FriendServiceImpl implements FriendService {
         return friendRepo.findByUserAndFriend(user, friend).getStatus();
     }
 
+    /**
+     * Converts a set of {@link Friendship} objects into a set of {@link FriendshipDTO} objects.
+     * <p>
+     * This method iterates over a set of {@link Friendship} entities, determines the status of
+     * each friendship with respect to the specified {@code user}, and creates corresponding
+     * {@link FriendshipDTO} objects for each friendship.
+     * </p>
+     *
+     * @param user   the current user whose friendship status will be checked.
+     * @param friends the set of {@link Friendship} objects to be converted.
+     * @return a {@link Set} of {@link FriendshipDTO} objects, representing the converted friendships.
+     */
     private Set<FriendshipDTO> convertFriendshipIntoDTOS(User user, Set<Friendship> friends) {
         Set<FriendshipDTO> friendDTOs = new HashSet<>();
         for (Friendship friendship : friends) {
