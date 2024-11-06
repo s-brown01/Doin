@@ -13,20 +13,51 @@ import org.springframework.http.ResponseEntity;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Controller for handling friend-related API requests. This class provides endpoints
+ *      for managing friends, retrieving friend lists, friend requests, and
+ *      handling actions like adding, confirming, and removing friends.
+ * Each method performs validation of the JWT token and user credentials before executing actions.
+ */
 @RestController
 @RequestMapping("api/friends")
 public class FriendController {
+    /**
+     * A {@link Logger} for logging messages
+     */
     private static final Logger log = LoggerFactory.getLogger(FriendController.class);
 
+    /**
+     * A {@link FriendService} to use functions relating to the Friendship repository
+     */
     private final FriendService friendService;
 
+    /**
+     * A {@link TokenService} for functions relating to JWT-Tokens
+     */
     private final TokenService tokenService;
 
+
+    /**
+     * Constructor for a new FriendController
+     *
+     * @param friendService The service responsible for friend operations.
+     * @param tokenService The service responsible for token validation.
+     */
     public FriendController(FriendService friendService, TokenService tokenService) {
         this.friendService = friendService;
         this.tokenService = tokenService;
     }
 
+    /**
+     * Retrieves the set of "friends of friends" for the authenticated user.
+     * Ensures that no null values are returned and logs the process.
+     *
+     * @param authHeader The authorization header containing the JWT token.
+     * @return A {@link ResponseEntity} containing a {@link Set} of friends
+     *          of the user's friends, or an empty set if authentication fails or no
+     *          friends are found.
+     */
     @GetMapping()
     public ResponseEntity<Set<FriendshipDTO>> getFriendsOfFriends(@RequestHeader("Authorization") String authHeader) {
         log.trace("getFriendsOfFriends: validating authHeader, extracting jwtToken and username");
@@ -46,6 +77,14 @@ public class FriendController {
         return ResponseEntity.ok(friends);
     }
 
+    /**
+     * Retrieves a user by their specific username.
+     *
+     * @param authHeader The authorization header containing the JWT token.
+     * @param otherUsername The username of the user to be searched for.
+     * @return A {@link ResponseEntity} containing a {@link Set} of {@link FriendshipDTO} representing
+     *          the found users, or an empty set if authentication fails or no friends are found.
+     */
     @GetMapping("/{otherUsername}")
     public ResponseEntity<Set<FriendshipDTO>> getUserByUsername(@RequestHeader("Authorization") String authHeader, @PathVariable String otherUsername) {
         log.trace("getUserByUsername: validating authHeader, extracting jwtToken and username");
@@ -72,6 +111,13 @@ public class FriendController {
         return ResponseEntity.ok(newFriend);
     }
 
+    /**
+     * Retrieves the user's friends. The user is based on the username in the JWT-Token.
+     *
+     * @param authHeader The authorization header containing the JWT token.
+     * @return A {@link ResponseEntity} containing a {@link Set} of {@link FriendshipDTO} representing,
+     *          the user's friends or an empty set if authentication fails or no friends are found.
+     */
     @GetMapping("/get-friends")
     public ResponseEntity<Set<FriendshipDTO>> getFriends(@RequestHeader("Authorization") String authHeader) {
         log.trace("getFriends: validating authHeader, extracting jwtToken and username");
@@ -91,6 +137,14 @@ public class FriendController {
         return ResponseEntity.ok(friends);
     }
 
+    /**
+     * Retrieves the user's incoming friend requests. The user is based on the username in the JWT-Token.
+     *
+     * @param authHeader The authorization header containing the JWT token.
+     * @return A {@link ResponseEntity} containing a {@link Set} of {@link FriendshipDTO} representing
+     *          the incoming friend requests or an empty set if authentication fails or no incoming
+     *          friend requests are found.
+     */
     @GetMapping("/friend-requests")
     public ResponseEntity<Set<FriendshipDTO>> getFriendRequests(@RequestHeader("Authorization") String authHeader) {
         log.trace("getFriendRequests: validating authHeader, extracting jwtToken and username");
@@ -110,6 +164,15 @@ public class FriendController {
         return ResponseEntity.ok(requests);
     }
 
+
+    /**
+     * Adds a friend to the user's friend list. The user is based on the username in the JWT-Token.
+     *
+     * @param friendUsername The username of the friend to add.
+     * @param authHeader The authorization header containing the JWT token.
+     * @return A {@link ResponseEntity} containing {@code true} if the friend was added,
+     * or {@code false} if the operation failed or authentication is invalid.
+     */
     @PostMapping("/add/{friendUsername}")
     public ResponseEntity<Boolean> addFriend(@PathVariable String friendUsername, @RequestHeader("Authorization") String authHeader) {
         log.trace("addFriend: validating authHeader, extracting jwtToken and username");
@@ -141,6 +204,14 @@ public class FriendController {
 
     }
 
+    /**
+     * Confirms a pending friend request for the user. The user is based on the username in the JWT-Token.
+     *
+     * @param friendUsername The username of the friend to confirm.
+     * @param authHeader The authorization header containing the JWT token.
+     * @return A {@link ResponseEntity} containing {@code true} if the friend request was confirmed,
+     * or {@code false} if the operation failed or authentication is invalid.
+     */
     @PostMapping("/confirm/{friendUsername}")
     public ResponseEntity<Boolean> confirmFriend(@PathVariable String friendUsername, @RequestHeader("Authorization") String authHeader){
         log.trace("confirmFriend: validating authHeader, extracting jwtToken and username");
@@ -170,7 +241,14 @@ public class FriendController {
         log.info("confirmFriend: confirming friend {} was unsuccessful for user {}", friendUsername, userUsername);
         return ResponseEntity.ok(false);
     }
-
+    /**
+     * Removes a friend from the user's friend list. The user is based on the username in the JWT-Token.
+     *
+     * @param friendUsername The username of the friend to remove.
+     * @param authHeader The authorization header containing the JWT token.
+     * @return A {@link ResponseEntity} containing {@code true} if the friendship was removed,
+     * or {@code false} if the operation failed or authentication is invalid.
+     */
     @DeleteMapping("/remove/{friendUsername}")
     public ResponseEntity<Boolean> removeFriend(@PathVariable String friendUsername, @RequestHeader("Authorization") String authHeader) {
         ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
@@ -199,6 +277,15 @@ public class FriendController {
         return ResponseEntity.ok(true);
     }
 
+    /**
+     * Validates the JWT token from the Authorization header and extracts the associated username.
+     * Checks if the token exists, has the correct "Bearer" prefix, and if it is valid.
+     * Logs relevant messages based on validation status and extracts the username if valid.
+     *
+     * @param header The Authorization header containing the JWT token, expected to be prefixed by "Bearer ".
+     * @return A {@link ValidateResult} object containing a flag indicating validity and the extracted username
+     * if the token is valid; otherwise, returns an invalid result with a null username.
+     */
     private ValidateResult validateTokenAndGetUsername(String header) {
         if (header == null || header.isBlank() ||  !header.startsWith("Bearer ")) {
             log.error("getFriendsOfFriends: Missing or invalid Authorization header");
@@ -220,6 +307,14 @@ public class FriendController {
         return new ValidateResult(true, username);
     }
 
+    /**
+     * Checks if the provided username is valid.
+     * A username is considered valid if it is non-null, non-blank,
+     * and contains only alphanumeric characters and underscores.
+     *
+     * @param username The username to validate.
+     * @return {@code true} if the username is valid, {@code false} otherwise.
+     */
     private boolean isValidUsername(String username) {
         if (username == null || username.isBlank()) {
             log.error("validateTokenAndGetUsername: - null or empty username");
@@ -231,6 +326,5 @@ public class FriendController {
             return false;
         }
         return true;
-
     }
 }
