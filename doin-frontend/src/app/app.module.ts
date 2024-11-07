@@ -28,6 +28,7 @@ import { RegisterComponent } from './register/register.component';
 import { AppRoutingModule } from './app.routes';
 import { UserPageComponent } from './user-page/user-page.component';
 import { ImageUploadModalComponent } from './app-image-upload-modal/app-image-upload-modal.component';
+import { EventMiniComponent } from './event-mini/event-mini.component';
 
 @NgModule({
   declarations: [
@@ -49,8 +50,8 @@ import { ImageUploadModalComponent } from './app-image-upload-modal/app-image-up
     StoryPopupComponent,
     StoryBarComponent,
     UserPageComponent,
-    ImageUploadModalComponent
-  ],
+    ImageUploadModalComponent,
+    EventMiniComponent  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
