@@ -48,7 +48,7 @@ public class EventServiceImpl implements EventService {
         logger.info("Retrieving events with paging, page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Set<Integer> friends = friendService.findFriendIdsByUserId(reqUserId, FriendshipStatus.CONFIRMED);
         Page<Event> eventPage;
-        if(friends.contains(userId)) {
+        if(userId.equals(reqUserId) || friends.contains(userId)) {
             eventPage = eventRepository.findUserEvents(userId, Visibility.PRIVATE, pageable);
         }
         else{
