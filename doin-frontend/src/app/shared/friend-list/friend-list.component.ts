@@ -14,7 +14,7 @@ export class FriendListComponent {
   }
 
   @Input() friend!: FriendshipDto;  // Marking as input so parent can pass it4
-  response: string | null = null;
+  @Input() response: string | null = null;
 
   removeFriend() {
     console.log("Removing friend: " + this.friend.username);
