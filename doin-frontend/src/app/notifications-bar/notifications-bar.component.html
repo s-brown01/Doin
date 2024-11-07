@@ -11,7 +11,15 @@
     </div>
     <a href="login" (click)="logout()">Logout</a>
   </div>
-  <div class="notifications">
-
+  <div class="upcoming-events">
+    <h2>Upcoming Events:</h2>
+    <div class="events">
+      <div *ngFor="let e of upcomingEvents">
+        <app-event-mini [event]="e"></app-event-mini> 
+      </div>
+      <div *ngIf="upcomingEvents.length == 0">
+        <p class="no-events-message">No events to show</p>
+      </div>
+    </div>
   </div>
 </div>
