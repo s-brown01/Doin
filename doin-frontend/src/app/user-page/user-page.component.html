@@ -1,32 +1,36 @@
 <div *ngIf="user" class="user-container">
-    <div class="header">
-      <div class="user-info">
-        <app-image class="profile-img" [borderRadius]="'50%'" [image]="user.profilePicture"></app-image>
-        <div *ngIf="isCurrentUserPage">
-          <app-image-upload-modal [titile]='buttonTitle'></app-image-upload-modal>
-        </div>
-        <a [routerLink]="['/user', user.id]" class="username-link">
-            <span class="username">{{ user.username }}</span>
-          </a>      </div>
+  <div class="header">
+    <div class="user-info">
+      <app-image
+        class="profile-img"
+        [borderRadius]="'50%'"
+        [image]="user.profilePicture"
+      ></app-image>
+      <div *ngIf="isCurrentUserPage">
+        <app-image-upload-modal [titile]="buttonTitle"></app-image-upload-modal>
+      </div>
+      <a [routerLink]="['/user', user.id]" class="username-link">
+        <span class="username">{{ user.username }}</span>
+      </a>
     </div>
-    <div class="events-container">
-        <h3 *ngIf="!isCurrentUserPage">{{user.username}}'s events:</h3>
-        <h3 *ngIf="isCurrentUserPage">your events:</h3>
+  </div>
+  <div class="may-know">
+    <h2 *ngIf="!isCurrentUserPage">{{ user.username }}'s friends:</h2>
+    <h2 *ngIf="isCurrentUserPage">your friends:</h2>
+    <div class="may-know-list">
+      <div *ngFor="let friend of friends">
+        <app-friend-list [friend]="friend"></app-friend-list>
+      </div>
+    </div>
+  </div>
+  <div class="events-container">
+    <h2 *ngIf="!isCurrentUserPage">{{ user.username }}'s events:</h2>
+    <h2 *ngIf="isCurrentUserPage">your events:</h2>
 
-        <div class="events">
-            <div class="event" *ngFor="let event of events">
-                <div class="post-body">
-                    <div class="content">
-                      <a [routerLink]="['/event', event.id]" class="event-link">
-                        <h2 class="title"><span class="icon">🍽️</span> Going on a {{event.description}}</h2>
-                      </a>
-                      <div class="location">📍{{event.location}}</div>
-                      <div>🕒{{event.time}}</div>
-                    </div>
-                    <div class="footer">
-                      <button class="join-button">Join</button>
-                </div>
-            </div>
-        </div>
+    <div class="events">
+      <div *ngFor="let e of events">
+        <app-event-mini [event]="e"></app-event-mini>
+      </div>
     </div>
+  </div>
 </div>
