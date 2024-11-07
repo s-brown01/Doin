@@ -4,8 +4,9 @@
     <app-image class="avatar" [borderRadius]="'50%'" [image]="friend.profilePic"></app-image>
   </div>
 
-  <div class="friend-name">{{friend.username}}</div>
-
+  <a (click)="goToProfile(friend.id)">
+    <span class="username">{{friend.username}}</span>
+  </a>
   <div *ngIf="response">{{response}}</div>
 
   <div *ngIf="!response" class="buttons">
