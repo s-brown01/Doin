@@ -16,7 +16,7 @@ import java.util.List;
 public interface EventService {
 
     Page<EventDTO> getPublicEvents(Pageable pageable);
-    Page<EventDTO> getUserEvents(Integer userId, Pageable pageable);
+    Page<EventDTO> getUserEvents(Integer userId, Integer reqUserId, Pageable pageable);
 
 
     Page<EventDTO> getAll(Integer userId, Pageable pageable);
