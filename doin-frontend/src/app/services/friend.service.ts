@@ -17,6 +17,10 @@ export class FriendService {
     return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends");
   }
 
+  getFriends(): Observable<FriendshipDto[]> {
+    return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends/get-friends");
+  }
+
   getUserByUsername(otherUsername: string): Observable<FriendshipDto[]> {
     if (otherUsername == this.authService.getCurrentUser().username) {
       console.warn("OtherUsername is the same as current user's username");
