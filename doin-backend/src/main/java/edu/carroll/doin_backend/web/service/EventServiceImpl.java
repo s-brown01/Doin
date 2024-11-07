@@ -107,7 +107,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public boolean joinUser(Integer eventId, Integer userId) {
         logger.info("User with ID {} joining event with ID {}", userId, eventId);
-        Event existing = eventRepository.getById(eventId);
+        Optional<Event> existingOpt = eventRepository.findById(eventId);
+        if(existingOpt.isEmpty())
+            return false;
+        Event existing = existingOpt.get();
         if(existing.getJoiners().stream().anyMatch(a-> Objects.equals(a.getId(), userId))) {
             return false;
         }
