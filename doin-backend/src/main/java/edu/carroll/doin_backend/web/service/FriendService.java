@@ -2,6 +2,7 @@ package edu.carroll.doin_backend.web.service;
 
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
 import edu.carroll.doin_backend.web.dto.ValidateResult;
+import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 
 import java.util.Set;
 
@@ -34,6 +35,7 @@ public interface FriendService {
      * @return A {@link Set} of {@link FriendshipDTO} objects representing the user's friends.
      */
     Set<FriendshipDTO> getFriends(String userUsername);
+    Set<Integer> findFriendIdsByUserId(Integer userId, FriendshipStatus status);
 
     /**
      * Retrieves the list of friend requests for the specified user.

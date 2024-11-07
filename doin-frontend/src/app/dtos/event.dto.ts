@@ -37,8 +37,6 @@ export class EventDTO {
         this.createdAt = createdAt;
     }
 }
-
-
 export class EventType{
     id : number;
     name : string;

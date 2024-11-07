@@ -19,7 +19,9 @@ export class EventComponent {
   ngOnInit(){
     this.time = this.calculateTime()
   }
-
+  getShortDescription(): string {
+    return this.event.description.length > 18 ? this.event.description.slice(0, 15) + '...' : this.event.description;
+  }
   join(){
     const currentUser = this.authService.getCurrentUser();
 

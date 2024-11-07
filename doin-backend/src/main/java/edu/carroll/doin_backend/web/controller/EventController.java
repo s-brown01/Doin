@@ -1,13 +1,18 @@
 package edu.carroll.doin_backend.web.controller;
 
 import edu.carroll.doin_backend.web.dto.EventDTO;
+import edu.carroll.doin_backend.web.security.TokenService;
 import edu.carroll.doin_backend.web.service.EventService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * REST controller for managing events.
@@ -19,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
-
+    private final TokenService tokenService;
     private final EventService eventService;
 
     /**
@@ -27,8 +32,9 @@ public class EventController {
      *
      * @param eventService the service used to manage events
      */
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, TokenService tokenService) {
         this.eventService = eventService;
+        this.tokenService = tokenService;
     }
 
     /**
@@ -41,10 +47,38 @@ public class EventController {
      */
     @GetMapping()
     public Page<EventDTO> getAll(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        Integer userId = tokenService.getUserId(authHeader);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("time").descending());
+        return eventService.getAll(userId, pageable);
+    }
+
+    @GetMapping("/public")
+    public Page<EventDTO> getPublicEvents(@RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("time").descending());
-        return eventService.getAll(pageable);
+        return eventService.getPublicEvents(pageable);
     }
+
+    @GetMapping("/users/{id}")
+    public Page<EventDTO> getUserEvents(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("time").descending());
+        return eventService.getPublicEvents(pageable);
+    }
+
+    @GetMapping("/upcoming")
+    public List<EventDTO> getUpcoming(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader){
+        Integer userId = tokenService.getUserId(authHeader);
+        return eventService.getUpcomingEvents(userId);
+    }
+//
+//    @GetMapping("/user/{id}")
+//    public List<EventDTO> getUserEvents(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @PathVariable String id){
+//        Integer currUserId = tokenService.getUserId(authHeader);
+//        return eventService.getUpcomingEvents(userId);
+//    }
 
     /**
      * Retrieves a specific event by its ID.
@@ -56,8 +90,10 @@ public class EventController {
      * @return the {@link EventDTO} representing the requested event
      */
     @GetMapping("/{id}")
-    public ResponseEntity<EventDTO> getById(@PathVariable Integer id) {
-        EventDTO event = eventService.getById(id);
+    public ResponseEntity<EventDTO> getById(@PathVariable Integer id,
+                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        Integer userId = tokenService.getUserId(authHeader);
+        EventDTO event = eventService.getById(id, userId);
         if(event == null){
             return ResponseEntity.notFound().build();
         }
@@ -74,35 +110,25 @@ public class EventController {
      * @return the created {@link EventDTO}
      */
     @PostMapping()
-    public EventDTO create(@RequestBody EventDTO event) {
+    public EventDTO create(@RequestBody EventDTO event, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        Integer userId = tokenService.getUserId(authHeader);
+        if(!event.getCreator().getId().equals(userId))
+            return null;
         return eventService.add(event);
     }
 
-    /**
-     * Joins a user to an event.
-     * <p>
-     * This endpoint allows a user to join an event by its ID.
-     * </p>
-     *
-     * @param id the ID of the event to join
-     * @param userId the ID of the user joining the event
-     */
     @PostMapping("/{id}/join")
-    public ResponseEntity<Boolean> join(@PathVariable Integer id, @RequestParam Integer userId) {
+    public ResponseEntity<Boolean> join(@PathVariable Integer id, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        Integer userId = tokenService.getUserId(authHeader);
         boolean res = eventService.joinUser(id, userId);
         return ResponseEntity.ok(res);
     }
 
-    /**
-     * Deletes a specific event by its ID.
-     * <p>
-     * This endpoint removes the event corresponding to the provided ID from the system.
-     * </p>
-     *
-     * @param id the ID of the event to delete
-     */
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
-        eventService.delete(id);
+    @PostMapping("{id}/images")
+    public boolean addImages(@RequestParam("file") MultipartFile file,
+                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader,
+                             @PathVariable Integer id) {
+        Integer userId = tokenService.getUserId(authHeader);
+        return eventService.addImage(id, userId, file);
     }
 }

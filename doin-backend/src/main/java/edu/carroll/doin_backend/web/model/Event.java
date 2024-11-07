@@ -18,16 +18,10 @@ import java.util.List;
  * <p>
  * This class is used to model events that can be created, updated, and viewed within the application.
  * </p>
- *
- * @see EventType
- * @see User
- * @see Image
- * @see Visibility
  */
 @Entity
 @Table(name = "events")
 public class Event {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -287,10 +281,10 @@ public class Event {
      * This method allows the addition of multiple images to the event by appending them to the existing list of images.
      * </p>
      *
-     * @param images a {@link List} of {@link Image} objects to add to the event
+     * @param image an {@link Image} object to add to the event
      */
-    public void addImages(List<Image> images) {
-        this.images.addAll(images);
+    public void addImage(Image image){
+        this.images.add(image);
     }
 
     /**

@@ -50,10 +50,10 @@ public class FriendControllerTest {
 
     @BeforeEach
     public void setUp() {
-        final String user1Token = jwtTokenService.generateToken(username1);
-        final String user2Token = jwtTokenService.generateToken(username2);
-        final String user3Token = jwtTokenService.generateToken(username3);
-        final String userInvalidToken = jwtTokenService.generateToken(invalidUsername);
+        final String user1Token = jwtTokenService.generateToken(username1, 1);
+        final String user2Token = jwtTokenService.generateToken(username2, 2);
+        final String user3Token = jwtTokenService.generateToken(username3, 3);
+        final String userInvalidToken = jwtTokenService.generateToken(invalidUsername, 4);
         final String invalidToken = user1Token + "FAKE TOKEN";
         user1Header = "Bearer " + user1Token;
         user2Header = "Bearer " + user2Token;

@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Implementation of the {@link FriendService} interface that manages friendship operations.
@@ -179,7 +176,8 @@ public class FriendServiceImpl implements FriendService {
      * empty if none found or username is invalid.
      */
     @Override
-    public Set<FriendshipDTO> getFriends(String userUsername) {
+    public Set<FriendshipDTO>
+    getFriends(String userUsername) {
         log.trace("getFriends: validating user username {}", userUsername);
         if (!isValidExistingUsername(userUsername)) {
             log.warn("getFriends: invalid user username {}", userUsername);
@@ -209,6 +207,14 @@ public class FriendServiceImpl implements FriendService {
      * @return a {@link Set} of {@link FriendshipDTO} objects representing pending friend requests;
      * empty if none found or if the username is invalid.
      */
+    @Override
+    public Set<Integer> findFriendIdsByUserId(Integer userId, FriendshipStatus status) {
+        log.trace("getting Friends: for user {}", userId);
+        Set<Integer> foundFriends = friendRepo.findFriendIdsByUserId(userId, status);
+        log.trace("getFriends: found {} friends for user {}", foundFriends.size(), userId);
+        return foundFriends;
+    }
+
     @Override
     public Set<FriendshipDTO> getFriendRequests(String userUsername) {
         log.debug("getFriendRequests: validating user username {}", userUsername);

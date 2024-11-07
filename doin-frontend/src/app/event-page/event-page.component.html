@@ -7,7 +7,20 @@
           </a>      </div>
       <h2 class="description">{{event.description}}</h2>
     </div>
-  
+  <!-- Images Section -->
+  <div *ngIf="event.images && event.images.length > 0" class="images-section">
+    <div *ngFor="let image of event.images" class="event-image">
+      <app-image [image]="image" [borderRadius]="'8px'"></app-image>
+    </div>
+    <!-- Image Upload Button -->
+    <div class="image-upload" *ngIf="imageUploadAvailable">
+      <label class="upload-button">
+        <span class="upload-icon">+</span>
+        <input type="file" (change)="onImageUpload($event)" />
+      </label>
+    </div>
+  </div>
+
     <div class="post-details">
       <div class="location">
         <i class="location-icon">📍</i>

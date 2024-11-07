@@ -3,6 +3,7 @@ package edu.carroll.doin_backend.web.service;
 import edu.carroll.doin_backend.web.dto.ForgotPasswordDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
+import edu.carroll.doin_backend.web.dto.TokenDTO;
 import edu.carroll.doin_backend.web.dto.ValidateResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,7 +64,7 @@ public interface UserService {
      * @param file   the new profile picture file to be uploaded.
      * @return true if the profile picture was successfully updated, false otherwise.
      */
-    boolean updateProfilePicture(String userId, MultipartFile file);
+    boolean updateProfilePicture(Integer userId, MultipartFile file);
 
     /**
      * Validates the user's security question and answer during the password recovery process.

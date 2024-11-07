@@ -11,13 +11,6 @@
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
 }
-
-.post {
-  margin: 30px 0; /* Added vertical margin for spacing */
-  width: 50%; /* Ensures posts take full width of content-wrapper */
-  max-width: 600px; /* Optional: Limit max width for better readability */
-}
-
 .wrapper {
   height: 100%;
 }
@@ -84,4 +77,38 @@ h1 {
   padding: 15px;
   font-size: 12pt;
   font-weight: bold;
+}
+
+.other-events {
+  width: 80%;
+  margin-top: 20px;
+}
+
+.events {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 0 10px;
+}
+
+button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color:  #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover {
+  background-color:  #27ae60;
+}
+
+h2 {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
 }

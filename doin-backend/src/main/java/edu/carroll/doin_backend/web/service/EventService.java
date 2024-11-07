@@ -3,6 +3,10 @@ package edu.carroll.doin_backend.web.service;
 import edu.carroll.doin_backend.web.dto.EventDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
 
 /**
  * The {@code EventService} interface provides methods for managing events
@@ -11,21 +15,15 @@ import org.springframework.data.domain.Pageable;
  */
 public interface EventService {
 
-    /**
-     * Retrieves all events in the system.
-     *
-     * @return a list of {@link EventDTO} representing all events.
-     */
-    Page<EventDTO> getAll(Pageable pageable);
+    Page<EventDTO> getPublicEvents(Pageable pageable);
+    Page<EventDTO> getUserEvents(Integer userId, Pageable pageable);
 
-    /**
-     * Retrieves an event by its unique identifier.
-     *
-     * @param id the unique identifier of the event to retrieve.
-     * @return an {@link EventDTO} representing the event, or {@code null}
-     * if no event with the specified ID exists.
-     */
-    EventDTO getById(Integer id);
+
+    Page<EventDTO> getAll(Integer userId, Pageable pageable);
+
+    List<EventDTO> getUpcomingEvents(Integer userId);
+
+    EventDTO getById(Integer eventId, Integer userId);
 
     /**
      * Adds a new event to the system.
@@ -51,4 +49,6 @@ public interface EventService {
      * @throws IllegalArgumentException if the event ID is invalid or does not exist.
      */
     void delete(Integer id);
+
+    boolean addImage(Integer eventId, Integer userId, MultipartFile file);
 }

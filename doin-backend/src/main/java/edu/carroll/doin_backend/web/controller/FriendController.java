@@ -1,9 +1,11 @@
 package edu.carroll.doin_backend.web.controller;
 
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.dto.ValidateResult;
 import edu.carroll.doin_backend.web.security.TokenService;
 import edu.carroll.doin_backend.web.service.FriendService;
+import edu.carroll.doin_backend.web.service.FriendServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -222,20 +224,18 @@ public class FriendController {
             log.warn("confirmFriend: invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
-        log.trace("confirmFriend: user username {} validated", userUsername);
         // validate the friendUsername
         if (!isValidUsername(friendUsername)) {
             log.error("confirmFriend: - Invalid friend username {}", friendUsername);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
-        log.trace("confirmFriend: friend username {} validated", friendUsername);
 
         ValidateResult result = friendService.confirmFriend(userUsername, friendUsername);
         if (result.isValid()) {
-            log.debug("confirmFriend: confirming friend {} was successful for user {}", friendUsername, userUsername);
+            log.debug("confirmFriend: confirming friend {} was unsuccessful for user {}", friendUsername, userUsername);
             return ResponseEntity.ok(true);
         }
-        log.info("confirmFriend: confirming friend {} was unsuccessful for user {}", friendUsername, userUsername);
+        log.trace("confirmFriend: confirming friend {} was successful for user {}", friendUsername, userUsername);
         return ResponseEntity.ok(false);
     }
 

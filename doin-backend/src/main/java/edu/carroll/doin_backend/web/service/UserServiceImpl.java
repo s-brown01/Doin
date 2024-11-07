@@ -219,8 +219,8 @@ public class UserServiceImpl implements UserService {
      * @return true if the profile picture was successfully updated, false otherwise.
      */
     @Override
-    public boolean updateProfilePicture(String userName, MultipartFile file) {
-        Optional<User> userOpt = loginRepo.findByUsername(userName);
+    public boolean updateProfilePicture(Integer userId, MultipartFile file) {
+        Optional<User> userOpt = loginRepo.findById(userId);
         if (userOpt.isEmpty())
             return false;
         User user = userOpt.get();

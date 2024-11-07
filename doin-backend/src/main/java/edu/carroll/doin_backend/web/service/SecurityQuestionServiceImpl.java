@@ -89,16 +89,16 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     @Override
     public boolean addSecurityQuestion(String questionValue) {
         log.trace("addSecurityQuestion: validating question {}", questionValue);
-        // Make sure new question isn't null or blank
+        // make sure new question isn't null or blank
         if (questionValue == null || questionValue.isBlank()) {
             return false;
         }
-        // Make sure the question doesn't already exist
+        // make sure question doesn't already exist
         if (securityQuestionRepo.existsByQuestion(questionValue)) {
             log.warn("addSecurityQuestion: question {} already exists", questionValue);
             return false;
         }
-        // If not null and doesn't exist, create the new SecurityQuestion
+        // if not null and does not exist, create the new SecurityQuestion
         log.info("addSecurityQuestion: adding question {}", questionValue);
         securityQuestionRepo.save(new SecurityQuestion(questionValue));
         return true;
