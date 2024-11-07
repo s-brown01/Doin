@@ -20,6 +20,7 @@ export class UserPageComponent {
   friends: FriendshipDto[] = [];
   buttonTitle: string = 'Chanage Profile Pic'
   isCurrentUserPage: boolean = false;
+  empty: string = ' '
 
   constructor(private userService: UserService, private route: ActivatedRoute, 
     private eventService: EventService, private authService: AuthService, 
