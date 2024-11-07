@@ -50,7 +50,8 @@ public class LoginController {
     if (isValidUser) {
         log.info("LoginController: user {} successfully logged in, generating JWT-Tokens", login.getUsername());
         // generate new token and store it in DTO
-        final String token = tokenService.generateToken(login.getUsername());
+        UserDTO user = userService.findUser( null, login.getUsername());
+        final String token = tokenService.generateToken(user.getUsername(), user.getId());
         final TokenDTO tokenDTO = new TokenDTO(token);
         // Return the DTO
         return ResponseEntity.ok(tokenDTO);

@@ -50,12 +50,13 @@ public class JwtTokenService implements TokenService {
      * @return the newly generated JWT-Token that identifies the user, returns null if any errors when creating
      */
     @Override
-    public String generateToken(String username) {
+    public String generateToken(String username, Integer id) {
         // try to create a JWT token, catch errors
         try {
             return JWT.create()
                     .withSubject(username)
                     .withClaim("username", username)
+                    .withClaim("id", id)
                     .withIssuedAt(new Date())
                     .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                     .withIssuer(issuer)
@@ -125,6 +126,11 @@ public class JwtTokenService implements TokenService {
     @Override
     public String getUsername(String token) {
         return JWT.decode(token).getClaim("username").asString();
+    }
+
+    @Override
+    public Integer getUserId(String token) {
+        return JWT.decode(token.substring(7)).getClaim("id").asInt();
     }
 
     @Override
