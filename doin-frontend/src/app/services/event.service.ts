@@ -18,8 +18,8 @@ export class EventService {
       );
   }
 
-  getUserEvents(page: number, size: number): Observable<EventDTO[]> {
-    return this.http.get<{ content: EventDTO[] }>(`${this.baseUrl}/events/users/?page=${page}&size=${size}`)
+  getUserEvents(userId: number, page: number, size: number): Observable<EventDTO[]> {
+    return this.http.get<{ content: EventDTO[] }>(`${this.baseUrl}/events/users/${userId}?page=${page}&size=${size}`)
       .pipe(
         map((response: { content: any; }) => response.content)
       );
