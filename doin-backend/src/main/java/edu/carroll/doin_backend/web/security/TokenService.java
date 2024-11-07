@@ -15,7 +15,7 @@ public interface TokenService {
      * @param username the username for which to generate a token
      * @return the generated token as a string
      */
-    String generateToken(String username);
+    String generateToken(String username, Integer id);
 
     /**
      * Validates the given token.
@@ -32,6 +32,8 @@ public interface TokenService {
      * @return the username associated with the token
      */
     String getUsername(String token);
+
+    Integer getUserId(String token);
 
     String generatePasswordResetToken(String username);
 }
