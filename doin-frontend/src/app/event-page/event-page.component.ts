@@ -14,6 +14,9 @@ export class EventPageComponent {
   event: EventDTO | null = null; 
   constructor(private eventService: EventService, private route: ActivatedRoute, private authService: AuthService) {}
   imageUploadAvailable = false; 
+  isGoing = false;
+  isPast = false;
+  result: string = ''
   curUser: UserDTO | null = null;
 
   onImageUpload(e: Event) {
@@ -47,9 +50,16 @@ export class EventPageComponent {
       this.eventService.getEvent(eventId).subscribe(
         (data: EventDTO) => {
           this.event = data;
-          if(new Date(this.event.time).getTime() < Date.now() && (this.event.creator.id == this.curUser?.id || this.event.joiners.some(joiner => joiner.id === this.curUser?.id))){
-            this.imageUploadAvailable = true;
+          if((this.event.creator.id == this.curUser?.id || this.event.joiners.some(joiner => joiner.id === this.curUser?.id))){
+            this.isGoing = true;
+            if(new Date(this.event.time).getTime() < Date.now()){
+              this.imageUploadAvailable = true;
+
+            }else{
+              this.isPast = true;
+            }
           }
+
         },
         (error) => {
           console.error('Error fetching event:', error);
@@ -57,6 +67,28 @@ export class EventPageComponent {
       );
     } else {
       console.error('Invalid event ID');
+    }
+  }
+
+  join(){
+    const currentUser = this.authService.getCurrentUser();
+
+    if (this.event && currentUser) {
+      this.eventService.joinEvent(this.event.id, currentUser.id).subscribe(
+        (response) => {
+          if(response){
+            location.reload();
+          }else{
+            this.result = '🙃already joined!'
+          }
+          
+        },
+        (error) => {
+          console.error('Error joining event:', error);
+        }
+      );
+    } else {
+      console.error('Event or user is not available');
     }
   }
 }

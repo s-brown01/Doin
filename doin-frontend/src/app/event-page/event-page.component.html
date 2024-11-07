@@ -10,7 +10,10 @@
         <span class="username">{{ event.creator.username }}</span>
       </a>
     </div>
-    <h2 class="description">{{ event.description }}</h2>
+    <div class="desc-wrapper">
+      <h2 class="description">{{ event.description }}</h2>
+      <button *ngIf="!isGoing && !isPast" class="join-button" (click)="join()">Join</button>
+    </div>
   </div>
   <!-- Images Section -->
   <div *ngIf="(event.images && event.images.length > 0) || imageUploadAvailable" class="images-section">
