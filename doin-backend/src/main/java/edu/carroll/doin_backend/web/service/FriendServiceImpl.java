@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Implementation of the FriendService interface that handles operations related to friends and friendships.
@@ -150,7 +147,8 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public Set<FriendshipDTO> getFriends(String userUsername) {
+    public Set<FriendshipDTO>
+    getFriends(String userUsername) {
         log.trace("getFriends: validating user username {}", userUsername);
         if (!isValidExistingUsername(userUsername)) {
             log.warn("getFriends: invalid user username {}", userUsername);
@@ -164,6 +162,14 @@ public class FriendServiceImpl implements FriendService {
         log.trace("getFriends: found {} friends for user {}", foundFriends.size(), userUsername);
         // convert Friendships into FriendshipDTO using the helper method
         return convertFriendshipIntoDTOS(currentUser, foundFriends);
+    }
+
+    @Override
+    public Set<Integer> findFriendIdsByUserId(Integer userId, FriendshipStatus status) {
+        log.trace("getting Friends: for user {}", userId);
+        Set<Integer> foundFriends = friendRepo.findFriendIdsByUserId(userId, status);
+        log.trace("getFriends: found {} friends for user {}", foundFriends.size(), userId);
+        return foundFriends;
     }
 
     @Override

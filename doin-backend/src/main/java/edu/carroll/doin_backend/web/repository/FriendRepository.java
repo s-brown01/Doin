@@ -34,7 +34,13 @@ public interface FriendRepository extends JpaRepository<Friendship, Integer> {
     Set<FriendshipDTO> findFriendsOfFriends(@Param("user") User user);
 
     Set<Friendship> findByFriendAndStatus(User user, FriendshipStatus status);
+
     Set<Friendship> findByUserAndStatus(User user, FriendshipStatus status);
+
+    @Query("SELECT CASE WHEN f.user.id = :userId THEN f.friend.id ELSE f.user.id END " +
+            "FROM Friendship f " +
+            "WHERE (f.user.id = :userId OR f.friend.id = :userId) AND f.status = :status")
+    Set<Integer> findFriendIdsByUserId(@Param("userId") Integer userId, @Param("status") FriendshipStatus status);
 
     Set<Friendship> findByUser(User user);
 
