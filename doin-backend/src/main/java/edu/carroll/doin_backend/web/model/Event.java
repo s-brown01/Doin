@@ -135,8 +135,8 @@ public class Event {
         this.createdAt = createdAt;
     }
 
-    public void addImages(List<Image> images){
-        this.images.addAll(images);
+    public void addImage(Image image){
+        this.images.add(image);
     }
 
     public void addJoiner(User user){
