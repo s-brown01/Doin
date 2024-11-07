@@ -102,11 +102,11 @@ public class FriendController {
         // validate the friend username
         if (!isValidUsername(otherUsername)) {
             log.warn("getUserByUsername: - Invalid friend username {}", otherUsername);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
         }
         log.trace("getUserByUsername: username {} validated", otherUsername);
         Set<FriendshipDTO> newFriend = friendService.getUser(userUsername, otherUsername);
-        log.info("getUserByUsername: username {} returned {} friends", otherUsername, newFriend.size());
+        log.info("getUserByUsername: username {} returned {} friends for {}", otherUsername, newFriend.size(), userUsername);
         return ResponseEntity.ok(newFriend);
     }
 
@@ -238,6 +238,7 @@ public class FriendController {
         log.info("confirmFriend: confirming friend {} was unsuccessful for user {}", friendUsername, userUsername);
         return ResponseEntity.ok(false);
     }
+
     /**
      * Removes a friend from the user's friend list. The user is based on the username in the JWT-Token.
      *
