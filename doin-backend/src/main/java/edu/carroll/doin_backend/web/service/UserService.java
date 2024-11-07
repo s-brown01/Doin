@@ -33,7 +33,7 @@ public interface UserService {
 
     UserDTO findUser(Integer id, String username);
 
-    boolean updateProfilePicture(String userId, MultipartFile file);
+    boolean updateProfilePicture(Integer userId, MultipartFile file);
 
     ValidateResult validateSecurityQuestion(ForgotPasswordDTO forgotPasswordDTO);
 
