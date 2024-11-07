@@ -35,9 +35,7 @@ public class UserController {
     public boolean updateProfileImage(@RequestParam("file") MultipartFile file,
                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader
     ) {
-        String token = authHeader.substring(7); // Remove "Bearer " prefix
-
-        String userName = jwtTokenService.getUsername(token);
-        return userService.updateProfilePicture(userName, file);
+        Integer userId = jwtTokenService.getUserId(authHeader);
+        return userService.updateProfilePicture(userId, file);
     }
 }
