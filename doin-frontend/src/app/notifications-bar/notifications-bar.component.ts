@@ -3,7 +3,6 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { UserDTO } from '../dtos/user.dto';
 import { EventDTO, EventType } from '../dtos/event.dto';
-import { ImageDTO } from '../dtos/image.dto';
 import { EventService } from '../services/event.service';
 
 @Component({
