@@ -30,6 +30,7 @@ export class ImageUploadModalComponent {
       this.resetModal();
       document.body.style.overflow = 'auto';
     }
+    location.reload();
   }
 
   resetModal(): void {

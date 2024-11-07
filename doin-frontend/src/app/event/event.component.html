@@ -9,15 +9,15 @@
       </a>
       <span class="time">{{time}}</span>
     </div>
-    <span class="more-button">•••</span>
+    <!-- <span class="more-button">•••</span> -->
   </div>
   <div class="post-body">
     <div class="content">
       <a [routerLink]="['/event', event.id]" class="event-link">
-        <h2 class="title"><span class="icon">🍽️</span> Going on a {{event.description}}</h2>
+        <h2 class="title"><span class="icon">✨</span> Going on a {{getShortDescription()}}</h2>
       </a>
       <div class="location">📍{{event.location}}</div>
-      <div>🕒{{event.time}}</div>
+      <div>🕒 {{ event.time | date: 'short' }}</div>
     </div>
     <div class="footer">
       <button class="join-button" (click)="join()">Join</button>
