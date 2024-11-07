@@ -3,15 +3,18 @@ import { EventService } from "../services/event.service";
 import { EventDTO } from "../dtos/event.dto";
 import {FriendService} from "../services/friend.service";
 import {FriendshipDto, FriendshipStatus} from "../dtos/friendship.dto";
-import {ImageDTO} from "../dtos/image.dto";
 
 @Component({
   selector: 'app-discover',
   templateUrl: './discover.component.html',
   styleUrl: './discover.component.css'
 })
+
 export class DiscoverComponent {
+  hasMoreEvents: boolean = true;
   events: EventDTO[] = [];
+  currentPage = 0;
+  pageSize = 6;
   mayKnowList: FriendshipDto[] = [];
   mayKnowErrorMessage: string | null = null;
 
@@ -19,7 +22,7 @@ export class DiscoverComponent {
   constructor(private eventService: EventService, private friendService: FriendService) {}
 
   ngOnInit(): void {
-    this.getEvents();
+    this.loadEvents();
     this.loadMayKnowList();
   }
 
@@ -38,9 +41,18 @@ export class DiscoverComponent {
     return event.id;
   }
 
-  getEvents(): void {
-    this.eventService.getEvents(0, 10).subscribe((data: EventDTO[]) => {
-      this.events = data;
+  loadEvents(): void {
+    this.eventService.getPublicEvents(this.currentPage, this.pageSize).subscribe((newEvents: EventDTO[]) => {
+      if (newEvents.length > 0) {
+        this.events.push(...newEvents); 
+        this.currentPage++;
+      } else {
+        this.hasMoreEvents = false;  
+      }
     });
+  }
+
+  onLoadMore(): void {
+    this.loadEvents();
   }
 }
