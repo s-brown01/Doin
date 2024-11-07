@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -131,7 +132,7 @@ public class EventServiceImpl implements EventService {
         if (eventOpt.isEmpty())
             return false;
         Event event = eventOpt.get();
-        if ((long) event.getImages().size() > 5
+        if ( event.getTime().isBefore(LocalDateTime.now()) || event.getImages().size() > 5
                 || !(Objects.equals(event.getCreator().getId(), userId)
                 || event.getJoiners().stream().anyMatch(a -> Objects.equals(a.getId(), userId)))) {
             return false;
