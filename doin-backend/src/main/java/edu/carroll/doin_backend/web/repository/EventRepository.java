@@ -41,7 +41,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     @Query("SELECT e FROM Event e " +
             "WHERE e.creator.id = :userId " +
             "and (e.visibility = :visibility or :visibility = 'PRIVATE')")
-    Page<Event> findUserEvents(@Param("userId") Integer userId, @Param("userId")  Visibility visibility, Pageable pageable);
+    Page<Event> findUserEvents(@Param("userId") Integer userId, @Param("visibility")  Visibility visibility, Pageable pageable);
 
     @Query("SELECT e FROM Event e WHERE e.visibility = 'PUBLIC'")
     Page<Event> findAllPublicEvents(Pageable pageable);
