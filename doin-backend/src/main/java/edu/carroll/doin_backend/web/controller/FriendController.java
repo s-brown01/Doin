@@ -138,6 +138,25 @@ public class FriendController {
         return ResponseEntity.ok(friends);
     }
 
+    @GetMapping("/get-friends/{userId}")
+    public ResponseEntity<Set<FriendshipDTO>> getFriendsOf(@RequestHeader("Authorization") String authHeader, @PathVariable Integer userId) {
+        log.trace("Getting friends of user ID {}", userId);
+        ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);
+        if (!tokenResult.isValid()) {
+            log.warn("getFriendsOf: invalid jwtToken or authHeader");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
+        }
+        final String userUsername = tokenResult.getMessage();
+        if (!isValidUsername(userUsername)) {
+            log.warn("getFriendsOf: invalid user username {}", userUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
+        }
+        Set<FriendshipDTO> friends = friendService.getFriendsOf(userUsername, userId);
+        log.trace("getFriendsOf: userId {} returned {} friends", userId, friends.size());
+        return ResponseEntity.ok(friends);
+
+    }
+
     /**
      * Retrieves the user's incoming friend requests. The user is based on the username in the JWT-Token.
      *
