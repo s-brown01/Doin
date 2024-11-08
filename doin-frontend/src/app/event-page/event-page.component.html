@@ -1,14 +1,22 @@
 <div *ngIf="event" class="lunch-container">
-    <div class="header">
-      <div class="user-info">
-        <app-image class="profile-img" [borderRadius]="'50%'" [image]="event.creator.profilePicture"></app-image>
-        <a [routerLink]="['/user', event.creator.id]" class="username-link">
-            <span class="username">{{ event.creator.username }}</span>
-          </a>      </div>
-      <h2 class="description">{{event.description}}</h2>
+  <div class="header">
+    <div class="user-info">
+      <app-image
+        class="profile-img"
+        [borderRadius]="'50%'"
+        [image]="event.creator.profilePicture"
+      ></app-image>
+      <a [routerLink]="['/user', event.creator.id]" class="username-link">
+        <span class="username">{{ event.creator.username }}</span>
+      </a>
     </div>
+    <div class="desc-wrapper">
+      <h2 class="description">{{ event.description }}</h2>
+      <button *ngIf="!isGoing && !isPast" class="join-button" (click)="join()">Join</button>
+    </div>
+  </div>
   <!-- Images Section -->
-  <div *ngIf="event.images && event.images.length > 0" class="images-section">
+  <div *ngIf="(event.images && event.images.length > 0) || imageUploadAvailable" class="images-section">
     <div *ngFor="let image of event.images" class="event-image">
       <app-image [image]="image" [borderRadius]="'8px'"></app-image>
     </div>
@@ -21,27 +29,31 @@
     </div>
   </div>
 
-    <div class="post-details">
-      <div class="location">
-        <i class="location-icon">📍</i>
-        <span>{{event.location}}</span>
-      </div>
-      <div class="time">
-        <i class="time-icon">🕒</i>
-        <span>{{event.time}}</span>
-      </div>
+  <div class="post-details">
+    <div class="location">
+      <i class="location-icon">📍</i>
+      <span>{{ event.location }}</span>
     </div>
-    <div *ngIf="event.joiners.length > 0">
-        <h3>Also going:</h3>
-    </div>
-    <div class="attendees">
-        <div class="atandee" *ngFor="let joiner of event?.joiners">
-            <div class="avatar">
-                <app-image class="profile-img" [borderRadius]="'50%'" [image]="joiner.profilePicture"></app-image>
-            </div>
-            <a [routerLink]="['/user', joiner.id]" class="username-link">
-            <span class="username">{{joiner.username}}</span>
-          </a>
-        </div>
+    <div class="time">
+      <i class="time-icon">🕒</i>
+      <span>{{ event.time }}</span>
     </div>
   </div>
+  <div *ngIf="event.joiners.length > 0">
+    <h3>Also going:</h3>
+  </div>
+  <div class="attendees">
+    <div class="atandee" *ngFor="let joiner of event?.joiners">
+      <div class="avatar">
+        <app-image
+          class="profile-img"
+          [borderRadius]="'50%'"
+          [image]="joiner.profilePicture"
+        ></app-image>
+      </div>
+      <a [routerLink]="['/user', joiner.id]" class="username-link">
+        <span class="username">{{ joiner.username }}</span>
+      </a>
+    </div>
+  </div>
+</div>

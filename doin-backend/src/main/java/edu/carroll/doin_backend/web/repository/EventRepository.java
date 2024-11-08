@@ -2,6 +2,7 @@ package edu.carroll.doin_backend.web.repository;
 
 import edu.carroll.doin_backend.web.dto.EventDTO;
 import edu.carroll.doin_backend.web.dto.FriendshipDTO;
+import edu.carroll.doin_backend.web.enums.Visibility;
 import edu.carroll.doin_backend.web.model.Event;
 import edu.carroll.doin_backend.web.model.User;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,15 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "OR e.creator.id IN :friendIds")
     Page<Event> findPublicOrFriendsEvents(@Param("friendIds") Set<Integer> friendIds, Pageable pageable);
 
+    @Query("SELECT e FROM Event e " +
+            "WHERE e.creator.id = :userId " +
+            "and (e.visibility = :visibility or :visibility = 'PRIVATE')")
+    Page<Event> findUserEvents(@Param("userId") Integer userId, @Param("visibility")  Visibility visibility, Pageable pageable);
+
     @Query("SELECT e FROM Event e WHERE e.visibility = 'PUBLIC'")
     Page<Event> findAllPublicEvents(Pageable pageable);
+
+    @Query("SELECT e FROM Event e WHERE e.creator.id = :userId")
+    Page<Event> findAllPublicEvents(@Param("userId")  Integer userId, Pageable pageable);
+
 }

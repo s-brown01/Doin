@@ -177,4 +177,25 @@
     display: none; /* Hide the default file input */
   }
 
+
+  .join-button {
+    background-color: #48bb78;
+    color: #ffffff;
+    padding: 8px 24px;
+    border: none;
+    border-radius: 9999px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 20px;
+  }
   
+  .join-button:hover {
+    background-color: #38a169;
+  }
+
+  .desc-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

@@ -2,6 +2,8 @@ import { Component, Optional } from '@angular/core';
 import { EventDTO } from '../dtos/event.dto';
 import { EventService } from '../services/event.service';
 import { ActivatedRoute } from '@angular/router';
+import { UserDTO } from '../dtos/user.dto';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-event-page',
@@ -10,8 +12,12 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class EventPageComponent {
   event: EventDTO | null = null; 
-  constructor(private eventService: EventService, private route: ActivatedRoute) {}
-  imageUploadAvailable = true; 
+  constructor(private eventService: EventService, private route: ActivatedRoute, private authService: AuthService) {}
+  imageUploadAvailable = false; 
+  isGoing = false;
+  isPast = false;
+  result: string = ''
+  curUser: UserDTO | null = null;
 
   onImageUpload(e: Event) {
     const fileInput = e.target as HTMLInputElement;
@@ -36,11 +42,24 @@ export class EventPageComponent {
 
   }
   ngOnInit(): void {
+    this.authService.currentUser.subscribe((usr: UserDTO | null) => {
+      this.curUser = usr;
+    });
     const eventId = Number(this.route.snapshot.paramMap.get('id'));
       if (eventId) {
       this.eventService.getEvent(eventId).subscribe(
         (data: EventDTO) => {
           this.event = data;
+          if((this.event.creator.id == this.curUser?.id || this.event.joiners.some(joiner => joiner.id === this.curUser?.id))){
+            this.isGoing = true;
+            if(new Date(this.event.time).getTime() < Date.now()){
+              this.imageUploadAvailable = true;
+
+            }else{
+              this.isPast = true;
+            }
+          }
+
         },
         (error) => {
           console.error('Error fetching event:', error);
@@ -48,6 +67,28 @@ export class EventPageComponent {
       );
     } else {
       console.error('Invalid event ID');
+    }
+  }
+
+  join(){
+    const currentUser = this.authService.getCurrentUser();
+
+    if (this.event && currentUser) {
+      this.eventService.joinEvent(this.event.id, currentUser.id).subscribe(
+        (response) => {
+          if(response){
+            location.reload();
+          }else{
+            this.result = '🙃already joined!'
+          }
+          
+        },
+        (error) => {
+          console.error('Error joining event:', error);
+        }
+      );
+    } else {
+      console.error('Event or user is not available');
     }
   }
 }

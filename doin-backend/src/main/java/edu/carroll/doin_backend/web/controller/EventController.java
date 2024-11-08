@@ -62,10 +62,13 @@ public class EventController {
     }
 
     @GetMapping("/users/{id}")
-    public Page<EventDTO> getUserEvents(@RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "10") int size) {
+    public Page<EventDTO> getUserEvents(@PathVariable Integer id,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size,
+                                        @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        Integer userId = tokenService.getUserId(authHeader);
         Pageable pageable = PageRequest.of(page, size, Sort.by("time").descending());
-        return eventService.getPublicEvents(pageable);
+        return eventService.getUserEvents(id, userId, pageable);
     }
 
     @GetMapping("/upcoming")
@@ -73,12 +76,6 @@ public class EventController {
         Integer userId = tokenService.getUserId(authHeader);
         return eventService.getUpcomingEvents(userId);
     }
-//
-//    @GetMapping("/user/{id}")
-//    public List<EventDTO> getUserEvents(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @PathVariable String id){
-//        Integer currUserId = tokenService.getUserId(authHeader);
-//        return eventService.getUpcomingEvents(userId);
-//    }
 
     /**
      * Retrieves a specific event by its ID.

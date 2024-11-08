@@ -15,10 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -46,9 +44,16 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDTO> getUserEvents(Integer userId, Pageable pageable) {
+    public Page<EventDTO> getUserEvents(Integer userId, Integer reqUserId, Pageable pageable) {
         logger.info("Retrieving events with paging, page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
-        Page<Event> eventPage = eventRepository.findAllPublicEvents(pageable);
+        Set<Integer> friends = friendService.findFriendIdsByUserId(reqUserId, FriendshipStatus.CONFIRMED);
+        Page<Event> eventPage;
+        if(userId.equals(reqUserId) || friends.contains(userId)) {
+            eventPage = eventRepository.findUserEvents(userId, Visibility.PRIVATE, pageable);
+        }
+        else{
+            eventPage = eventRepository.findUserEvents(userId, Visibility.PUBLIC, pageable);
+        }
         Page<EventDTO> eventDTOPage = eventPage.map(EventDTO::new);
 
         logger.info("Successfully retrieved {} events", eventDTOPage.getTotalElements());
@@ -131,7 +136,7 @@ public class EventServiceImpl implements EventService {
         if (eventOpt.isEmpty())
             return false;
         Event event = eventOpt.get();
-        if ((long) event.getImages().size() > 5
+        if ( event.getTime().isBefore(LocalDateTime.now()) || event.getImages().size() > 5
                 || !(Objects.equals(event.getCreator().getId(), userId)
                 || event.getJoiners().stream().anyMatch(a -> Objects.equals(a.getId(), userId)))) {
             return false;
