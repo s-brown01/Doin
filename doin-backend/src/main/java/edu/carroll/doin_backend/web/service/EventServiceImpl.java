@@ -99,6 +99,13 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDTO add(EventDTO event) {
         logger.info("Adding new event: {}", event);
+        if (event.getDescription() != null && event.getDescription().length() > 255) {
+            event.setDescription(event.getDescription().substring(0, 255));
+        }
+
+        if (event.getVisibility() == null) {
+            event.setVisibility(Visibility.PUBLIC);
+        }
         Event newEvent = eventRepository.save(new Event(event));
         logger.info("Successfully added event with ID: {}", newEvent.getId());
         return new EventDTO(newEvent);
@@ -111,7 +118,7 @@ public class EventServiceImpl implements EventService {
         if(existingOpt.isEmpty())
             return false;
         Event existing = existingOpt.get();
-        if(existing.getJoiners().stream().anyMatch(a-> Objects.equals(a.getId(), userId))) {
+        if(existing.getTime().isBefore(LocalDateTime.now()) || existing.getCreator().getId().equals(userId) || existing.getJoiners().stream().anyMatch(a-> Objects.equals(a.getId(), userId))) {
             return false;
         }
         User user = new User();
