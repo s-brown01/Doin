@@ -174,4 +174,23 @@ public class FriendControllerTest {
         assertTrue(invalidParamResponse.getBody().isEmpty(), "Searching for an invalid parameters should return an empty Set");
     }
 
+    @Test
+    public void getUserByUsername_Null(){
+        ResponseEntity<Set<FriendshipDTO>> nullHeader = friendController.getUserByUsername(null, username1);
+        ResponseEntity<Set<FriendshipDTO>> nullUsernameResponse = friendController.getUserByUsername(user1Header, null);
+        ResponseEntity<Set<FriendshipDTO>> nullParamResponse = friendController.getUserByUsername(null, null);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, nullHeader.getStatusCode(), "A 'null' header should return 'UNAUTHORIZED' status");
+        assertEquals(HttpStatus.BAD_REQUEST, nullUsernameResponse.getStatusCode(), "Searching for 'null' username should return 'UNAUTHORIZED' status");
+        assertEquals(HttpStatus.UNAUTHORIZED, nullParamResponse.getStatusCode(), "Searching with 'null' parameters should return 'UNAUTHORIZED' status");
+
+        assertNotNull(nullHeader.getBody(), "Searching with a 'null' header should not return null body");
+        assertNotNull(nullUsernameResponse.getBody(), "Searching for a 'null' username should not return null body");
+        assertNotNull(nullParamResponse.getBody(), "Searching with 'null' parameters should not return null body");
+
+        assertTrue(nullHeader.getBody().isEmpty(), "Searching with a 'null' header should return an empty Set");
+        assertTrue(nullUsernameResponse.getBody().isEmpty(), "Searching for a 'null' username should return an empty Set");
+        assertTrue(nullParamResponse.getBody().isEmpty(), "Searching with 'null' parameters should return an empty Set");
+    }
+
 }
