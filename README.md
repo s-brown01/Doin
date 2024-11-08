@@ -38,6 +38,9 @@ Users can create events, join friends, and share experiences in real-time, foste
    git clone <repository-url>
    ```
    Note: Make sure your MySQL is running before starting program and the database is configured properly
+2. Add Security Questions
+   In our program, we had 3 security questions "pet", "school", "city".
+   They need to be added to the register page and the database. 
 
 
 ## Usage
