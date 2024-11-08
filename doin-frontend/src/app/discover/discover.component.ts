@@ -31,6 +31,9 @@ export class DiscoverComponent {
       data => {
         this.mayKnowList = data;
         this.mayKnowErrorMessage = null;
+        if (this.mayKnowList.length == 0) {
+          this.mayKnowErrorMessage = "No friends of friends found!";
+        }
       }, error => {
         this.mayKnowList = [];
         this.mayKnowErrorMessage = error.message;
@@ -44,10 +47,10 @@ export class DiscoverComponent {
   loadEvents(): void {
     this.eventService.getPublicEvents(this.currentPage, this.pageSize).subscribe((newEvents: EventDTO[]) => {
       if (newEvents.length > 0) {
-        this.events.push(...newEvents); 
+        this.events.push(...newEvents);
         this.currentPage++;
       } else {
-        this.hasMoreEvents = false;  
+        this.hasMoreEvents = false;
       }
     });
   }
