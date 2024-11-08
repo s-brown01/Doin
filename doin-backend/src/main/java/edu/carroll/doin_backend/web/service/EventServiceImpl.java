@@ -130,23 +130,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void delete(Integer id) {
-        logger.info("Deleting event with ID {}", id);
-        if (!eventRepository.existsById(id)) {
-            logger.error("Event with ID {} not found", id);
-            throw new ResourceNotFoundException("Event not found");
-        }
-        eventRepository.deleteById(id);
-        logger.info("Successfully deleted event with ID {}", id);
-    }
-
-    @Override
     public boolean addImage(Integer eventId, Integer userId, MultipartFile file) {
         Optional<Event> eventOpt = eventRepository.findById(eventId);
         if (eventOpt.isEmpty())
             return false;
         Event event = eventOpt.get();
-        if ( event.getTime().isBefore(LocalDateTime.now()) || event.getImages().size() > 5
+        if ( event.getTime().isAfter(LocalDateTime.now()) || event.getImages().size() > 5
                 || !(Objects.equals(event.getCreator().getId(), userId)
                 || event.getJoiners().stream().anyMatch(a -> Objects.equals(a.getId(), userId)))) {
             return false;
