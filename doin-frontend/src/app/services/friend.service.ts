@@ -11,7 +11,7 @@ import {AuthService} from "./auth.service";
 export class FriendService {
 
   private baseUrl = 'http://localhost:8080/api';
-  constructor(private http: HttpClient, private apiService : ApiService, private authService: AuthService) { }
+  constructor(private http: HttpClient, private apiService : ApiService) { }
 
   getFriendsOfFriends(): Observable<FriendshipDto[]> {
     return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends");
@@ -22,10 +22,6 @@ export class FriendService {
   }
 
   getUserByUsername(otherUsername: string): Observable<FriendshipDto[]> {
-    if (otherUsername == this.authService.getCurrentUser().username) {
-      console.warn("OtherUsername is the same as current user's username");
-      return of([]);
-    }
     return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/${otherUsername}`).pipe(
       catchError(error => {
         console.error("Error getting username " + otherUsername + ": " + error.message);

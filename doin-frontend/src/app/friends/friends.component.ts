@@ -3,6 +3,8 @@ import {FriendshipDto, FriendshipStatus} from "../dtos/friendship.dto";
 import {FriendService} from "../services/friend.service";
 import {ImageDTO} from "../dtos/image.dto";
 import {error} from "@angular/compiler-cli/src/transformers/util";
+import {AuthService} from "../services/auth.service";
+import {of} from "rxjs";
 
 @Component({
   selector: 'app-friends',
@@ -18,7 +20,7 @@ export class FriendsComponent {
 
   searchInput: string | null = null;
 
-  constructor(private friendService: FriendService) {
+  constructor(private friendService: FriendService, private authService: AuthService) {
   }
 
   ngOnInit(){
@@ -28,6 +30,11 @@ export class FriendsComponent {
   findUser(){
     if (!this.searchInput){
       this.searchErrorMessage = "Please a username something to search";
+      this.searchResults = [];
+      return;
+    }
+    if (this.searchInput == this.authService.getCurrentUser().username) {
+      this.searchErrorMessage = "You can't search for yourself";
       this.searchResults = [];
       return;
     }
