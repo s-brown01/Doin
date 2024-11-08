@@ -35,6 +35,8 @@ public interface FriendService {
      * @return A {@link Set} of {@link FriendshipDTO} objects representing the user's friends.
      */
     Set<FriendshipDTO> getFriends(String userUsername);
+    Set<FriendshipDTO> getFriendsOf(String userUsername, Integer otherID);
+
     Set<Integer> findFriendIdsByUserId(Integer userId, FriendshipStatus status);
 
     /**

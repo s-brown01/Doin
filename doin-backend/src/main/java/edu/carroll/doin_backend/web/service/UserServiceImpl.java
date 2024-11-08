@@ -164,7 +164,8 @@ public class UserServiceImpl implements UserService {
         if (foundUsers.isEmpty()) {
             log.info("validateCredentials: user {} cannot be found in database", username);
             // checking if other similar users are in there
-            List<User> extraUsers = loginRepo.findByUsernameContainingIgnoreCase(username);
+//            List<User> extraUsers = loginRepo.findByUsernameContainingIgnoreCase(username);
+            List<User> extraUsers = loginRepo.findByUsernameLike("%" + username + "%");
             if (extraUsers.isEmpty()) {
                 // no similar usernames, so just return false and no extra logs
                 return false;

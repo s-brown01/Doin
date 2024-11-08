@@ -135,17 +135,12 @@ public class FriendServiceImpl implements FriendService {
             log.warn("getUser: invalid user username {}", userUsername);
             return new HashSet<>();
         }
-        log.trace("getUser: validating friend username {}", usernameToFind);
-        if (!isValidExistingUsername(usernameToFind)) {
-            log.warn("getUser: invalid friend username {}", usernameToFind);
-            return new HashSet<>();
-        }
         log.trace("getUser: getting the current User {}", userUsername);
         final User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
 
         final Set<FriendshipDTO> foundUsers = new HashSet<>();
         log.trace("getUser: finding all Users with a username containing {} and ignoring case", usernameToFind);
-        List<User> listFriends = loginRepo.findByUsernameContainingIgnoreCase(usernameToFind);
+        List<User> listFriends = loginRepo.findByUsernameLike("%" + usernameToFind + "%");
         log.trace("getUser: found {} Users", listFriends.size());
 
         for (User friend : listFriends) {
@@ -156,6 +151,10 @@ public class FriendServiceImpl implements FriendService {
                 currentStatus = statusBetween(currentUser, friend);
             } else {
                 currentStatus = statusBetween(friend, currentUser);
+            }
+            // do not all the user to the friends list
+            if (friend.getUsername().equalsIgnoreCase(userUsername)) {
+                continue;
             }
             foundUsers.add(new FriendshipDTO(friend.getId(), friend.getUsername(), currentStatus, friend.getProfilePicture()));
         }
@@ -195,6 +194,20 @@ public class FriendServiceImpl implements FriendService {
         return convertFriendshipIntoDTOS(currentUser, foundFriends);
     }
 
+    @Override
+    public Set<FriendshipDTO>
+    getFriendsOf(String userUsername, Integer otherID) {
+        return new HashSet<>();
+    }
+
+    @Override
+    public Set<Integer> findFriendIdsByUserId(Integer userId, FriendshipStatus status) {
+        log.trace("getting Friends: for user {}", userId);
+        Set<Integer> foundFriends = friendRepo.findFriendIdsByUserId(userId, status);
+        log.trace("getFriends: found {} friends for user {}", foundFriends.size(), userId);
+        return foundFriends;
+    }
+
     /**
      * Retrieves a set of pending friend requests for the specified user, identified by {@code userUsername}.
      * <p>
@@ -207,14 +220,6 @@ public class FriendServiceImpl implements FriendService {
      * @return a {@link Set} of {@link FriendshipDTO} objects representing pending friend requests;
      * empty if none found or if the username is invalid.
      */
-    @Override
-    public Set<Integer> findFriendIdsByUserId(Integer userId, FriendshipStatus status) {
-        log.trace("getting Friends: for user {}", userId);
-        Set<Integer> foundFriends = friendRepo.findFriendIdsByUserId(userId, status);
-        log.trace("getFriends: found {} friends for user {}", foundFriends.size(), userId);
-        return foundFriends;
-    }
-
     @Override
     public Set<FriendshipDTO> getFriendRequests(String userUsername) {
         log.debug("getFriendRequests: validating user username {}", userUsername);
