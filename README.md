@@ -10,11 +10,11 @@ Welcome to Doin!
 Doin is a social media platform designed for event sharing and social interaction. 
 Users can create events, join friends, and share experiences in real-time, fostering community engagement and collaboration.
 
-Our program was created using Java 17, Gradle, Angular, JPA, JWT, SLF4J, Logback, and MySQL.
+Our program was created using Java 21, Gradle, Angular, JPA, JWT, SLF4J, Logback, and MySQL.
 
 ## Technologies Used
 <ul>
-  <li>Java 17</li>
+  <li>Java 21</li>
   <li>SpringBoot</li>
   <li>Gradle</li>
   <li>Angular</li>
@@ -29,7 +29,7 @@ Our program was created using Java 17, Gradle, Angular, JPA, JWT, SLF4J, Logback
 # Installation Instructions
 ## Prerequisites
 <ol>
-  <li>Java 17 JDK</li>
+  <li>Java 21 JDK</li>
   <li>Node.js and npm</li>
   <li>MySQL</li>
   <li>Angular CLI</li>
