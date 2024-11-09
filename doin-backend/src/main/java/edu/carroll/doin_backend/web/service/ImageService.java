@@ -12,17 +12,30 @@ import java.io.IOException;
 public interface ImageService {
 
     /**
-     * Saves the specified image entity to the data store.
+     * Saves the specified image file as a new {@link Image} entity in the data store.
+     * <p>
+     * The image data is encoded in Base64 format before being saved. This method also logs
+     * the process of saving the image and handles potential I/O exceptions during file processing.
+     * </p>
      *
-     * @param image the {@link Image} object to be saved.
+     * @param file the {@link MultipartFile} representing the image to be saved.
+     *             It should not be empty, and its size should be validated before saving.
+     * @return the {@link Image} object representing the saved image entity.
+     * @throws IOException if an I/O error occurs while reading the file data or saving the image.
+     * @throws IllegalArgumentException if the provided file is empty.
      */
-    Image save(MultipartFile image) throws IOException;
+    Image save(MultipartFile file) throws IOException;
 
     /**
-     * Retrieves an image entity by its unique identifier.
+     * Retrieves an {@link Image} entity by its unique identifier from the data store.
+     * <p>
+     * If the image with the specified ID is not found, a {@link edu.carroll.doin_backend.web.exception.ResourceNotFoundException}
+     * is thrown.
+     * </p>
      *
      * @param id the unique identifier of the image to retrieve.
-     * @return the {@link Image} object representing the retrieved image.
+     * @return the {@link Image} object representing the retrieved image entity.
+     * @throws edu.carroll.doin_backend.web.exception.ResourceNotFoundException if no image is found with the given ID.
      */
     Image get(Long id);
 }
