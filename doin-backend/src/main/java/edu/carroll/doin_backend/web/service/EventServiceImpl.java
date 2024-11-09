@@ -3,7 +3,6 @@ package edu.carroll.doin_backend.web.service;
 import edu.carroll.doin_backend.web.dto.EventDTO;
 import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 import edu.carroll.doin_backend.web.enums.Visibility;
-import edu.carroll.doin_backend.web.exception.ResourceNotFoundException;
 import edu.carroll.doin_backend.web.model.Event;
 import edu.carroll.doin_backend.web.model.Image;
 import edu.carroll.doin_backend.web.model.User;
@@ -16,7 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -35,6 +37,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<EventDTO> getPublicEvents(Pageable pageable) {
+        if(pageable == null)
+            return Page.empty();
+
         logger.info("Retrieving events with paging, page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Page<Event> eventPage = eventRepository.findAllPublicEvents(pageable);
         Page<EventDTO> eventDTOPage = eventPage.map(EventDTO::new);
@@ -45,6 +50,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<EventDTO> getUserEvents(Integer userId, Integer reqUserId, Pageable pageable) {
+        if(pageable == null)
+            return Page.empty();
         logger.info("Retrieving events with paging, page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Set<Integer> friends = friendService.findFriendIdsByUserId(reqUserId, FriendshipStatus.CONFIRMED);
         Page<Event> eventPage;
@@ -62,8 +69,11 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<EventDTO> getAll(Integer userId, Pageable pageable) {
+        if(pageable == null)
+            return Page.empty();
         logger.info("Retrieving events with paging, page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Set<Integer> friends = friendService.findFriendIdsByUserId(userId, FriendshipStatus.CONFIRMED);
+        friends.add(userId);
         Page<Event> eventPage = eventRepository.findPublicOrFriendsEvents(friends, pageable);
         Page<EventDTO> eventDTOPage = eventPage.map(EventDTO::new);
 
@@ -131,27 +141,45 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public boolean addImage(Integer eventId, Integer userId, MultipartFile file) {
+        logger.info("Adding image to event with ID {} by user with ID {}", eventId, userId);
+
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-        if (eventOpt.isEmpty())
+        if (eventOpt.isEmpty()) {
+            logger.warn("Event not found with ID: {}", eventId);
             return false;
+        }
+
         Event event = eventOpt.get();
-        if ( event.getTime().isAfter(LocalDateTime.now()) || event.getImages().size() > 5
-                || !(Objects.equals(event.getCreator().getId(), userId)
-                || event.getJoiners().stream().anyMatch(a -> Objects.equals(a.getId(), userId)))) {
+        if (event.getTime().isAfter(LocalDateTime.now()) || event.getImages().size() > 5 ||
+                !(Objects.equals(event.getCreator().getId(), userId) ||
+                        event.getJoiners().stream().anyMatch(j -> Objects.equals(j.getId(), userId)))) {
+            logger.warn("User is not allowed to add image to this event");
             return false;
         }
-        Image img;
-        try {
-            img =  imageService.save(file);
-        }
-        catch (Exception e) {
+
+        // Check if the uploaded file is an image
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            logger.warn("Invalid file type: {}. Only image files are allowed", contentType);
             return false;
         }
-        event.addImage(img);
+
+        // Check if the file size is within the 10 MB limit
+        final long MAX_FILE_SIZE_MB = 10;
+        final long MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; // 10 MB in bytes
+        if (file.getSize() > MAX_FILE_SIZE_BYTES) {
+            logger.warn("File size exceeds the limit. Uploaded file size: {} bytes, Max allowed: {} bytes", file.getSize(), MAX_FILE_SIZE_BYTES);
+            return false;
+        }
+
         try {
+            Image img = imageService.save(file);
+            event.addImage(img);
             eventRepository.save(event);
+            logger.info("Successfully added image to event with ID {}", eventId);
             return true;
         } catch (Exception e) {
+            logger.error("Failed to add image to event with ID {} due to exception: {}", eventId, e.getMessage());
             return false;
         }
     }
