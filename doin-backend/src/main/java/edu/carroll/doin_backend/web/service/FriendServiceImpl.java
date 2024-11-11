@@ -140,7 +140,7 @@ public class FriendServiceImpl implements FriendService {
 
         final Set<FriendshipDTO> foundUsers = new HashSet<>();
         log.trace("getUser: finding all Users with a username containing {} and ignoring case", usernameToFind);
-        List<User> listFriends = loginRepo.findByUsernameLike("%" + usernameToFind + "%");
+        List<User> listFriends = loginRepo.findByUsernameLikeIgnoreCase("%" + usernameToFind + "%");
         log.trace("getUser: found {} Users", listFriends.size());
 
         for (User friend : listFriends) {
@@ -175,8 +175,7 @@ public class FriendServiceImpl implements FriendService {
      * empty if none found or username is invalid.
      */
     @Override
-    public Set<FriendshipDTO>
-    getFriends(String userUsername) {
+    public Set<FriendshipDTO> getFriends(String userUsername) {
         log.trace("getFriends: validating user username {}", userUsername);
         if (!isValidExistingUsername(userUsername)) {
             log.warn("getFriends: invalid user username {}", userUsername);
@@ -384,7 +383,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public ValidateResult confirmFriend(String userUsername, String friendUsername) {
         // the addFriend already handles what happens when 2 different users send each other friend requests, so use that method
-        log.trace("confirmFriend: confirming friendship between user {} and friend {}", userUsername, friendUsername);
+        log.info("confirmFriend: confirming friendship between user {} and friend {}", userUsername, friendUsername);
         log.trace("confirmFriend: sending request to addFriend for user {} and friend {}", userUsername, friendUsername);
         return addFriend(userUsername, friendUsername);
     }
@@ -472,7 +471,7 @@ public class FriendServiceImpl implements FriendService {
             } else {
                 // the 'user' is the 'user', friend is 'friend'
                 friend = friendship.getFriend();
-                FriendshipStatus status = statusBetween(friend, user);
+                FriendshipStatus status = statusBetween(user, friend);
                 friendDTOs.add(new FriendshipDTO(friend.getId(), friend.getUsername(), status, friend.getProfilePicture()));
             }
         }
