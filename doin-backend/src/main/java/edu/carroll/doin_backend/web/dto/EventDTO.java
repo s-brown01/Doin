@@ -91,6 +91,7 @@ public class EventDTO {
         this.images = event.getImages();
         this.createdAt = event.getCreatedAt();
     }
+    public EventDTO(){}
 
     /**
      * Gets the creation timestamp of the event.

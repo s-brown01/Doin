@@ -55,7 +55,7 @@ export class UserPageComponent {
   }
 
   loadFriends(): void {
-    this.friendService.getFriends().subscribe(
+    this.friendService.getFriends(this.userId).subscribe(
       data => {
         this.friends = data;
       })

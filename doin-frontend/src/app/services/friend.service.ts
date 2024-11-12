@@ -17,8 +17,8 @@ export class FriendService {
     return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends");
   }
 
-  getFriends(): Observable<FriendshipDto[]> {
-    return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends/get-friends");
+  getFriends(userId: number): Observable<FriendshipDto[]> {
+    return this.http.get<FriendshipDto[]>(this.baseUrl + `/friends/get-friends/${userId}`);
   }
 
   getUserByUsername(otherUsername: string): Observable<FriendshipDto[]> {

@@ -119,7 +119,7 @@ public class FriendController {
      * @return A {@link ResponseEntity} containing a {@link Set} of {@link FriendshipDTO} representing,
      *          the user's friends or an empty set if authentication fails or no friends are found.
      */
-    @GetMapping("/get-friends")
+    @GetMapping("/get-friends/{userId}")
     public ResponseEntity<Set<FriendshipDTO>> getFriends(@RequestHeader("Authorization") String authHeader) {
         log.trace("getFriends: validating authHeader, extracting jwtToken and username");
         ValidateResult tokenResult = validateTokenAndGetUsername(authHeader);

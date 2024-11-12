@@ -31,7 +31,6 @@ export class EventPageComponent {
           }else{
             console.log('Error adding image:', response);
           }
-          
         },
         (error) => {
           console.error('Error joining event:', error);

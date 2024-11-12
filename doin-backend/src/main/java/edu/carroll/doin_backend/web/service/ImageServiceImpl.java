@@ -24,14 +24,36 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Image save(MultipartFile file) throws IOException {
+        logger.info("Starting to save image file with original filename: {}", file.getOriginalFilename());
+
+        // Check if file is empty
+        if (file.isEmpty()) {
+            logger.warn("File is empty. Cannot save image.");
+            throw new IllegalArgumentException("File is empty");
+        }
+
+        // Prepare image entity for saving
         Image img = new Image();
         img.setName(file.getOriginalFilename());
-        img.setData(Base64.getEncoder().encodeToString(file.getBytes()));
+        try {
+            img.setData(Base64.getEncoder().encodeToString(file.getBytes()));
+        } catch (IOException e) {
+            logger.error("Error reading file bytes for image: {}", e.getMessage());
+            throw e;
+        }
         img.setCreatedAt(LocalDateTime.now());
-        logger.info("Saving new image with details: {}", img);
-        Image image = imageRepository.save(img);
-        logger.info("Image saved successfully with ID: {}", image.getId());
-        return image;
+
+        logger.info("Saving new image with details: name={}, createdAt={}", img.getName(), img.getCreatedAt());
+
+        // Save image to repository
+        try {
+            Image image = imageRepository.save(img);
+            logger.info("Image saved successfully with ID: {}", image.getId());
+            return image;
+        } catch (Exception e) {
+            logger.error("Failed to save image. Error: {}", e.getMessage());
+            throw new IOException("Error saving image to the database", e);
+        }
     }
 
     @Override

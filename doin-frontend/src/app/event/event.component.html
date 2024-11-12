@@ -20,7 +20,10 @@
       <div>🕒 {{ event.time | date: 'short' }}</div>
     </div>
     <div class="footer">
-      <button class="join-button" (click)="join()">Join</button>
+      <button *ngIf="!isPast && !isGoing" class="join-button" (click)="join()">Join</button>
+      <button disabled *ngIf="isGoing" class="join-button-grey" (click)="join()">Joined</button>
+      <button disabled *ngIf="isPast && !isGoing" class="join-button-grey" (click)="join()">Finished</button>
+
       <div *ngIf="result">{{result}}</div>
       <div class="avatars">
         <div *ngFor="let joiner of event.joiners" class="avatar">
