@@ -194,9 +194,18 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public Set<FriendshipDTO>
-    getFriendsOf(String userUsername, Integer otherID) {
-        return new HashSet<>();
+    public Set<FriendshipDTO> getFriendsOf(String userUsername, Integer otherID) {
+        final Optional<User> searchResult = loginRepo.findById(otherID);
+        if (searchResult.isEmpty()) {
+            log.warn("getFriendsOf: invalid user ID {}", otherID);
+            return new HashSet<>();
+        }
+        final String otherUsername = loginRepo.findByUsernameIgnoreCase(userUsername).get(0).getUsername();
+        log.trace("getFriendsOf: getting friends for user {}", otherUsername);
+        Set<FriendshipDTO> otherFriends = getFriends(otherUsername);
+        otherFriends.removeIf(friend -> friend.getUsername().equalsIgnoreCase(userUsername));
+        log.info("getFriendsOf: found {} friends for user {}", otherFriends.size(), otherUsername);
+        return otherFriends;
     }
 
     @Override
