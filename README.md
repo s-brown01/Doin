@@ -34,7 +34,8 @@ Our program was created using Java 21, Gradle, Angular, JPA, JWT, SLF4J, Logback
 
 
 ## Challenges
-Some of the challenges that we faced were...
+We had some various challenges while building this site. One of the biggest ones was learning how to use the many 
+different coding languages in coordination with each other, especially Angular and Spring Boot. 
 
 ## Future Features
 We were able to implement most of the features we wanted, but there are a few more we would have added if we 
