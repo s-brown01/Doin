@@ -18,8 +18,8 @@ export class RegisterComponent {
     securityAnswer: ''
   }
   errorMessage: string | null = null;
-  invalidPasswordLength: boolean = true;
-  invalidPasswordMatch: boolean = true;
+  invalidPasswordLength: boolean = false;
+  invalidPasswordMatch: boolean = false;
 
 
 
@@ -46,7 +46,7 @@ export class RegisterComponent {
       this.errorMessage = "Password must be at least 8 characters";
     }
 
-    if (this.invalidPasswordLength || this.invalidPasswordMatch){
+    if (this.invalidPasswordLength || this.invalidPasswordMatch) {
       return;
     }
 
