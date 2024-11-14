@@ -151,7 +151,7 @@ public class FriendController {
             log.warn("getFriendsOf: invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
         }
-        Set<FriendshipDTO> friends = friendService.getFriendsOf(userUsername, userId);
+        Set<FriendshipDTO> friends = friendService.getFriendsOf(userId);
         log.trace("getFriendsOf: userId {} returned {} friends", userId, friends.size());
         return ResponseEntity.ok(friends);
 

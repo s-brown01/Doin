@@ -194,7 +194,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public Set<FriendshipDTO> getFriendsOf(String userUsername, Integer otherID) {
+    public Set<FriendshipDTO> getFriendsOf(Integer otherID) {
         final Optional<User> otherUser = loginRepo.findById(otherID);
         if (otherUser.isEmpty()) {
             log.warn("getFriendsOf: invalid user ID {}", otherID);
@@ -203,6 +203,11 @@ public class FriendServiceImpl implements FriendService {
         final String otherUsername = otherUser.get().getUsername();
         log.trace("getFriendsOf: getting friends for user {}", otherUsername);
         Set<FriendshipDTO> otherFriends = getFriends(otherUsername);
+//        for (FriendshipDTO friend : otherFriends) {
+//            if (friend.getUsername().equalsIgnoreCase(userUsername)) {
+//                friend.setStatus(FriendshipStatus.NOTADDED);
+//            }
+//        }
         log.info("getFriendsOf: found {} friends for user {}", otherFriends.size(), otherUsername);
         return otherFriends;
     }
