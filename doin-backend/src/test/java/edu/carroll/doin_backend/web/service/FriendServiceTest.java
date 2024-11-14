@@ -459,6 +459,31 @@ public class FriendServiceTest {
         assertTrue(user1Friends.isEmpty(), "User1 friend should have no friends");
     }
 
+    @Test
+    public void getFriendsOf_OneOtherFriend() {
+        // user1 -> user2
+        assertTrue(friendService.addFriend(username1, username2).isValid(), "Making sure addFriend works: User1 and User2");
+        assertTrue(friendService.confirmFriend(username2, username1).isValid(), "Making sure addFriend works: User2 and User1");
+        // user2 -> user3
+        assertTrue(friendService.addFriend(username2, username3).isValid(), "Making sure addFriend works: User2 and User 3");
+        assertTrue(friendService.confirmFriend(username3, username2).isValid(), "Making sure addFriend works: User3 and User2");
+
+        final Set<FriendshipDTO> user1GetUser2Friends = friendService.getFriendsOf(username1, 2);
+        assertEquals(2, user1GetUser2Friends.size(), "User1 should be able to see that User2 has 2 friends");
+
+        for (FriendshipDTO friend : user1GetUser2Friends) {
+            if (friend.getUsername().equals(username1)) {
+                assertEquals(friend.getStatus(), FriendshipStatus.NOTADDED, "User1 should be NOT ADDED friends with themselves");
+            }
+            if (friend.getUsername().equals(username2)) {
+                fail("This should not happen");
+            }
+            if (friend.getUsername().equals(username3)) {
+                assertEquals(friend.getStatus(), FriendshipStatus.NOTADDED, "User1 and User3 should be NOT ADDED friends");
+            }
+        }
+    }
+
     /**
      * This method tests a successful query of getRequests
      */
