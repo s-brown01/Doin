@@ -217,6 +217,11 @@ public class FriendServiceImpl implements FriendService {
         Set<FriendshipDTO> otherFriends = getFriends(otherUsername);
         // for each friend, check the status between the current user and that friend
         for (FriendshipDTO friend : otherFriends) {
+            // if the friend is the current user, set the status appropriately
+            if (friend.getUsername().equalsIgnoreCase(userUsername)) {
+                friend.setStatus(FriendshipStatus.IS_SELF);
+                continue;
+            }
             // the friend's User model by the username
             final User tempFriend = loginRepo.findByUsernameIgnoreCase(friend.getUsername()).get(0);
             // if the friendship exists from User -> friend, use that

@@ -23,6 +23,10 @@
       <div *ngSwitchCase="FriendshipStatus.NOTADDED">
         <button class="add-button" (click)="addFriend()">Add Friend</button>
       </div>
+
+      <div *ngSwitchCase="FriendshipStatus.IS_SELF">
+        <div>You! :)</div>
+      </div>
     </ng-container>
   </div>
 </div>
