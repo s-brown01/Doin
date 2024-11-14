@@ -195,15 +195,14 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public Set<FriendshipDTO> getFriendsOf(String userUsername, Integer otherID) {
-        final Optional<User> searchResult = loginRepo.findById(otherID);
-        if (searchResult.isEmpty()) {
+        final Optional<User> otherUser = loginRepo.findById(otherID);
+        if (otherUser.isEmpty()) {
             log.warn("getFriendsOf: invalid user ID {}", otherID);
             return new HashSet<>();
         }
-        final String otherUsername = loginRepo.findByUsernameIgnoreCase(userUsername).get(0).getUsername();
+        final String otherUsername = otherUser.get().getUsername();
         log.trace("getFriendsOf: getting friends for user {}", otherUsername);
         Set<FriendshipDTO> otherFriends = getFriends(otherUsername);
-        otherFriends.removeIf(friend -> friend.getUsername().equalsIgnoreCase(userUsername));
         log.info("getFriendsOf: found {} friends for user {}", otherFriends.size(), otherUsername);
         return otherFriends;
     }
@@ -212,7 +211,7 @@ public class FriendServiceImpl implements FriendService {
     public Set<Integer> findFriendIdsByUserId(Integer userId, FriendshipStatus status) {
         log.trace("getting Friends: for user {}", userId);
         Set<Integer> foundFriends = friendRepo.findFriendIdsByUserId(userId, status);
-        log.trace("getFriends: found {} friends for user {}", foundFriends.size(), userId);
+        log.trace("findFriendIdsByUserId: found {} friends for user {}", foundFriends.size(), userId);
         return foundFriends;
     }
 
