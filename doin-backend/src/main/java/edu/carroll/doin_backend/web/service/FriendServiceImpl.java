@@ -193,21 +193,38 @@ public class FriendServiceImpl implements FriendService {
         return convertFriendshipIntoDTOS(currentUser, foundFriends);
     }
 
+    /**
+     * Retrieves the list of friends for a user based on the other User's ID. <BR>
+     * It also sets the statuses of all friendships to the status between the current user and the found friends
+     *
+     * @param userUsername the username of the current user
+     * @param otherID the ID of the User whos friends to get
+     * @return A {@link Set} of {@link FriendshipDTO} objects representing the other user's friends
+     */
     @Override
-    public Set<FriendshipDTO> getFriendsOf(Integer otherID) {
+    public Set<FriendshipDTO> getFriendsOf(String userUsername, Integer otherID) {
         final Optional<User> otherUser = loginRepo.findById(otherID);
+        // make sure the otherUser exists if it doesn't than return an empty set
         if (otherUser.isEmpty()) {
             log.warn("getFriendsOf: invalid user ID {}", otherID);
             return new HashSet<>();
         }
         final String otherUsername = otherUser.get().getUsername();
+        final User currentUser = loginRepo.findByUsernameIgnoreCase(otherUsername).get(0);
         log.trace("getFriendsOf: getting friends for user {}", otherUsername);
         Set<FriendshipDTO> otherFriends = getFriends(otherUsername);
-//        for (FriendshipDTO friend : otherFriends) {
-//            if (friend.getUsername().equalsIgnoreCase(userUsername)) {
-//                friend.setStatus(FriendshipStatus.NOTADDED);
-//            }
-//        }
+        // for each friend, check the status beteween the current user and that friend
+        for (FriendshipDTO friend : otherFriends) {
+            // the friend's User model by the username
+            final User tempFriend = loginRepo.findByUsernameIgnoreCase(friend.getUsername()).get(0);
+            // if the friendship exists from User -> friend, use that
+            if (friendRepo.existsFriendshipByUserAndFriend(currentUser, tempFriend)) {
+                friend.setStatus(statusBetween(currentUser, tempFriend));
+            } else {
+                // if it doesn't exist, statusBetween already handles it
+                friend.setStatus(statusBetween(tempFriend, currentUser));
+            }
+        }
         log.info("getFriendsOf: found {} friends for user {}", otherFriends.size(), otherUsername);
         return otherFriends;
     }
