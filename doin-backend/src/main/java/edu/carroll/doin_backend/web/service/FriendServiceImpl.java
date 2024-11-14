@@ -214,7 +214,12 @@ public class FriendServiceImpl implements FriendService {
         // get the otherUser from the Optional above
         final String otherUsername = otherUser.get().getUsername();
         // get the current user based on the userUsername
+        if (!isValidExistingUsername(userUsername)) {
+            log.warn("getFriendsOf: invalid user username {}", userUsername);
+            return new HashSet<>();
+        }
         final User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
+        log.trace("getFriendsOf: found current user {}", userUsername);
         log.trace("getFriendsOf: getting friends for user {}", otherUsername);
         Set<FriendshipDTO> otherFriends = getFriends(otherUsername);
         // for each friend, check the status between the current user and that friend

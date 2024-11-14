@@ -5,7 +5,7 @@ import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.dto.ValidateResult;
 import edu.carroll.doin_backend.web.security.TokenService;
 import edu.carroll.doin_backend.web.service.FriendService;
-import edu.carroll.doin_backend.web.service.FriendServiceImpl;
+import edu.carroll.doin_backend.web.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,14 +40,20 @@ public class FriendController {
     private final TokenService tokenService;
 
     /**
+     * A {@link UserService} for finding users
+     */
+    private final UserService userService;
+
+    /**
      * Constructor for a new FriendController
      *
      * @param friendService The service responsible for friend operations.
      * @param tokenService The service responsible for token validation.
      */
-    public FriendController(FriendService friendService, TokenService tokenService) {
+    public FriendController(FriendService friendService, TokenService tokenService, UserService userService) {
         this.friendService = friendService;
         this.tokenService = tokenService;
+        this.userService = userService;
     }
 
     /**
@@ -150,6 +156,10 @@ public class FriendController {
         if (!isValidUsername(userUsername)) {
             log.warn("getFriendsOf: invalid user username {}", userUsername);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashSet<>());
+        }
+        if (!userService.existsByID(userId).isValid()) {
+            log.warn("getFriendsOf: user ID {} does not exist", userId);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashSet<>());
         }
         Set<FriendshipDTO> friends = friendService.getFriendsOf(userUsername, userId);
         log.trace("getFriendsOf: userId {} returned {} friends", userId, friends.size());
