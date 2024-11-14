@@ -339,4 +339,27 @@ public class UserServiceImpl implements UserService {
         loginRepo.save(user);
         return new ValidateResult(true, "Successfully reset password");
     }
+
+    /**
+     * Checks if any User in the database has an ID that matches the one given in the parameter.
+     *
+     * @param id - the ID to check for in the database
+     * @return a {@link ValidateResult} object containing the result of the password reset attempt.
+     * If successful, valid = true and a success message; otherwise, it returns valid = false and failure
+     * message with the reason.
+     */
+    @Override
+    public ValidateResult existsByID(Integer id) {
+        log.trace("existsByID: existing user with id {}", id);
+        if (id == null) {
+            log.warn("existsByID: id is null");
+            return new ValidateResult(false, "Invalid ID");
+        }
+        if (loginRepo.existsById(id)) {
+            log.info("existsByID: existing user with id {}", id);
+            return new ValidateResult(true, "User exists");
+        }
+        log.warn("existsByID: no user with id {}", id);
+        return new ValidateResult(false, "User does not exist");
+    }
 }

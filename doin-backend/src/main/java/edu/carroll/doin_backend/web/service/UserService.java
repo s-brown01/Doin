@@ -88,4 +88,6 @@ public interface UserService {
      * @return a {@link ValidateResult} indicating whether the password reset was successful.
      */
     ValidateResult resetPassword(ForgotPasswordDTO forgotPasswordDTO);
+
+    ValidateResult existsByID(Integer id);
 }
