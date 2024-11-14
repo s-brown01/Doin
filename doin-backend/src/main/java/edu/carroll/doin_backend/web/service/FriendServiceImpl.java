@@ -198,7 +198,7 @@ public class FriendServiceImpl implements FriendService {
      * It also sets the statuses of all friendships to the status between the current user and the found friends
      *
      * @param userUsername the username of the current user
-     * @param otherID the ID of the User whos friends to get
+     * @param otherID the ID of the User whose friends to get
      * @return A {@link Set} of {@link FriendshipDTO} objects representing the other user's friends
      */
     @Override
@@ -209,11 +209,13 @@ public class FriendServiceImpl implements FriendService {
             log.warn("getFriendsOf: invalid user ID {}", otherID);
             return new HashSet<>();
         }
+        // get the otherUser from the Optional above
         final String otherUsername = otherUser.get().getUsername();
-        final User currentUser = loginRepo.findByUsernameIgnoreCase(otherUsername).get(0);
+        // get the current user based on the userUsername
+        final User currentUser = loginRepo.findByUsernameIgnoreCase(userUsername).get(0);
         log.trace("getFriendsOf: getting friends for user {}", otherUsername);
         Set<FriendshipDTO> otherFriends = getFriends(otherUsername);
-        // for each friend, check the status beteween the current user and that friend
+        // for each friend, check the status between the current user and that friend
         for (FriendshipDTO friend : otherFriends) {
             // the friend's User model by the username
             final User tempFriend = loginRepo.findByUsernameIgnoreCase(friend.getUsername()).get(0);
