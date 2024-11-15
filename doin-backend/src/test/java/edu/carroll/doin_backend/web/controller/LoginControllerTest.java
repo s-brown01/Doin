@@ -143,7 +143,7 @@ public class LoginControllerTest {
         assertNotNull(loginTest.getBody());
         final String token = loginTest.getBody().getToken();
         assertTrue(tokenService.validateToken(token));
-        assertEquals(username1, tokenService.getUsername(token));
+        assertEquals(username2, tokenService.getUsername(token));
     }
 
     @Test
@@ -151,7 +151,6 @@ public class LoginControllerTest {
         RegisterDTO invalidUsernameRegister = new RegisterDTO(invalidUsername, password2, sqQuestion, "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(invalidUsernameRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(invalidUsername, password2));
@@ -164,7 +163,6 @@ public class LoginControllerTest {
         RegisterDTO invalidPasswordRegister = new RegisterDTO(username2, invalidPassword, sqQuestion, "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(invalidPasswordRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, invalidPassword));
@@ -177,7 +175,6 @@ public class LoginControllerTest {
         RegisterDTO invalidSQRegister = new RegisterDTO(username2, password2, invalidSQ, "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(invalidSQRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
@@ -190,7 +187,6 @@ public class LoginControllerTest {
         RegisterDTO emptyUsernameRegister = new RegisterDTO("", password2, sqQuestion, "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(emptyUsernameRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO("", password2));
@@ -203,7 +199,6 @@ public class LoginControllerTest {
         RegisterDTO emptyPasswordRegister = new RegisterDTO(username2, "", sqQuestion, "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(emptyPasswordRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, ""));
@@ -216,7 +211,6 @@ public class LoginControllerTest {
         RegisterDTO emptySecurityQuestionRegister = new RegisterDTO(username2, password2, "", "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(emptySecurityQuestionRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
@@ -229,7 +223,6 @@ public class LoginControllerTest {
         RegisterDTO emptySecurityQuestionAnswerRegister = new RegisterDTO(username2, password2, sqQuestion, "");
         ResponseEntity<String> registerAttempt = loginController.registerUser(emptySecurityQuestionAnswerRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
@@ -242,7 +235,6 @@ public class LoginControllerTest {
         RegisterDTO nullUsernameRegister = new RegisterDTO(null, password2, sqQuestion, "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(nullUsernameRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(null, password2));
@@ -255,7 +247,6 @@ public class LoginControllerTest {
         RegisterDTO nullPasswordRegister = new RegisterDTO(username2, null, sqQuestion, "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(nullPasswordRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, null));
@@ -268,7 +259,6 @@ public class LoginControllerTest {
         RegisterDTO nullSecurityQuestionRegister = new RegisterDTO(username2, password2, null, "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(nullSecurityQuestionRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
@@ -281,7 +271,6 @@ public class LoginControllerTest {
         RegisterDTO nullSecurityAnswerRegister = new RegisterDTO(username2, password2, sqQuestion, null);
         ResponseEntity<String> registerAttempt = loginController.registerUser(nullSecurityAnswerRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
@@ -294,7 +283,6 @@ public class LoginControllerTest {
         RegisterDTO nullDataRegister = new RegisterDTO(null, null, null, null);
         ResponseEntity<String> registerAttempt = loginController.registerUser(nullDataRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
-        assertNull(registerAttempt.getBody());
         assertEquals("Invalid data", registerAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(null, null));
@@ -318,42 +306,226 @@ public class LoginControllerTest {
         assertEquals("{}", resetAttempt.getBody());
 
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.OK, loginAttempt.getStatusCode());
+        assertNotNull(loginAttempt.getBody());
+        assertTrue(tokenService.validateToken(loginAttempt.getBody().getToken()));
+        assertEquals(username2, tokenService.getUsername(loginAttempt.getBody().getToken()));
+    }
+
+    @Test
+    public void forgotPassword_InvalidUsername() {
+        RegisterDTO invalidUsernameRegister = new RegisterDTO(invalidUsername, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(invalidUsernameRegister);
+        assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
+        assertEquals("Invalid data", registerAttempt.getBody());
+
+        ForgotPasswordDTO fpwdInvalidUsername = new ForgotPasswordDTO(invalidUsername, password2, sqQuestion, "answer");
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fpwdInvalidUsername);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(invalidUsername, password2));
         assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
         assertNull(loginAttempt.getBody());
     }
 
     @Test
-    public void forgotPassword_InvalidUsername() {}
+    public void forgotPassword_EmptyUsername() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fpwdEmptyUsername = new ForgotPasswordDTO("", sqQuestion, "answer", password2);
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fpwdEmptyUsername);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO("", password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_EmptyUsername() {}
+    public void forgotPassword_EmptyPassword() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fpwdEmptyPassword = new ForgotPasswordDTO(username2, sqQuestion, "answer", "");
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fpwdEmptyPassword);
+        assertEquals(HttpStatus.UNAUTHORIZED, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, ""));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_EmptyPassword() {}
+    public void forgotPassword_InvalidSecurityQuestion() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fwpdInvalidSecurityQuestion = new ForgotPasswordDTO(username2, password2, invalidSQ, "answer");
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fwpdInvalidSecurityQuestion);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_InvalidSecurityQuestion() {}
+    public void forgotPassword_EmptySecurityQuestion() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fwpdInvalidSecurityQuestion = new ForgotPasswordDTO(username2, password2, "", "answer");
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fwpdInvalidSecurityQuestion);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_EmptySecurityQuestion() {}
+    public void forgotPassword_EmptySecurityAnswer() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fwpdInvalidSecurityQuestion = new ForgotPasswordDTO(username2, password2, sqQuestion, "");
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fwpdInvalidSecurityQuestion);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_EmptySecurityAnswer() {}
+    public void forgotPassword_IncorrectSecurityAnswer() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fwpdInvalidSecurityQuestion = new ForgotPasswordDTO(username2, password2, sqQuestion, "not_the_real_answer");
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fwpdInvalidSecurityQuestion);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_NullUsername() {}
+    public void forgotPassword_NullUsername() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fwpdInvalidSecurityQuestion = new ForgotPasswordDTO(null, password2, sqQuestion, "answer");
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fwpdInvalidSecurityQuestion);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_NullPassword() {}
+    public void forgotPassword_NullPassword() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fwpdInvalidSecurityQuestion = new ForgotPasswordDTO(username2, null, sqQuestion, "answer");
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fwpdInvalidSecurityQuestion);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_NullSecurityQuestion() {}
+    public void forgotPassword_NullSecurityQuestion() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fwpdInvalidSecurityQuestion = new ForgotPasswordDTO(username2, password2, null, "answer");
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fwpdInvalidSecurityQuestion);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_NullSecurityAnswer() {}
+    public void forgotPassword_NullSecurityAnswer() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fwpdInvalidSecurityQuestion = new ForgotPasswordDTO(username2, password2, sqQuestion, null);
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fwpdInvalidSecurityQuestion);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
     @Test
-    public void forgotPassword_NullData() {}
+    public void forgotPassword_NullData() {
+        RegisterDTO successfulRegister = new RegisterDTO(username2, password1, sqQuestion, "answer");
+        ResponseEntity<String> registerAttempt = loginController.registerUser(successfulRegister);
+        assertEquals(HttpStatus.OK, registerAttempt.getStatusCode());
+        assertNotNull(registerAttempt.getBody());
+        assertEquals("{}", registerAttempt.getBody());
+
+        ForgotPasswordDTO fwpdInvalidSecurityQuestion = new ForgotPasswordDTO(null, null, null, null);
+        ResponseEntity<String> resetAttempt = loginController.forgotPassword(fwpdInvalidSecurityQuestion);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, resetAttempt.getStatusCode());
+        assertEquals("Invalid data", resetAttempt.getBody());
+
+        final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(new LoginDTO(username2, password2));
+        assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
+        assertNull(loginAttempt.getBody());
+    }
 
 
 }
