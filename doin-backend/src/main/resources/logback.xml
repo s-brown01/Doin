@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <appender name="Console" class ="ch.qos.logback.core.ConsoleAppender">
+  <property name="LOGS" value="./logs" />
+
+  <!-- Console Appender -->
+  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%date - [%level] - from %logger in %thread %n%message %n%xException%n</pattern>
     </encoder>
   </appender>
 
-  <property name="LOGS" value = "./logs" />
-
-  <appender name="LogFile" class = "ch.qos.logback.core.rolling.RollingFileAppender">
+  <!-- Rolling File Appender -->
+  <appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOGS}/doin-logger.log</file>
     <encoder>
       <pattern>%date - [%level] - from %logger in %thread %n%message%xException%n</pattern>
     </encoder>
-
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <!-- create a new log file every day or whenever the logfile reaches 10MB -->
       <fileNamePattern>${LOGS}/archived/doin-logger-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
       <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
         <maxFileSize>10MB</maxFileSize>
@@ -23,9 +23,15 @@
     </rollingPolicy>
   </appender>
 
-  <root level = "INFO">
-    <appender-ref ref = "Console" />
-    <!-- Comment out logging to LogFile for now... -->
-     <appender-ref ref = "LogFile" />
+  <!-- Root Logger Configuration -->
+  <root level="INFO">
+    <appender-ref ref="Console" />
+    <appender-ref ref="LogFile" />
   </root>
+
+  <!-- Specific Logger Configuration for Service Package -->
+  <logger name="edu.carroll.doin_backend.web.service" level="TRACE" additivity="false">
+    <appender-ref ref="Console" />
+    <appender-ref ref="LogFile" />
+  </logger>
 </configuration>

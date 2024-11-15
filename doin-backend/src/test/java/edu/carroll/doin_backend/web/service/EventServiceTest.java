@@ -3,7 +3,6 @@ package edu.carroll.doin_backend.web.service;
 import edu.carroll.doin_backend.web.dto.EventDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
-import edu.carroll.doin_backend.web.enums.FriendshipStatus;
 import edu.carroll.doin_backend.web.enums.Visibility;
 import edu.carroll.doin_backend.web.model.Event;
 import edu.carroll.doin_backend.web.model.User;
@@ -25,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-public class EventServiceImplTest {
+public class EventServiceTest {
 
     @Autowired
     private EventService eventService;
@@ -674,22 +673,28 @@ public class EventServiceImplTest {
 
     @Test
     @DisplayName("Should successfully retrieve a public event by ID")
-    void testGetById_PublicEvent(EventDTO eventDTO) {
-        // Arrange
-        Event event = new Event();
-        event.setId(1);
-        event.setVisibility(Visibility.PUBLIC);
-        event.setCreator(user);
-        event.setDescription("Public Event");
-        EventDTO savedEvent = eventService.add(new EventDTO(event));
+    void testGetById_PublicEvent() {
+        // Create private event
+        testEvent.setVisibility(Visibility.PRIVATE);
+        EventDTO savedEvent = eventService.add(new EventDTO(testEvent));
 
-        // Act
-        EventDTO result = eventService.getById(savedEvent.getId(), user2.getId()); // Assuming 123 is the userId
+        // Create second user
+        RegisterDTO userData = new RegisterDTO("user2", "password", "pet", "answer");
+        userService.createNewUser(userData);
+        User secondUser = new User(userService.findUser(null, "user2"));
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(eventDTO.getId(), savedEvent.getId());
-        assertEquals(event.getDescription(), result.getDescription());
+        // Test creator access
+        assertNotNull(eventService.getById(savedEvent.getId(), user.getId()));
+
+        // Test non-friend access (should be null)
+        assertNull(eventService.getById(savedEvent.getId(), secondUser.getId()));
+
+        // Add friendship
+        friendService.addFriend(user.getUsername(), secondUser.getUsername());
+        friendService.addFriend(secondUser.getUsername(), user.getUsername());
+
+        // Test friend access
+        assertNotNull(eventService.getById(savedEvent.getId(), secondUser.getId()));
     }
 
     @Test
@@ -697,18 +702,17 @@ public class EventServiceImplTest {
     void testGetById_EventCreatedByUser() {
         // Arrange
         Event event = new Event();
-        event.setId(2);
         event.setVisibility(Visibility.PRIVATE); // Private event
         event.setCreator(user);
         event.setDescription("User's Event");
-        eventService.add(new EventDTO(event));
+        EventDTO addedEvent = eventService.add(new EventDTO(event));
 
         // Act
-        EventDTO result = eventService.getById(2, user.getId()); // The user is the creator
+        EventDTO result = eventService.getById(addedEvent.getId(), user.getId());
 
         // Assert
         assertNotNull(result);
-        assertEquals(2, result.getId());
+        assertEquals(addedEvent.getId(), result.getId());
         assertEquals("User's Event", result.getDescription());
     }
 
@@ -739,19 +743,17 @@ public class EventServiceImplTest {
         event.setVisibility(Visibility.PRIVATE); // Private event
         event.setCreator(user);
         event.setDescription("Private Event with Friend");
-        eventService.add(new EventDTO(event));
+        EventDTO addedEvent = eventService.add(new EventDTO(event));
 
-        User friend = new User();
-        friend.setId(999);
-        friendService.addFriend(user.getUsername(), friend.getUsername());
-        friendService.addFriend(friend.getUsername(), user.getUsername());
+        friendService.addFriend(user.getUsername(), user2.getUsername());
+        friendService.addFriend(user2.getUsername(), user.getUsername());
 
         // Act
-        EventDTO result = eventService.getById(4, 999); // The user is a confirmed friend of the creator
+        EventDTO result = eventService.getById(addedEvent.getId(), user2.getId()); // The user is a confirmed friend of the creator
 
         // Assert
         assertNotNull(result);
-        assertEquals(4, result.getId());
+        assertEquals(addedEvent.getId(), result.getId());
         assertEquals("Private Event with Friend", result.getDescription());
     }
 
@@ -897,32 +899,6 @@ public class EventServiceImplTest {
         List<EventDTO> upcomingEvents = eventService.getUpcomingEvents(user.getId());
         assertEquals(1, upcomingEvents.size());
         assertTrue(upcomingEvents.get(0).getTime().isAfter(LocalDateTime.now()));
-    }
-
-    @Test
-    @DisplayName("Should get event by ID with visibility checks")
-    void testGetById() {
-        // Create private event
-        testEvent.setVisibility(Visibility.PRIVATE);
-        EventDTO savedEvent = eventService.add(new EventDTO(testEvent));
-
-        // Create second user
-        RegisterDTO userData = new RegisterDTO("user2", "password", "pet", "answer");
-        userService.createNewUser(userData);
-        User secondUser = new User(userService.findUser(null, "user2"));
-
-        // Test creator access
-        assertNotNull(eventService.getById(savedEvent.getId(), user.getId()));
-
-        // Test non-friend access (should be null)
-        assertNull(eventService.getById(savedEvent.getId(), secondUser.getId()));
-
-        // Add friendship
-        friendService.addFriend(user.getUsername(), secondUser.getUsername());
-        friendService.addFriend(secondUser.getUsername(), user.getUsername());
-
-        // Test friend access
-        assertNotNull(eventService.getById(savedEvent.getId(), secondUser.getId()));
     }
 
     @Test

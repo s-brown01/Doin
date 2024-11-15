@@ -16,12 +16,12 @@
     </div>
   </div>
   <!-- Images Section -->
-  <div *ngIf="(event.images && event.images.length > 0) || imageUploadAvailable" class="images-section">
+  <div *ngIf="(event.images && event.images.length > 0) || (isPast && isGoing)" class="images-section">
     <div *ngFor="let image of event.images" class="event-image">
       <app-image [image]="image" [borderRadius]="'8px'"></app-image>
     </div>
     <!-- Image Upload Button -->
-    <div class="image-upload" *ngIf="imageUploadAvailable">
+    <div class="image-upload" *ngIf="isPast && isGoing">
       <label class="upload-button">
         <span class="upload-icon">+</span>
         <input type="file" (change)="onImageUpload($event)" />

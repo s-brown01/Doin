@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserDTO } from '../../dtos/user.dto';
 import { ImageDTO } from '../../dtos/image.dto';
 import { EventDTO, EventType } from '../../dtos/event.dto';
@@ -11,10 +11,10 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './add-post-popup.component.html',
   styleUrls: ['./add-post-popup.component.css']
 })
-export class AddPostPopupComponent {  
+export class AddPostPopupComponent implements OnInit{  
   description: string = '';
   location: string = '';
-  time: Date = new Date();
+  time: string = '';
   eventTypeName: string = '';
   evetTypeId: number = 1;
   visibility: string = 'PUBLIC'; 
@@ -22,6 +22,11 @@ export class AddPostPopupComponent {
   images: ImageDTO[] = [];
   joiners: UserDTO[] = [];
   createdAt: Date; 
+  minTime: string ='';
+
+  ngOnInit(): void {
+    this.minTime = new Date().toISOString().slice(0, 16);
+  }
 
   @Input() isVisible: boolean = false;
   @Output() closeAddPost = new EventEmitter<void>();
@@ -33,6 +38,19 @@ export class AddPostPopupComponent {
     this.creator = authService.getCurrentUser();
   }
 
+  validateTime(): void {
+    if (this.time) {
+      const selectedTime = new Date(this.time);
+      const currentTime = new Date();
+
+      const isSameDay = selectedTime.toDateString() === currentTime.toDateString();
+
+      if (isSameDay && selectedTime < currentTime) {
+        this.time = this.minTime;
+      }
+    }
+  }
+
   async onSubmit() {
     console.log(this.createdAt);
     const event = new EventDTO(
@@ -41,7 +59,7 @@ export class AddPostPopupComponent {
       this.visibility,
       this.creator, 
       this.location,
-      this.time,
+      new Date(this.time),
       this.description,
       this.images,
       this.joiners,

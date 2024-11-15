@@ -51,12 +51,9 @@ export class EventPageComponent {
           this.event = data;
           if((this.event.creator.id == this.curUser?.id || this.event.joiners.some(joiner => joiner.id === this.curUser?.id))){
             this.isGoing = true;
-            if(new Date(this.event.time).getTime() < Date.now()){
-              this.imageUploadAvailable = true;
-
-            }else{
-              this.isPast = true;
-            }
+          }
+          if(new Date(this.event.time).getTime() < Date.now()){
+            this.isPast = true;
           }
 
         },

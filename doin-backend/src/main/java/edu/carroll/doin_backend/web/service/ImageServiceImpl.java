@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Optional;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -59,10 +60,13 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Image get(Long id) {
         logger.info("Retrieving image with ID: {}", id);
-        return imageRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Image with ID {} not found", id);
-                    return new ResourceNotFoundException("Image not found");
-                });
+        Optional<Image> imgOpt = imageRepository.findById(id);
+        if (imgOpt.isPresent()) {
+            return imgOpt.get();
+        }
+        else {
+            logger.error("Image with ID {} not found", id);
+            return null;
+        }
     }
 }

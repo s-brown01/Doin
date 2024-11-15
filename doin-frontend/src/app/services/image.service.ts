@@ -8,7 +8,7 @@ export class ImageService {
 
   constructor(private api: ApiService) {}
 
-  getImage(id: number): Observable<string> {
-    return this.api.getString("images/" + id);
-  }
+  // getImage(id: number): Observable<string> {
+  //   return this.api.getString("images/" + id);
+  // }
 }
