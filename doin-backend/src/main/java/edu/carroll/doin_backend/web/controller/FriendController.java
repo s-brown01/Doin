@@ -349,7 +349,7 @@ public class FriendController {
         }
         // make sure that the username only contains characters from the regex sequence
         if (!username.matches("^[a-zA-Z0-9_]+$")) {
-            log.warn("validateTokenAndGetUsername: - username {} has unexpected characters", username);
+            log.warn("isValidUsername: - username {} has unexpected characters", username);
             return false;
         }
         return true;
