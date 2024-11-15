@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
      * @return true if the username is valid, false if not valid (null, empty).
      */
     private boolean isValidPassword(String password) {
-        if (password == null || password.isEmpty() || password.trim().isEmpty()) {
+        if (password == null || password.isEmpty() || password.isBlank()) {
             log.warn("createNewUser: isValidPassword - null or empty password");
             return false;
         }
@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Updates the user's profile picture by saving the uploaded file and associating it with the user.
      *
-     * @param userName the username of the user whose profile picture is to be updated.
+     * @param userId   the ID of the user whose profile picture is to be updated.
      * @param file     the profile picture file to be uploaded.
      * @return true if the profile picture was successfully updated, false otherwise.
      */
