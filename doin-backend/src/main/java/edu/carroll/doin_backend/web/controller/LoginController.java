@@ -119,7 +119,7 @@ public class LoginController {
         ValidateResult securityQuestionResult = userService.validateSecurityQuestion(forgotPasswordDTO);
         if (!securityQuestionResult.isValid()) {
             log.warn("LoginController: forgotPassword - username {} failed their security question", forgotPasswordDTO.getUsername());
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(securityQuestionResult.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Invalid data");
         }
         // ONLY AFTER SQ was validated
         ValidateResult passwordResetResult = userService.resetPassword(forgotPasswordDTO);
@@ -128,7 +128,7 @@ public class LoginController {
             return ResponseEntity.ok("{}");
         } else {
             log.warn("LoginController: forgotPassword - username {} failed resetting their password", forgotPasswordDTO.getUsername());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(passwordResetResult.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid data");
         }
     }
 }
