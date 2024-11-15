@@ -33,11 +33,6 @@ export class FriendsComponent {
       this.searchResults = [];
       return;
     }
-    if (this.searchInput == this.authService.getCurrentUser().username) {
-      this.searchErrorMessage = "You can't search for yourself";
-      this.searchResults = [];
-      return;
-    }
     this.searchErrorMessage = null;
     this.friendService.getUserByUsername(this.searchInput).subscribe(data => {
       this.searchResults = data;
@@ -69,10 +64,5 @@ export class FriendsComponent {
         this.friendRequestErrorMessage = error.message;
       }
     );
-    // this.friendRequests = [
-    //   new FriendshipDto("request1", FriendshipStatus.PENDING, new ImageDTO(1, "friend1", "test"), 1),
-    //   new FriendshipDto("request2", FriendshipStatus.PENDING, new ImageDTO(1, "friend2", "test"), 1),
-    //   new FriendshipDto("request3", FriendshipStatus.PENDING, new ImageDTO(1, "friend3", "test"), 1)
-    // ]
   }
 }

@@ -5,6 +5,9 @@ Welcome to Doin! This is a social media app made to help people connect with new
 ## Table of Contents
 - [Project Description](#project-description)
    - [Technologies Used](#technologies-used)
+     - [Backend](#backend)
+     - [Frontend](#frontend)
+     - [Dev-Tools](#dev-tools)
    - [Challenges](#challenges)
    - [Future Features](#future-features)
 - [Installation Instructions](#installation-instructions)
@@ -31,25 +34,30 @@ Our program was created using Java 21, Gradle, Angular, JPA, JWT, SLF4J, Logback
 
 
 ## Challenges
-Some of the challenges that we faced were...
+We had some various challenges while building this site. One of the biggest ones was learning how to use the many 
+different coding languages in coordination with each other, especially Angular and Spring Boot. 
 
 ## Future Features
 We were able to implement most of the features we wanted, but there are a few more we would have added if we 
 had more time. Those features are ...
 
 ## Technologies Used
-<ul>
-  <li>Java 21</li>
-  <li>SpringBoot</li>
-  <li>Gradle</li>
-  <li>Angular</li>
-  <li>JPA</li>
-  <li>JWT</li>
-  <li>SLF4J</li>
-  <li>Logback</li>
-  <li>BCrypt Encoder</li>
-  <li>MySQL</li>
-</ul>
+
+### Backend
+- **Java 21**: Primary programming language for backend logic
+- **Spring Boot**: Framework for building Java-based applications
+- **JPA**: For object-relational mapping
+- **JWT**: Token-based authentication
+- **BCrypt Encoder**: For password hashing
+- **MySQL**: Relational database
+
+### Frontend
+- **Angular**: Framework for building a dynamic web frontend
+
+### Dev Tools
+- **Gradle**: Build automation tool
+- **SLF4J & Logback**: Logging
+
 
 # Installation Instructions
 ## Prerequisites

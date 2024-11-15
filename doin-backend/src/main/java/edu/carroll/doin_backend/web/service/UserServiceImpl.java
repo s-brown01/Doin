@@ -78,6 +78,10 @@ public class UserServiceImpl implements UserService {
             log.info("createNewUser: Invalid password with username {}", registerDTO.getUsername());
             return false;
         }
+        if (!isValidSecurityQuestionAnswer(registerDTO.getSecurityAnswer())){
+            log.info("createNewUser: Invalid security question answer {}", registerDTO.getSecurityAnswer());
+            return false;
+        }
         final SecurityQuestion userSecurityQuestion = sqService.getSecurityQuestionByValue(registerDTO.getSecurityQuestionString());
         if (userSecurityQuestion == null) {
             log.info("createNewUser: Invalid security question {}", registerDTO.getSecurityQuestionString());
@@ -116,14 +120,10 @@ public class UserServiceImpl implements UserService {
             log.warn("createNewUser: isValidNewUsername - non-unique username");
             return false;
         }
-        // making sure there's no weird characters in the name
-        String[] invalidChars = new String[]{"`", "'", "/", ";", ":", "*", "{", "}", "[", "]", "|"};
-        for (String s : invalidChars) {
-            // indexOf(c) will return -1 if char doesn't exist
-            if (username.contains(s)) {
-                log.warn("createNewUser: isValidNewUsername - invalid username");
-                return false;
-            }
+        // make sure that the username only contains characters from the regex sequence
+        if (!username.matches("^[a-zA-Z0-9_]+$")) {
+            log.warn("validateTokenAndGetUsername: - username {} has unexpected characters", username);
+            return false;
         }
         return true;
     }
@@ -135,8 +135,26 @@ public class UserServiceImpl implements UserService {
      * @return true if the username is valid, false if not valid (null, empty).
      */
     private boolean isValidPassword(String password) {
-        if (password == null || password.isEmpty() || password.trim().isEmpty()) {
-            log.warn("createNewUser: isValidPassword - null or empty password");
+        if (password == null || password.isEmpty() || password.isBlank()) {
+            log.warn("isValidUsername: isValidPassword - null or empty password");
+            return false;
+        }
+        if (!password.matches("^[a-zA-Z0-9_!@#$%^&*]+$")) {
+            log.warn("isValidUsername: - username {} has unexpected characters", password);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * This function makes sure that a user's security question answer is valid (not blank or empty)
+     *
+     * @param securityAnswer the security question answer to validate
+     * @return true if the answer is valid, false otherwise
+     */
+    private boolean isValidSecurityQuestionAnswer(String securityAnswer) {
+        if (securityAnswer == null || securityAnswer.isEmpty() || securityAnswer.isBlank()) {
+            log.warn("isValidSecurityQuestionAnswer - null or empty security question answer");
             return false;
         }
         return true;
@@ -206,7 +224,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Updates the user's profile picture by saving the uploaded file and associating it with the user.
      *
-     * @param userName the username of the user whose profile picture is to be updated.
+     * @param userId   the ID of the user whose profile picture is to be updated.
      * @param file     the profile picture file to be uploaded.
      * @return true if the profile picture was successfully updated, false otherwise.
      */
@@ -260,6 +278,10 @@ public class UserServiceImpl implements UserService {
         if (foundUsers.size() > 1) {
             log.warn("validateSecurityQuestion: found more than 1 user with username {}", forgotPasswordDTO.getUsername());
             return new ValidateResult(false, "Internal Error");
+        }
+        if (!isValidSecurityQuestionAnswer(forgotPasswordDTO.getSecurityQuestionAnswer())) {
+            log.warn("validateSecurityQuestion: invalid security question answer {}", forgotPasswordDTO.getSecurityQuestionAnswer());
+            return new ValidateResult(false, "Invalid Security Question Answer");
         }
         log.trace("validateSecurityQuestion: retrieving security question {} from service for user {}", forgotPasswordDTO.getSecurityQuestionValue(), forgotPasswordDTO.getUsername());
         final SecurityQuestion userSecurityQuestion = sqService.getSecurityQuestionByValue(forgotPasswordDTO.getSecurityQuestionValue());
@@ -338,5 +360,28 @@ public class UserServiceImpl implements UserService {
         // if all tests pass, its good and save changes
         loginRepo.save(user);
         return new ValidateResult(true, "Successfully reset password");
+    }
+
+    /**
+     * Checks if any User in the database has an ID that matches the one given in the parameter.
+     *
+     * @param id - the ID to check for in the database
+     * @return a {@link ValidateResult} object containing the result of the password reset attempt.
+     * If successful, valid = true and a success message; otherwise, it returns valid = false and failure
+     * message with the reason.
+     */
+    @Override
+    public ValidateResult existsByID(Integer id) {
+        log.trace("existsByID: existing user with id {}", id);
+        if (id == null) {
+            log.warn("existsByID: id is null");
+            return new ValidateResult(false, "Invalid ID");
+        }
+        if (loginRepo.existsById(id)) {
+            log.info("existsByID: existing user with id {}", id);
+            return new ValidateResult(true, "User exists");
+        }
+        log.warn("existsByID: no user with id {}", id);
+        return new ValidateResult(false, "User does not exist");
     }
 }

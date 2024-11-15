@@ -15,7 +15,7 @@ public class LoginDTO {
      * @param username the username of the user attempting to log in.
      * @param password the password of the user attempting to log in.
      */
-    LoginDTO(String username, String password) {
+    public LoginDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }

@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("api")
 public class LoginController {
@@ -54,7 +51,7 @@ public class LoginController {
      *              login fails or an error occurs.
      */
   @PostMapping("/login")
-  public ResponseEntity<TokenDTO> loginPost(@RequestBody LoginDTO login) {
+  public ResponseEntity<TokenDTO> loginAttempt(@RequestBody LoginDTO login) {
     log.info("LoginController: user {} attempting login", login.getUsername());
     boolean isValidUser = false;
     try {
@@ -100,7 +97,7 @@ public class LoginController {
         } else {
             log.warn("LoginController: user {} failed to register", register.getUsername());
             // return that the username or password is invalid, no more specific than that to not reveal info
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid data");
         }
     }
 
@@ -122,7 +119,7 @@ public class LoginController {
         ValidateResult securityQuestionResult = userService.validateSecurityQuestion(forgotPasswordDTO);
         if (!securityQuestionResult.isValid()) {
             log.warn("LoginController: forgotPassword - username {} failed their security question", forgotPasswordDTO.getUsername());
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(securityQuestionResult.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Invalid data");
         }
         // ONLY AFTER SQ was validated
         ValidateResult passwordResetResult = userService.resetPassword(forgotPasswordDTO);
@@ -131,7 +128,7 @@ public class LoginController {
             return ResponseEntity.ok("{}");
         } else {
             log.warn("LoginController: forgotPassword - username {} failed resetting their password", forgotPasswordDTO.getUsername());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(passwordResetResult.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid data");
         }
     }
 }

@@ -3,8 +3,11 @@
   <form (ngSubmit)="onRegister()">
 
     <input type="text" placeholder="Username" [(ngModel)]="registerData.username" name="username" required>
+    <div class="fieldName">Username</div>
     <input type="password" placeholder="Password" [(ngModel)]="registerData.password" name="password" required>
+    <div class="fieldName">Password</div>
     <input type="password" placeholder="Confirm Password" [(ngModel)]="registerData.confirmPassword" name="confirmPassword" required>
+    <div class="fieldName">Confirm Password</div>
 
     <div class="requirements">
       * New Password must be 8 characters long.
@@ -21,8 +24,10 @@
       <option value="school">What elementary school did you attend?</option>
       <option value="city">In what city were you born?</option>
     </select>
+    <div class="fieldName">Security Question </div>
 
     <input type="text" placeholder="Security Answer" [(ngModel)]="registerData.securityAnswer" name="securityAnswer" required>
+    <div class="fieldName">Security Question Answer</div>
 
     <div *ngIf="errorMessage" class="error-message">
       {{ errorMessage }}

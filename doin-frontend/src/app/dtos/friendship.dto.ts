@@ -4,7 +4,8 @@ import { ImageDTO } from "./image.dto";
 export enum FriendshipStatus {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',
-  NOTADDED = 'NOTADDED'
+  NOTADDED = 'NOTADDED',
+  IS_SELF = 'IS_SELF'
 }
 
 export class FriendshipDto {

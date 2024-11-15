@@ -23,7 +23,6 @@
 
 /* Form input fields and select box */
 .auth-container input[type="text"],
-.auth-container input[type="email"],
 .auth-container input[type="password"],
 .auth-container select {
   width: 100%;
@@ -69,10 +68,20 @@
   text-decoration: underline;
 }
 
+.fieldName {
+  /*background-color: #333333;*/
+  color: #777777;
+  text-align: left;
+  padding: 0px;
+  margin: -7px 0px 0px;
+  font-size: 0.9rem;
+}
+
 .requirements {
-  text-align: center;
-  background-color: #bcbdbd;
-  padding: 10px;
+  text-align: left;
+  color: #777777;
+  /*background-color: #bcbdbd;*/
+  padding: 0px;
 }
 
 .checkmark {
