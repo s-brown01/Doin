@@ -116,14 +116,10 @@ public class UserServiceImpl implements UserService {
             log.warn("createNewUser: isValidNewUsername - non-unique username");
             return false;
         }
-        // making sure there's no weird characters in the name
-        String[] invalidChars = new String[]{"`", "'", "/", ";", ":", "*", "{", "}", "[", "]", "|"};
-        for (String s : invalidChars) {
-            // indexOf(c) will return -1 if char doesn't exist
-            if (username.contains(s)) {
-                log.warn("createNewUser: isValidNewUsername - invalid username");
-                return false;
-            }
+        // make sure that the username only contains characters from the regex sequence
+        if (!username.matches("^[a-zA-Z0-9_]+$")) {
+            log.warn("validateTokenAndGetUsername: - username {} has unexpected characters", username);
+            return false;
         }
         return true;
     }
@@ -135,7 +131,7 @@ public class UserServiceImpl implements UserService {
      * @return true if the username is valid, false if not valid (null, empty).
      */
     private boolean isValidPassword(String password) {
-        if (password == null || password.isEmpty() || password.isBlank()) {
+        if (password == null || password.isEmpty() || password.isBlank()    ) {
             log.warn("createNewUser: isValidPassword - null or empty password");
             return false;
         }
