@@ -131,8 +131,12 @@ public class UserServiceImpl implements UserService {
      * @return true if the username is valid, false if not valid (null, empty).
      */
     private boolean isValidPassword(String password) {
-        if (password == null || password.isEmpty() || password.isBlank()    ) {
+        if (password == null || password.isEmpty() || password.isBlank()) {
             log.warn("createNewUser: isValidPassword - null or empty password");
+            return false;
+        }
+        if (!password.matches("^[a-zA-Z0-9_]+$!@#$%^&*")) {
+            log.warn("isValidUsername: - username {} has unexpected characters", password);
             return false;
         }
         return true;
