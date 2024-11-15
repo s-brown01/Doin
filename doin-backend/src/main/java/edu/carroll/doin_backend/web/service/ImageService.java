@@ -35,7 +35,6 @@ public interface ImageService {
      *
      * @param id the unique identifier of the image to retrieve.
      * @return the {@link Image} object representing the retrieved image entity.
-     * @throws edu.carroll.doin_backend.web.exception.ResourceNotFoundException if no image is found with the given ID.
      */
     Image get(Long id);
 }
