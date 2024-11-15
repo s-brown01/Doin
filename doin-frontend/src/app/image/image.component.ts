@@ -20,19 +20,14 @@ export class ImageComponent implements OnInit {
   constructor(private imageService: ImageService) {}
 
   ngOnInit(): void {
-    if (this.imageId) {
-      this.imageService.getImage(this.imageId).subscribe((data: string) => {
-        this.imageData = 'data:image/jpeg;base64,' + data;
-      });
-    }
-    else {
+
       if(this.image?.data){
         this.imageData = 'data:image/jpeg;base64,' + this.image?.data;
       }
       else{
         this.imageData = this.defaultImg;
       }
-    }
+  
     
   }
 }
