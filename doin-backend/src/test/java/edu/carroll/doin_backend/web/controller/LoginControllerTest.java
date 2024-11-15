@@ -26,10 +26,7 @@ public class LoginControllerTest {
     private final String username2 = "username_2";
     private final String password2 = "password_2";
     private final String invalidUsername = "invalid username";
-    private final String invalidPassword = "invalid password";
     private final String invalidSQ = "invalid SQ";
-    private final String unusedUsername = "No_user_with_this_username";
-    private final String unusedPassword = "No_user_with_this_password";
     private final String sqQuestion = "security_question";
 
     @Autowired
@@ -47,11 +44,11 @@ public class LoginControllerTest {
     @BeforeEach
     public void setUp() {
         sqService.addSecurityQuestion(sqQuestion);
-        createNewUser(username1, password1);
+        createNewUser1();
     }
 
-    private void createNewUser(String username, String password) {
-        RegisterDTO data = new RegisterDTO(username, password, sqQuestion, "answer");
+    private void createNewUser1() {
+        RegisterDTO data = new RegisterDTO(username1, password1, sqQuestion, "answer");
         userService.createNewUser(data);
     }
 
@@ -68,6 +65,7 @@ public class LoginControllerTest {
 
     @Test
     public void loginAttempt_UnusedUsername() {
+        final String unusedUsername = "No_user_with_this_username";
         LoginDTO unusedUsernameLogin = new LoginDTO(unusedUsername, password1);
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(unusedUsernameLogin);
         assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
@@ -84,6 +82,7 @@ public class LoginControllerTest {
 
     @Test
     public void loginAttempt_IncorrectPassword() {
+        final String unusedPassword = "No_user_with_this_password";
         LoginDTO user1IncorrectPwd = new LoginDTO(username1, unusedPassword);
         final ResponseEntity<TokenDTO> loginAttempt = loginController.loginAttempt(user1IncorrectPwd);
         assertEquals(HttpStatus.UNAUTHORIZED, loginAttempt.getStatusCode());
@@ -160,6 +159,7 @@ public class LoginControllerTest {
 
     @Test
     public void registerUser_InvalidPassword() {
+        final String invalidPassword = "invalid password";
         RegisterDTO invalidPasswordRegister = new RegisterDTO(username2, invalidPassword, sqQuestion, "answer");
         ResponseEntity<String> registerAttempt = loginController.registerUser(invalidPasswordRegister);
         assertEquals(HttpStatus.BAD_REQUEST, registerAttempt.getStatusCode());
