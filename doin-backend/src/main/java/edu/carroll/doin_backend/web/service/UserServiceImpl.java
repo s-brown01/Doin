@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
         if (id != null) {
             user = loginRepo.findById(id);
         } else {
-            user = Optional.ofNullable(loginRepo.findByUsernameIgnoreCase(username).get(0));
+            user = loginRepo.findByUsernameIgnoreCase(username).stream().findFirst();
         }
         return user.map(UserDTO::new).orElse(null);
     }
