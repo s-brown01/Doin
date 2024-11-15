@@ -157,7 +157,7 @@ public class EventControllerTest {
     @Test
     public void joinEvent_Success() {
         // Create event
-        testEvent.setTime(LocalDateTime.now());
+        testEvent.setTime(LocalDateTime.now().plusDays(1));
         EventDTO createdEvent = eventController.create(testEvent, user1Header);
 
         // Join event
