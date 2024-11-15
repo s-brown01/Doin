@@ -97,7 +97,7 @@ public class LoginController {
         } else {
             log.warn("LoginController: user {} failed to register", register.getUsername());
             // return that the username or password is invalid, no more specific than that to not reveal info
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid data");
         }
     }
 
