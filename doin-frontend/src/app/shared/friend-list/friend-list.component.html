@@ -7,7 +7,7 @@
   <a (click)="goToProfile(friend.id)">
     <span class="username">{{friend.username}}</span>
   </a>
-  <div *ngIf="response">{{response}}</div>
+  <div *ngIf="response" class="response">{{response}}</div>
 
   <div *ngIf="!response" class="buttons">
     <ng-container [ngSwitch]="friend.status">
@@ -25,7 +25,7 @@
       </div>
 
       <div *ngSwitchCase="FriendshipStatus.IS_SELF">
-        <div>You! :)</div>
+        <div class="you">You! :)</div>
       </div>
     </ng-container>
   </div>
