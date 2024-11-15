@@ -78,6 +78,10 @@ public class UserServiceImpl implements UserService {
             log.info("createNewUser: Invalid password with username {}", registerDTO.getUsername());
             return false;
         }
+        if (!isValidSecurityQuestionAnswer(registerDTO.getSecurityAnswer())){
+            log.info("createNewUser: Invalid security question answer {}", registerDTO.getSecurityAnswer());
+            return false;
+        }
         final SecurityQuestion userSecurityQuestion = sqService.getSecurityQuestionByValue(registerDTO.getSecurityQuestionString());
         if (userSecurityQuestion == null) {
             log.info("createNewUser: Invalid security question {}", registerDTO.getSecurityQuestionString());
@@ -132,11 +136,25 @@ public class UserServiceImpl implements UserService {
      */
     private boolean isValidPassword(String password) {
         if (password == null || password.isEmpty() || password.isBlank()) {
-            log.warn("createNewUser: isValidPassword - null or empty password");
+            log.warn("isValidUsername: isValidPassword - null or empty password");
             return false;
         }
-        if (!password.matches("^[a-zA-Z0-9_]+$!@#$%^&*")) {
+        if (!password.matches("^[a-zA-Z0-9_!@#$%^&*]+$")) {
             log.warn("isValidUsername: - username {} has unexpected characters", password);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * This function makes sure that a user's security question answer is valid (not blank or empty)
+     *
+     * @param securityAnswer the security question answer to validate
+     * @return true if the answer is valid, false otherwise
+     */
+    private boolean isValidSecurityQuestionAnswer(String securityAnswer) {
+        if (securityAnswer == null || securityAnswer.isEmpty() || securityAnswer.isBlank()) {
+            log.warn("isValidSecurityQuestionAnswer - null or empty security question answer");
             return false;
         }
         return true;
@@ -260,6 +278,10 @@ public class UserServiceImpl implements UserService {
         if (foundUsers.size() > 1) {
             log.warn("validateSecurityQuestion: found more than 1 user with username {}", forgotPasswordDTO.getUsername());
             return new ValidateResult(false, "Internal Error");
+        }
+        if (!isValidSecurityQuestionAnswer(forgotPasswordDTO.getSecurityQuestionAnswer())) {
+            log.warn("validateSecurityQuestion: invalid security question answer {}", forgotPasswordDTO.getSecurityQuestionAnswer());
+            return new ValidateResult(false, "Invalid Security Question Answer");
         }
         log.trace("validateSecurityQuestion: retrieving security question {} from service for user {}", forgotPasswordDTO.getSecurityQuestionValue(), forgotPasswordDTO.getUsername());
         final SecurityQuestion userSecurityQuestion = sqService.getSecurityQuestionByValue(forgotPasswordDTO.getSecurityQuestionValue());
