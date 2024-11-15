@@ -128,7 +128,7 @@ public class EventServiceImpl implements EventService {
         if(existingOpt.isEmpty())
             return false;
         Event existing = existingOpt.get();
-        if(existing.getTime().isBefore(LocalDateTime.now()) || existing.getCreator().getId().equals(userId) || existing.getJoiners().stream().anyMatch(a-> Objects.equals(a.getId(), userId))) {
+        if(existing.getTime().isAfter(LocalDateTime.now()) || existing.getCreator().getId().equals(userId) || existing.getJoiners().stream().anyMatch(a-> Objects.equals(a.getId(), userId))) {
             return false;
         }
         User user = new User();
