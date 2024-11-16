@@ -20,77 +20,27 @@ import java.util.List;
 @Table(name = "users")
 public class User implements UserDetails {
 
-    /**
-     * The unique identifier for the user.
-     *
-     * @return the ID of the user.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    /**
-     * The username of the user.
-     * <p>
-     * This is a unique identifier for the user within the system.
-     * </p>
-     *
-     * @return the username of the user.
-     */
     @Column(nullable = false)
     private String username;
 
-    /**
-     * The hashed password of the user.
-     * <p>
-     * This is used for user authentication, stored securely as a hashed value.
-     * </p>
-     *
-     * @return the hashed password.
-     */
     @Column(nullable = false)
     private String passwordHash;
 
-    /**
-     * The date and time when the user was created in the system.
-     *
-     * @return the creation timestamp of the user account.
-     */
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    /**
-     * The user's profile picture, if any.
-     * <p>
-     * The profile picture is an image object that is associated with the user.
-     * </p>
-     *
-     * @return the user's profile picture.
-     */
     @OneToOne
     @JoinColumn(name = "profile_picture_id")
     private Image profilePicture;
 
-    /**
-     * The security question associated with the user.
-     * <p>
-     * This question is used for password recovery or identity verification.
-     * </p>
-     *
-     * @return the security question.
-     */
     @ManyToOne
     @JoinColumn(name = "security_question_id")
     private SecurityQuestion securityQuestion;
 
-    /**
-     * The hashed answer to the security question.
-     * <p>
-     * This is used to validate the user's identity during account recovery.
-     * </p>
-     *
-     * @return the hashed security question answer.
-     */
     @Column(name = "security_question_answer_hash")
     private String securityQuestionAnswer;
 
