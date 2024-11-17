@@ -31,7 +31,6 @@ Welcome to Doin! This is a social media app made to help people connect with new
     - [Starting the Frontend](#starting-the-frontend)
     - [In Browser](#in-browser)
 - [Tests](#tests)
-- [Credits](#credits)
 - [How to Contribute](#how-to-contribute)
 - [License](#license)
 
@@ -372,6 +371,15 @@ In your favorite browser, open http://localhost:4200 to see Doin! From there, en
 
 # How To Contribute
 You are welcome to contribute! Please submit a pull request and credit our project!
+
+# Tests
+We tested our program using JUnit. To run these tests, simply follow the [Starting the Backend](#starting-the-backend) 
+instructions. However, do **not** run `./gradlew bootRun`. To run the tests, use the commands:
+```bash
+# To start the tests
+./gradlew test # For MacOS/Linues
+gradlew test   # For windows
+```
 
 # License
 MIT License
