@@ -30,12 +30,6 @@ public class EventController {
     private final TokenService tokenService;
     private final EventService eventService;
 
-    /**
-     * Constructs an EventController with the specified {@link EventService} and {@link TokenService}.
-     *
-     * @param eventService the service used to manage events
-     * @param tokenService the service used to manage token-based authentication
-     */
     public EventController(EventService eventService, TokenService tokenService) {
         this.eventService = eventService;
         this.tokenService = tokenService;
@@ -54,8 +48,11 @@ public class EventController {
                                  @RequestParam(defaultValue = "10") int size,
                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         logger.info("Fetching all events - Page: {}, Size: {}", page, size);
+        // Extract user ID from the authorization token
         Integer userId = tokenService.getUserId(authHeader);
+        // Create pageable object with descending sort by event time
         Pageable pageable = PageRequest.of(page, size, Sort.by("time").descending());
+        // Fetch paginated list of events for the user
         Page<EventDTO> events = eventService.getAll(userId, pageable);
         logger.debug("Retrieved {} events for userId {}", events.getTotalElements(), userId);
         return events;
@@ -72,7 +69,9 @@ public class EventController {
     public Page<EventDTO> getPublicEvents(@RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size) {
         logger.info("Fetching public events - Page: {}, Size: {}", page, size);
+        // Create pageable object with descending sort by event time
         Pageable pageable = PageRequest.of(page, size, Sort.by("time").descending());
+        // Fetch paginated list of public events
         Page<EventDTO> publicEvents = eventService.getPublicEvents(pageable);
         logger.debug("Retrieved {} public events", publicEvents.getTotalElements());
         return publicEvents;
@@ -93,8 +92,11 @@ public class EventController {
                                         @RequestParam(defaultValue = "10") int size,
                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         logger.info("Fetching events for user ID: {} - Page: {}, Size: {}", id, page, size);
+        // Get the authenticated user ID from the token
         Integer userId = tokenService.getUserId(authHeader);
+        // Define pagination and sorting parameters
         Pageable pageable = PageRequest.of(page, size, Sort.by("time").descending());
+        // Fetch paginated list of events created by the specified user
         Page<EventDTO> userEvents = eventService.getUserEvents(id, userId, pageable);
         logger.debug("Retrieved {} events for userId {}", userEvents.getTotalElements(), id);
         return userEvents;
@@ -109,7 +111,9 @@ public class EventController {
     @GetMapping("/upcoming")
     public List<EventDTO> getUpcoming(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         logger.info("Fetching upcoming events for authenticated user");
+        // Extract user ID from the authorization token
         Integer userId = tokenService.getUserId(authHeader);
+        // Retrieve the list of upcoming events for the authenticated user
         List<EventDTO> upcomingEvents = eventService.getUpcomingEvents(userId);
         logger.debug("Retrieved {} upcoming events for userId {}", upcomingEvents.size(), userId);
         return upcomingEvents;
@@ -126,7 +130,9 @@ public class EventController {
     public ResponseEntity<EventDTO> getById(@PathVariable Integer id,
                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         logger.info("Fetching event with ID: {}", id);
+        // Extract user ID from the authorization token
         Integer userId = tokenService.getUserId(authHeader);
+        // Retrieve the event by its ID
         EventDTO event = eventService.getById(id, userId);
         if (event == null) {
             logger.warn("Event with ID {} not found", id);
@@ -147,10 +153,12 @@ public class EventController {
     public EventDTO create(@RequestBody EventDTO event, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         Integer userId = tokenService.getUserId(authHeader);
         logger.info("Creating a new event by userId {}", userId);
+        // Ensure the authenticated user is the creator of the event
         if (!event.getCreator().getId().equals(userId)) {
             logger.warn("Unauthorized event creation attempt by userId {}", userId);
             return null;
         }
+        // Save and return the created event
         EventDTO createdEvent = eventService.add(event);
         logger.debug("Created event with ID {}", createdEvent.getId());
         return createdEvent;
@@ -167,6 +175,7 @@ public class EventController {
     public ResponseEntity<Boolean> join(@PathVariable Integer id, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         Integer userId = tokenService.getUserId(authHeader);
         logger.info("User ID {} attempting to join event ID {}", userId, id);
+        // Add the user to the event's participants
         boolean result = eventService.joinUser(id, userId);
         logger.debug("User ID {} joined event ID {}: {}", userId, id, result);
         return ResponseEntity.ok(result);
@@ -186,6 +195,7 @@ public class EventController {
                              @PathVariable Integer id) {
         Integer userId = tokenService.getUserId(authHeader);
         logger.info("Adding image to event ID {} by user ID {}", id, userId);
+        // Attempt to add the image to the specified event
         boolean result = eventService.addImage(id, userId, file);
         logger.debug("Image added to event ID {}: {}", id, result);
         return result;
