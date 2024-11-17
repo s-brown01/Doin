@@ -1,6 +1,5 @@
 package edu.carroll.doin_backend.web.service;
 
-import edu.carroll.doin_backend.web.exception.ResourceNotFoundException;
 import edu.carroll.doin_backend.web.model.Image;
 import edu.carroll.doin_backend.web.repository.ImageRepository;
 import org.slf4j.Logger;
@@ -24,6 +23,9 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Image save(MultipartFile file) throws IOException {
         logger.info("Starting to save image file with original filename: {}", file.getOriginalFilename());
 
@@ -58,9 +60,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Image get(Long id) {
         logger.info("Retrieving image with ID: {}", id);
         Optional<Image> imgOpt = imageRepository.findById(id);
+        // Return image if found, otherwise log error and return null
         if (imgOpt.isPresent()) {
             return imgOpt.get();
         }
