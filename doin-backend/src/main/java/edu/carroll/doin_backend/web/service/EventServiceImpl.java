@@ -36,8 +36,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Page<EventDTO> getPublicEvents(Pageable pageable) {
-        if(pageable == null)
+        if (pageable == null)
             return Page.empty();
 
         logger.info("Retrieving events with paging, page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
@@ -49,31 +52,40 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Page<EventDTO> getUserEvents(Integer userId, Integer reqUserId, Pageable pageable) {
-        if(pageable == null)
+        if (pageable == null)
             return Page.empty();
+
         logger.info("Retrieving events with paging, page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Set<Integer> friends = friendService.findFriendIdsByUserId(reqUserId, FriendshipStatus.CONFIRMED);
         Page<Event> eventPage;
-        if(userId.equals(reqUserId) || friends.contains(userId)) {
+
+        // Show private events only if the user is the requester or a friend
+        if (userId.equals(reqUserId) || friends.contains(userId)) {
             eventPage = eventRepository.findUserEvents(userId, Visibility.PRIVATE, pageable);
-        }
-        else{
+        } else {
             eventPage = eventRepository.findUserEvents(userId, Visibility.PUBLIC, pageable);
         }
-        Page<EventDTO> eventDTOPage = eventPage.map(EventDTO::new);
 
+        Page<EventDTO> eventDTOPage = eventPage.map(EventDTO::new);
         logger.info("Successfully retrieved {} events", eventDTOPage.getTotalElements());
         return eventDTOPage;
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Page<EventDTO> getAll(Integer userId, Pageable pageable) {
-        if(pageable == null)
+        if (pageable == null)
             return Page.empty();
+
         logger.info("Retrieving events with paging, page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Set<Integer> friends = friendService.findFriendIdsByUserId(userId, FriendshipStatus.CONFIRMED);
-        friends.add(userId);
+        friends.add(userId); // Include user's own events
         Page<Event> eventPage = eventRepository.findPublicOrFriendsEvents(friends, pageable);
         Page<EventDTO> eventDTOPage = eventPage.map(EventDTO::new);
 
@@ -82,55 +94,86 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public List<EventDTO> getUpcomingEvents(Integer userId) {
         List<Event> events = eventRepository.getUpcomingEvents(userId);
+        // Convert Event list to EventDTO list
         return events.stream().map(EventDTO::new).toList();
     }
 
-
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public EventDTO getById(Integer eventId, Integer userId) {
         logger.info("Retrieving event by ID: {}", eventId);
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-        if(eventOpt.isEmpty()) {
+
+        if (eventOpt.isEmpty()) {
             logger.warn("Event not found with ID: {}", eventId);
             return null;
         }
+
         Event event = eventOpt.get();
         logger.info("Successfully retrieved event with ID: {}", event);
+
+        // Return event if public or created by the requesting user
         if (event.getVisibility() == Visibility.PUBLIC || event.getCreator().getId().equals(userId))
             return new EventDTO(event);
+
+        // Return event if the user is a friend of the creator
         Set<Integer> friends = friendService.findFriendIdsByUserId(userId, FriendshipStatus.CONFIRMED);
         if (friends.contains(event.getCreator().getId()))
             return new EventDTO(event);
+
         return null;
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public EventDTO add(EventDTO event) {
         logger.info("Adding new event: {}", event);
+
+        // Truncate description if it exceeds 255 characters
         if (event.getDescription() != null && event.getDescription().length() > 255) {
             event.setDescription(event.getDescription().substring(0, 255));
         }
 
+        // Set visibility to PUBLIC if not provided
         if (event.getVisibility() == null) {
             event.setVisibility(Visibility.PUBLIC);
         }
+
         Event newEvent = eventRepository.save(new Event(event));
         logger.info("Successfully added event with ID: {}", newEvent.getId());
         return new EventDTO(newEvent);
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public boolean joinUser(Integer eventId, Integer userId) {
         logger.info("User with ID {} joining event with ID {}", userId, eventId);
         Optional<Event> existingOpt = eventRepository.findById(eventId);
-        if(existingOpt.isEmpty())
+
+        if (existingOpt.isEmpty())
             return false;
+
         Event existing = existingOpt.get();
-        if(existing.getTime().isBefore(LocalDateTime.now()) || existing.getCreator().getId().equals(userId) || existing.getJoiners().stream().anyMatch(a-> Objects.equals(a.getId(), userId))) {
+
+        // Prevent joining if the event has passed, user is the creator, or already a joiner
+        if (existing.getTime().isBefore(LocalDateTime.now()) ||
+                existing.getCreator().getId().equals(userId) ||
+                existing.getJoiners().stream().anyMatch(a -> Objects.equals(a.getId(), userId))) {
             return false;
         }
+
+        // Add user as a joiner
         User user = new User();
         user.setId(userId);
         existing.addJoiner(user);
@@ -140,6 +183,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public boolean addImage(Integer eventId, Integer userId, MultipartFile file) {
         logger.info("Adding image to event with ID {} by user with ID {}", eventId, userId);
 
@@ -150,6 +196,8 @@ public class EventServiceImpl implements EventService {
         }
 
         Event event = eventOpt.get();
+
+        // Check if the user is allowed to add an image
         if (event.getTime().isAfter(LocalDateTime.now()) || event.getImages().size() > 5 ||
                 !(Objects.equals(event.getCreator().getId(), userId) ||
                         event.getJoiners().stream().anyMatch(j -> Objects.equals(j.getId(), userId)))) {
@@ -157,22 +205,23 @@ public class EventServiceImpl implements EventService {
             return false;
         }
 
-        // Check if the uploaded file is an image
+        // Validate uploaded file is an image
         String contentType = file.getContentType();
         if (contentType == null || !contentType.startsWith("image/")) {
             logger.warn("Invalid file type: {}. Only image files are allowed", contentType);
             return false;
         }
 
-        // Check if the file size is within the 10 MB limit
+        // Validate file size within 10 MB limit
         final long MAX_FILE_SIZE_MB = 10;
-        final long MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; // 10 MB in bytes
+        final long MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
         if (file.getSize() > MAX_FILE_SIZE_BYTES) {
             logger.warn("File size exceeds the limit. Uploaded file size: {} bytes, Max allowed: {} bytes", file.getSize(), MAX_FILE_SIZE_BYTES);
             return false;
         }
 
         try {
+            // Save image and add to event
             Image img = imageService.save(file);
             event.addImage(img);
             eventRepository.save(event);
