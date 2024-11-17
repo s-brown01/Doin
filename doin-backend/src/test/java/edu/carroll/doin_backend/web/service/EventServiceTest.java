@@ -45,14 +45,14 @@ public class EventServiceTest {
     @BeforeEach
     public void setup() {
         // Create test user
-        securityQuestionService.addSecurityQuestion("pet");
-        securityQuestionService.addSecurityQuestion("city");
-        securityQuestionService.addSecurityQuestion("school");
+        assertTrue(securityQuestionService.addSecurityQuestion("pet"));
+        assertTrue(securityQuestionService.addSecurityQuestion("city"));
+        assertTrue(securityQuestionService.addSecurityQuestion("school"));
         RegisterDTO data = new RegisterDTO("user1", "password", "pet", "answer");
-        userService.createNewUser(data);
+        assertTrue(userService.createNewUser(data));
         user = new User(userService.findUser(null, "user1"));
         data = new RegisterDTO("user2", "password", "pet", "answer");
-        userService.createNewUser(data);
+        assertTrue(userService.createNewUser(data));
         user2 = new User(userService.findUser(null, "user2"));
         // Create base test event
         testEvent = new Event();
@@ -74,7 +74,7 @@ public class EventServiceTest {
             event.setDescription("Public Event " + i);
             event.setLocation("Location " + i);
             event.setTime(LocalDateTime.now().plusDays(i));
-            eventService.add(new EventDTO(event));
+            assertNotNull(eventService.add(new EventDTO(event)));
         }
 
         // Test with valid pagination parameters
@@ -101,21 +101,21 @@ public class EventServiceTest {
         event1.setVisibility(Visibility.PUBLIC);
         event1.setDescription("Last Event");
         event1.setTime(baseTime.plusDays(2));
-        eventService.add(new EventDTO(event1));
+        assertNotNull(eventService.add(new EventDTO(event1)));
 
         Event event2 = new Event();
         event2.setCreator(user);
         event2.setVisibility(Visibility.PUBLIC);
         event2.setDescription("First Event");
         event2.setTime(baseTime);
-        eventService.add(new EventDTO(event2));
+        assertNotNull(eventService.add(new EventDTO(event2)));
 
         Event event3 = new Event();
         event3.setCreator(user);
         event3.setVisibility(Visibility.PUBLIC);
         event3.setDescription("Middle Event");
         event3.setTime(baseTime.plusDays(1));
-        eventService.add(new EventDTO(event3));
+        assertNotNull(eventService.add(new EventDTO(event3)));
 
         // Test sorting ascending
         PageRequest pageRequestAsc = PageRequest.of(0, 10, Sort.by("time").ascending());
@@ -144,7 +144,7 @@ public class EventServiceTest {
         event.setVisibility(Visibility.PUBLIC);
         event.setDescription("Test Event");
         event.setTime(LocalDateTime.now());
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
 
         // Test with null pageable
         Page<EventDTO> result = eventService.getPublicEvents(null);
@@ -161,13 +161,13 @@ public class EventServiceTest {
         event.setVisibility(Visibility.PUBLIC);
         event.setDescription("Test Event1");
         event.setTime(LocalDateTime.now());
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
         event = new Event();
         event.setCreator(user);
         event.setVisibility(Visibility.PUBLIC);
         event.setDescription("Test Event2");
         event.setTime(LocalDateTime.now());
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
 
         // Test with zero page size
         PageRequest pageRequest = PageRequest.of(1, 1);
@@ -186,20 +186,20 @@ public class EventServiceTest {
         event.setVisibility(Visibility.PUBLIC);
         event.setDescription("Test Event1");
         event.setTime(LocalDateTime.now());
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
         event = new Event();
         event.setCreator(user);
         event.setVisibility(Visibility.PUBLIC);
         event.setDescription("Test Event2");
         event.setTime(LocalDateTime.now());
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
 
         event = new Event();
         event.setCreator(user);
         event.setVisibility(Visibility.PUBLIC);
         event.setDescription("Test Event3");
         event.setTime(LocalDateTime.now());
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
 
         // Test with zero page size
         PageRequest pageRequest = PageRequest.of(0, 3);
@@ -234,7 +234,7 @@ public class EventServiceTest {
             event.setDescription("Event " + i);
             event.setLocation("Location " + i);
             event.setTime(LocalDateTime.now().plusDays(i));
-            eventService.add(new EventDTO(event));
+            assertNotNull(eventService.add(new EventDTO(event)));
         }
 
         // Test with valid pagination parameters and the same user
@@ -261,10 +261,10 @@ public class EventServiceTest {
             event.setDescription("Friend Event " + i);
             event.setLocation("Friend Location " + i);
             event.setTime(LocalDateTime.now().plusDays(i));
-            eventService.add(new EventDTO(event));
+            assertNotNull(eventService.add(new EventDTO(event)));
         }
-        friendService.addFriend(user.getUsername(), user2.getUsername());
-        friendService.addFriend(user2.getUsername(), user.getUsername());
+        assertNotNull(friendService.addFriend(user.getUsername(), user2.getUsername()));
+        assertNotNull(friendService.addFriend(user2.getUsername(), user.getUsername()));
 
         Integer reqUserId = user2.getId(); // assuming reqUserId is the user requesting the events
         Integer userId = user.getId(); // friend userId
@@ -291,7 +291,7 @@ public class EventServiceTest {
             event.setDescription("Non-Friend Event " + i);
             event.setLocation("Non-Friend Location " + i);
             event.setTime(LocalDateTime.now().plusDays(i));
-            eventService.add(new EventDTO(event));
+            assertNotNull(eventService.add(new EventDTO(event)));
         }
 
         // Test with a user who is not a friend and should only get public events
@@ -318,21 +318,21 @@ public class EventServiceTest {
         event1.setVisibility(Visibility.PUBLIC);
         event1.setDescription("Last Event");
         event1.setTime(baseTime.plusDays(2));
-        eventService.add(new EventDTO(event1));
+        assertNotNull(eventService.add(new EventDTO(event1)));
 
         Event event2 = new Event();
         event2.setCreator(user);
         event2.setVisibility(Visibility.PUBLIC);
         event2.setDescription("First Event");
         event2.setTime(baseTime);
-        eventService.add(new EventDTO(event2));
+        assertNotNull(eventService.add(new EventDTO(event2)));
 
         Event event3 = new Event();
         event3.setCreator(user);
         event3.setVisibility(Visibility.PUBLIC);
         event3.setDescription("Middle Event");
         event3.setTime(baseTime.plusDays(1));
-        eventService.add(new EventDTO(event3));
+        assertNotNull(eventService.add(new EventDTO(event3)));
 
         // Test sorting ascending
         PageRequest pageRequestAsc = PageRequest.of(0, 10, Sort.by("time").ascending());
@@ -385,7 +385,7 @@ public class EventServiceTest {
             event.setDescription("Event " + i);
             event.setLocation("Location " + i);
             event.setTime(LocalDateTime.now().plusDays(i));
-            eventService.add(new EventDTO(event));
+            assertNotNull(eventService.add(new EventDTO(event)));
         }
 
         // Test with valid pagination parameters
@@ -412,10 +412,10 @@ public class EventServiceTest {
             event.setDescription("Friend Event " + i);
             event.setLocation("Friend Location " + i);
             event.setTime(LocalDateTime.now().plusDays(i));
-            eventService.add(new EventDTO(event));
+            assertNotNull(eventService.add(new EventDTO(event)));
         }
-        friendService.addFriend(user.getUsername(), user2.getUsername());
-        friendService.addFriend(user2.getUsername(), user.getUsername());
+        assertNotNull(friendService.addFriend(user.getUsername(), user2.getUsername()));
+        assertNotNull(friendService.addFriend(user2.getUsername(), user.getUsername()));
 
         Integer reqUserId = user2.getId(); // friend requesting events
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by("time").ascending());
@@ -440,7 +440,7 @@ public class EventServiceTest {
             event.setDescription("Non-Friend Event " + i);
             event.setLocation("Non-Friend Location " + i);
             event.setTime(LocalDateTime.now().plusDays(i));
-            eventService.add(new EventDTO(event));
+            assertNotNull(eventService.add(new EventDTO(event)));
         }
 
         Integer reqUserId = user.getId(); // requesting user who has no friends
@@ -465,21 +465,21 @@ public class EventServiceTest {
         event1.setVisibility(Visibility.PUBLIC);
         event1.setDescription("Last Event");
         event1.setTime(baseTime.plusDays(2));
-        eventService.add(new EventDTO(event1));
+        assertNotNull(eventService.add(new EventDTO(event1)));
 
         Event event2 = new Event();
         event2.setCreator(user);
         event2.setVisibility(Visibility.PUBLIC);
         event2.setDescription("First Event");
         event2.setTime(baseTime);
-        eventService.add(new EventDTO(event2));
+        assertNotNull(eventService.add(new EventDTO(event2)));
 
         Event event3 = new Event();
         event3.setCreator(user);
         event3.setVisibility(Visibility.PUBLIC);
         event3.setDescription("Middle Event");
         event3.setTime(baseTime.plusDays(1));
-        eventService.add(new EventDTO(event3));
+        assertNotNull(eventService.add(new EventDTO(event3)));
 
         // Test sorting ascending
         PageRequest pageRequestAsc = PageRequest.of(0, 10, Sort.by("time").ascending());
@@ -533,7 +533,7 @@ public class EventServiceTest {
             event.setDescription("Upcoming Event " + i);
             event.setLocation("Location " + i);
             event.setTime(baseTime.plusDays(i)); // Event time is one day apart
-            eventService.add(new EventDTO(event));
+            assertNotNull(eventService.add(new EventDTO(event)));
         }
 
         // Test retrieving upcoming events for the user
@@ -581,7 +581,7 @@ public class EventServiceTest {
         event1.setDescription("Future Event 1");
         event1.setLocation("Location 1");
         event1.setTime(baseTime); // Event scheduled for tomorrow
-        eventService.add(new EventDTO(event1));
+        assertNotNull(eventService.add(new EventDTO(event1)));
 
         Event event2 = new Event();
         event2.setCreator(user);
@@ -589,7 +589,7 @@ public class EventServiceTest {
         event2.setDescription("Future Event 2");
         event2.setLocation("Location 2");
         event2.setTime(baseTime.plusDays(2)); // Event scheduled for the day after tomorrow
-        eventService.add(new EventDTO(event2));
+        assertNotNull(eventService.add(new EventDTO(event2)));
 
         Event event3 = new Event();
         event3.setCreator(user);
@@ -597,7 +597,7 @@ public class EventServiceTest {
         event3.setDescription("Past Event");
         event3.setLocation("Location 3");
         event3.setTime(baseTime.minusDays(2)); // Past event
-        eventService.add(new EventDTO(event3));
+        assertNotNull(eventService.add(new EventDTO(event3)));
 
         // Test retrieving upcoming events (should only include future events)
         List<EventDTO> result = eventService.getUpcomingEvents(user.getId());
@@ -619,21 +619,21 @@ public class EventServiceTest {
         pastEvent.setVisibility(Visibility.PUBLIC);
         pastEvent.setDescription("Past Event");
         pastEvent.setTime(baseTime.minusDays(1)); // Past event
-        eventService.add(new EventDTO(pastEvent));
+        assertNotNull(eventService.add(new EventDTO(pastEvent)));
 
         Event presentEvent = new Event();
         presentEvent.setCreator(user);
         presentEvent.setVisibility(Visibility.PUBLIC);
         presentEvent.setDescription("Present Event");
         presentEvent.setTime(baseTime); // Present event
-        eventService.add(new EventDTO(presentEvent));
+        assertNotNull(eventService.add(new EventDTO(presentEvent)));
 
         Event futureEvent = new Event();
         futureEvent.setCreator(user);
         futureEvent.setVisibility(Visibility.PUBLIC);
         futureEvent.setDescription("Future Event");
         futureEvent.setTime(baseTime.plusDays(1)); // Future event
-        eventService.add(new EventDTO(futureEvent));
+        assertNotNull(eventService.add(new EventDTO(futureEvent)));
 
         // Test retrieving upcoming events (should exclude past and present events)
         List<EventDTO> result = eventService.getUpcomingEvents(user.getId());
@@ -656,7 +656,7 @@ public class EventServiceTest {
         event.setDescription("Mapped Event");
         event.setLocation("Mapped Location");
         event.setTime(baseTime);
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
 
         // Test retrieving upcoming events
         List<EventDTO> result = eventService.getUpcomingEvents(user.getId());
@@ -677,7 +677,7 @@ public class EventServiceTest {
         // Create private event
         testEvent.setVisibility(Visibility.PRIVATE);
         EventDTO savedEvent = eventService.add(new EventDTO(testEvent));
-
+        assertNotNull(savedEvent);
         // Create second user
         RegisterDTO userData = new RegisterDTO("user2", "password", "pet", "answer");
         userService.createNewUser(userData);
@@ -690,8 +690,8 @@ public class EventServiceTest {
         assertNull(eventService.getById(savedEvent.getId(), secondUser.getId()));
 
         // Add friendship
-        friendService.addFriend(user.getUsername(), secondUser.getUsername());
-        friendService.addFriend(secondUser.getUsername(), user.getUsername());
+        assertNotNull(friendService.addFriend(user.getUsername(), secondUser.getUsername()));
+        assertNotNull(friendService.addFriend(secondUser.getUsername(), user.getUsername()));
 
         // Test friend access
         assertNotNull(eventService.getById(savedEvent.getId(), secondUser.getId()));
@@ -706,7 +706,7 @@ public class EventServiceTest {
         event.setCreator(user);
         event.setDescription("User's Event");
         EventDTO addedEvent = eventService.add(new EventDTO(event));
-
+        assertNotNull(addedEvent);
         // Act
         EventDTO result = eventService.getById(addedEvent.getId(), user.getId());
 
@@ -725,7 +725,7 @@ public class EventServiceTest {
         event.setVisibility(Visibility.PRIVATE); // Private event
         event.setCreator(user);
         event.setDescription("Private Event");
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
 
         // Act
         EventDTO result = eventService.getById(3, 999); // A different user (ID 999)
@@ -744,9 +744,9 @@ public class EventServiceTest {
         event.setCreator(user);
         event.setDescription("Private Event with Friend");
         EventDTO addedEvent = eventService.add(new EventDTO(event));
-
-        friendService.addFriend(user.getUsername(), user2.getUsername());
-        friendService.addFriend(user2.getUsername(), user.getUsername());
+        assertNotNull(addedEvent);
+        assertNotNull(friendService.addFriend(user.getUsername(), user2.getUsername()));
+        assertNotNull(friendService.addFriend(user2.getUsername(), user.getUsername()));
 
         // Act
         EventDTO result = eventService.getById(addedEvent.getId(), user2.getId()); // The user is a confirmed friend of the creator
@@ -777,7 +777,7 @@ public class EventServiceTest {
         event.setVisibility(Visibility.PRIVATE); // Private event
         event.setCreator(user);
         event.setDescription("Private Event - Restricted Access");
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
 
         User anotherUser = new User();
         anotherUser.setId(777); // A different user
@@ -799,7 +799,7 @@ public class EventServiceTest {
         event.setVisibility(Visibility.PRIVATE);
         event.setCreator(user);
         event.setDescription("Private Event No Friend Access");
-        eventService.add(new EventDTO(event));
+        assertNotNull(eventService.add(new EventDTO(event)));
 
         User userWithoutFriendship = new User();
         userWithoutFriendship.setId(555); // A user without friendship
@@ -817,7 +817,7 @@ public class EventServiceTest {
     @DisplayName("Should successfully add new event")
     void testAddEvent_simple() {
         EventDTO savedEvent = eventService.add(new EventDTO(testEvent));
-
+        assertNotNull(savedEvent);
         assertNotNull(savedEvent);
         assertNotNull(savedEvent.getId());
         assertEquals(testEvent.getDescription(), savedEvent.getDescription());
@@ -887,14 +887,14 @@ public class EventServiceTest {
         pastEvent.setTime(LocalDateTime.now().minusDays(1));
         pastEvent.setVisibility(Visibility.PUBLIC);
 
-        eventService.add(new EventDTO(pastEvent));
+        assertNotNull(eventService.add(new EventDTO(pastEvent)));
 
         Event futureEvent = new Event();
         futureEvent.setCreator(user);
         futureEvent.setTime(LocalDateTime.now().plusDays(1));
         futureEvent.setVisibility(Visibility.PUBLIC);
 
-        eventService.add(new EventDTO(futureEvent));
+        assertNotNull(eventService.add(new EventDTO(futureEvent)));
 
         List<EventDTO> upcomingEvents = eventService.getUpcomingEvents(user.getId());
         assertEquals(1, upcomingEvents.size());
@@ -907,7 +907,7 @@ public class EventServiceTest {
         testEvent.setTime(LocalDateTime.now());
 
         EventDTO savedEvent = eventService.add(new EventDTO(testEvent));
-
+        assertNotNull(savedEvent);
         // Create mock image file
         MockMultipartFile file = new MockMultipartFile(
                 "file",
@@ -942,9 +942,7 @@ public class EventServiceTest {
     @DisplayName("Should successfully join user to event")
     void testJoinUser_Success() {
         EventDTO savedEvent = eventService.add(new EventDTO(testEvent));
-
-        RegisterDTO userData = new RegisterDTO("user2", "password", "pet", "answer");
-        userService.createNewUser(userData);
+        assertNotNull(savedEvent);
         User secondUser = new User(userService.findUser(null, "user2"));
 
         assertTrue(eventService.joinUser(savedEvent.getId(), secondUser.getId()));
@@ -967,7 +965,7 @@ public class EventServiceTest {
             event.setCreator(user);
             event.setVisibility(Visibility.PUBLIC);
             event.setTime(LocalDateTime.now().plusDays(i));
-            eventService.add(new EventDTO(event));
+            assertNotNull(eventService.add(new EventDTO(event)));
         }
 
         // Test with very large page size
