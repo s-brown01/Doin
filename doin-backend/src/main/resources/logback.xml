@@ -22,6 +22,8 @@
       </timeBasedFileNamingAndTriggeringPolicy>
     </rollingPolicy>
   </appender>
+  <logger name="edu.carroll.doin_backend.web.service" level="TRACE"/>
+  <logger name="edu.carroll.doin_backend.web.controller.EventController" level="INFO"/>
 
   <!-- Root Logger Configuration -->
   <root level="INFO">
@@ -29,9 +31,4 @@
     <appender-ref ref="LogFile" />
   </root>
 
-  <!-- Specific Logger Configuration for Service Package -->
-  <logger name="edu.carroll.doin_backend.web.service" level="TRACE" additivity="false">
-    <appender-ref ref="Console" />
-    <appender-ref ref="LogFile" />
-  </logger>
 </configuration>
