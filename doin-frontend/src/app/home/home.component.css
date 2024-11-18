@@ -18,6 +18,11 @@
   width: 50%;
   max-width: 600px;
 }
+@media (max-width: 768px) {
+  .post {
+      width: 90%;
+      }
+}
 
 .wrapper {
   height: 100%;

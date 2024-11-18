@@ -14,7 +14,7 @@
   <div class="post-body">
     <div class="content">
       <a [routerLink]="['/event', event.id]" class="event-link">
-        <h2 class="title"><span class="icon">✨</span> Going on a {{getShortDescription()}}</h2>
+        <h2 class="title"><span class="icon">✨</span><span *ngIf="!isPast">Going</span><span *ngIf="isPast">Went</span> on a {{getShortDescription()}}</h2>
       </a>
       <div class="location">📍{{event.location}}</div>
       <div>🕒 {{ event.time | date: 'short' }}</div>

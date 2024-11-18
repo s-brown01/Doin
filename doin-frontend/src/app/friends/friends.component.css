@@ -39,6 +39,7 @@ ul > * {
 .search-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 20%;
   margin-top: 15px;
   width: 100%;
@@ -77,7 +78,7 @@ ul > * {
 
 .search-result-list {
   height: 75%;
-  width: 75%;
+  width: 100%;
 }
 
 .search-result-list li {

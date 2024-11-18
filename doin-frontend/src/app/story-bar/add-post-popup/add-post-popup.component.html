@@ -24,6 +24,7 @@
         (change)="validateTime()"
         required
       />
+      
       <label for="eventType">Event Type</label>
       <select id="eventType" [(ngModel)]="eventTypeName" name="eventType">
         <option *ngFor="let type of eventTypes" [ngValue]="type">
