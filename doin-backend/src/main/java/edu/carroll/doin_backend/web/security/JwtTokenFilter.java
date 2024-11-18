@@ -32,7 +32,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JwtTokenFilter.class);
 
-    private final JwtTokenService jwtTokenUtil;
+    private final TokenService jwtTokenUtil;
     private final LoginRepository loginRepository;
 
     /**
@@ -41,7 +41,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
      * @param jwtTokenUtil    the service for handling JWT operations
      * @param loginRepository the repository for accessing user login data
      */
-    public JwtTokenFilter(JwtTokenService jwtTokenUtil,
+    public JwtTokenFilter(TokenService jwtTokenUtil,
                           LoginRepository loginRepository) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.loginRepository = loginRepository;
