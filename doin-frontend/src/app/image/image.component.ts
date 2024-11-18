@@ -1,7 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { ImageService } from '../services/image.service';
 import { ImageDTO } from '../dtos/image.dto';
 
 
@@ -16,8 +13,6 @@ export class ImageComponent implements OnInit {
   @Input() borderRadius: string = '0';
   @Input() imageId: number = 0;
 
-
-  constructor(private imageService: ImageService) {}
 
   ngOnInit(): void {
 
