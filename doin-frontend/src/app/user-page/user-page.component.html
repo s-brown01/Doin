@@ -2,9 +2,9 @@
   <div class="header">
     <div class="user-info">
       <app-image
-        class="profile-img"
         [borderRadius]="'50%'"
         [image]="user.profilePicture"
+        class="profile-img"
       ></app-image>
       <div *ngIf="isCurrentUserPage">
         <app-image-upload-modal [titile]="buttonTitle"></app-image-upload-modal>
@@ -40,7 +40,7 @@
           <app-event-mini [event]="e"></app-event-mini>
         </div>
       </div>
-      <button *ngIf="hasMoreEvents" (click)="onLoadMore()">Load More</button>
+      <button (click)="onLoadMore()" *ngIf="hasMoreEvents">Load More</button>
     </div>
   </div>
 </div>

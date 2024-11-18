@@ -2,7 +2,6 @@ package edu.carroll.doin_backend.web.controller;
 
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
-import edu.carroll.doin_backend.web.security.JwtTokenService;
 import edu.carroll.doin_backend.web.security.TokenService;
 import edu.carroll.doin_backend.web.service.SecurityQuestionService;
 import edu.carroll.doin_backend.web.service.UserService;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;

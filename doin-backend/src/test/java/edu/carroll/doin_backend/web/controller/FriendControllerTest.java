@@ -15,9 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -68,7 +68,7 @@ public class FriendControllerTest {
         user3Header = "Bearer " + user3Token;
         invalidAuthHeader = "Bearer " + invalidToken;
         invalidUserAuthHeader = "Bearer " + invalidUserToken;
-        incorrectHeader = "incorrect"+user1Header;
+        incorrectHeader = "incorrect" + user1Header;
 
         // user1 and user2 are friends
         assertTrue(friendService.addFriend(username1, username2).isValid());
@@ -270,7 +270,7 @@ public class FriendControllerTest {
     }
 
     @Test
-    public void getFriends_IncorrectHeader(){
+    public void getFriends_IncorrectHeader() {
         ResponseEntity<Set<FriendshipDTO>> incorrectHeaderResponse = friendController.getFriends(incorrectHeader);
         assertEquals(HttpStatus.UNAUTHORIZED, incorrectHeaderResponse.getStatusCode(), "Searching with invalid header should return 'UNAUTHORIZED' status");
         assertNotNull(incorrectHeaderResponse.getBody(), "Searching with invalid header should not return null body");
@@ -301,7 +301,7 @@ public class FriendControllerTest {
         assertNotNull(response.getBody(), "Response body should not be null");
         assertEquals(1, response.getBody().size(), "The search results should only have 1 user in it");
         for (FriendshipDTO friend : response.getBody()) {
-            assertEquals( username2, friend.getUsername(), "User2 should be the only search result");
+            assertEquals(username2, friend.getUsername(), "User2 should be the only search result");
             assertEquals(FriendshipStatus.CONFIRMED, friend.getStatus(), "User1 and User2 should be CONFIRMED friends");
         }
     }

@@ -1,27 +1,27 @@
 <div class="friend-item ">
   <div class="avatar"></div>
   <div class="avatar-wrapper">
-    <app-image class="avatar" [borderRadius]="'50%'" [image]="friend.profilePic"></app-image>
+    <app-image [borderRadius]="'50%'" [image]="friend.profilePic" class="avatar"></app-image>
   </div>
 
   <a (click)="goToProfile(friend.id)">
-    <span class="username">{{friend.username}}</span>
+    <span class="username">{{ friend.username }}</span>
   </a>
-  <div *ngIf="response" class="response">{{response}}</div>
+  <div *ngIf="response" class="response">{{ response }}</div>
 
   <div *ngIf="!response" class="buttons">
     <ng-container [ngSwitch]="friend.status">
       <div *ngSwitchCase="FriendshipStatus.CONFIRMED">
-        <button class="remove-button" (click)="removeFriend()">Remove Friend</button>
+        <button (click)="removeFriend()" class="remove-button">Remove Friend</button>
       </div>
 
       <div *ngSwitchCase="FriendshipStatus.PENDING">
-        <button class="confirm-button" (click)="confirmFriend()">Confirm Friend</button>
-        <button class="remove-button" (click)="removeFriend()">Remove Friend</button>
+        <button (click)="confirmFriend()" class="confirm-button">Confirm Friend</button>
+        <button (click)="removeFriend()" class="remove-button">Remove Friend</button>
       </div>
 
       <div *ngSwitchCase="FriendshipStatus.NOTADDED">
-        <button class="add-button" (click)="addFriend()">Add Friend</button>
+        <button (click)="addFriend()" class="add-button">Add Friend</button>
       </div>
 
       <div *ngSwitchCase="FriendshipStatus.IS_SELF">

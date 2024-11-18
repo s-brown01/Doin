@@ -11,12 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 public class SecurityQuestionServiceTest {
-    
+
     @Autowired
     private SecurityQuestionService securityQuestionService;
 
     @Test
-    public void getSecurityQuestionByValue_Failure(){
+    public void getSecurityQuestionByValue_Failure() {
         // should be no questions in repo
         //modify NAME of question
         final String invalidQuestion = "Non-existent question";
@@ -25,7 +25,7 @@ public class SecurityQuestionServiceTest {
     }
 
     @Test
-    public void getSecurityQuestionByValue_Successful(){
+    public void getSecurityQuestionByValue_Successful() {
         final String validQuestion = "Question";
         // make sure there's a question in the repo
         assertTrue(securityQuestionService.addSecurityQuestion(validQuestion));
@@ -36,7 +36,7 @@ public class SecurityQuestionServiceTest {
     }
 
     @Test
-    public void getSecurityQuestionByValue_MoreThanOne(){
+    public void getSecurityQuestionByValue_MoreThanOne() {
         final String question1 = "Question1";
         final String question2 = "Question2";
 
@@ -55,7 +55,7 @@ public class SecurityQuestionServiceTest {
     }
 
     @Test
-    public void getSecurityQuestionByValue_Null(){
+    public void getSecurityQuestionByValue_Null() {
         final String validQuestion = "Question";
         // make sure there's a question in the repo
         assertTrue(securityQuestionService.addSecurityQuestion(validQuestion));
@@ -65,7 +65,7 @@ public class SecurityQuestionServiceTest {
     }
 
     @Test
-    public void getSecurityQuestionByValue_Empty(){
+    public void getSecurityQuestionByValue_Empty() {
         final String validQuestion = "Question";
         // make sure there's a question in the repo
         assertTrue(securityQuestionService.addSecurityQuestion(validQuestion));
@@ -75,7 +75,7 @@ public class SecurityQuestionServiceTest {
     }
 
     @Test
-    public void addSecurityQuestion_Successful(){
+    public void addSecurityQuestion_Successful() {
         final String validQuestion = "Valid Question";
         // make sure that is successful
         assertTrue(securityQuestionService.addSecurityQuestion(validQuestion));
@@ -85,16 +85,17 @@ public class SecurityQuestionServiceTest {
     }
 
     @Test
-    public void addSecurityQuestion_Failure(){
+    public void addSecurityQuestion_Failure() {
         final String question = "Duplicated question";
         // first time should be successful
         assertTrue(securityQuestionService.addSecurityQuestion(question));
         // second time should be unsuccessful
         assertFalse(securityQuestionService.addSecurityQuestion(question));
     }
+
     //MORE THAN ONE QUESTION
     @Test
-    public void addSecurityQuestion_MoreThanOne(){
+    public void addSecurityQuestion_MoreThanOne() {
         final String question1 = "Question1";
         final String question2 = "Question2";
         final String question3 = "Question3";
@@ -121,14 +122,14 @@ public class SecurityQuestionServiceTest {
     }
 
     @Test
-    public void addSecurityQuestion_Null(){
+    public void addSecurityQuestion_Null() {
         // adding null should be unsuccessful
         assertFalse(securityQuestionService.addSecurityQuestion(null));
         assertNull(securityQuestionService.getSecurityQuestionByValue(null));
     }
 
     @Test
-    public void addSecurityQuestion_Empty(){
+    public void addSecurityQuestion_Empty() {
         // adding empty-string should be unsuccessful
         assertFalse(securityQuestionService.addSecurityQuestion(""));
         assertNull(securityQuestionService.getSecurityQuestionByValue(""));

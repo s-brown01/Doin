@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { ErrorService } from '../services/error.service';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {ErrorService} from '../services/error.service';
 
 @Component({
   selector: 'app-error-notification',
@@ -12,7 +12,8 @@ export class ErrorNotificationComponent implements OnInit, OnDestroy {
   showError: boolean = false;
   private errorSubscription: Subscription | undefined;
 
-  constructor(private errorService: ErrorService) {}
+  constructor(private errorService: ErrorService) {
+  }
 
   ngOnInit(): void {
     this.errorSubscription = this.errorService.error$.subscribe(

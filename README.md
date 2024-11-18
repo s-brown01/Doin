@@ -47,12 +47,63 @@ Our program was created using Java 21, Gradle, Angular, JPA, JWT, SLF4J, Logback
 
 
 ## Challenges
-We had some various challenges while building this site. One of the biggest ones was learning how to use the many 
-different coding languages in coordination with each other, especially Angular and Spring Boot. 
+
+While building this site, we faced a few challenges, some of which required significant troubleshooting. The four biggest issues were:
+
+1. Tests
+   - Initially, our **H2 database** was not configuring correctly, causing errors when inserting data into entities.
+   - To resolve this, we created a new service specifically for handling security questions. This solution required 
+     extensive trial-and-error and in-depth research, but ultimately allowed us to resolve the issue.
+2. Learning Angular
+   - Understanding **Angular** for frontend development posed a learning curve. While not a major blocker, it took time
+     to master its features and tools.
+   - Resources like the [official Angular tutorials](https://angular.dev/tutorials) were instrumental in helping us
+     efficiently learn and implement Angular's core functionalities.
+3. Storing Images
+   - Managing image storage and retrieval proved challenging due to the large data size of image files.
+   - Relational databases are not ideal for handling binary data. We explored alternative solutions, including external
+     storage services, but opted to keep image data within the database for simplicity in this version of the application.
+4. JWT Tokens
+   1. Finding the Correct Version
+      - Researching and implementing the correct version of **JWT (JSON Web Tokens)** for authentication required
+        significant effort.
+      - After comparing multiple libraries and approaches, we selected **Auth0**'s implementation for its robust 
+        documentation and compatibility. Learn more about their JWTs on
+        <a href = "https://auth0.com/docs/secure/tokens/json-web-tokens"> Auth0's site</a>.
+   2. Invalidating Tokens
+      - One issue we encountered was token invalidation. When a user logs out, the token is removed from session 
+        storage, requiring re-authentication upon re-login. However, if a user manually copies their token and 
+        inserts it into cookies, the token remains valid until it expires.
+      - A potential solution is to store all valid tokens in a database. However, this approach would make the 
+        application **stateful** instead of **stateless**, as it requires maintaining prior information.
+      - Since maintaining a stateless architecture was a priority and resolving this was beyond the scope of the
+        project, we opted not to address it in this iteration.
 
 ## Future Features
-We were able to implement most of the features we wanted, but there are a few more we would have added if we 
-had more time. Those features are ...
+
+We were able to implement almost every feature we wanted, but there are a few more we would have added if we
+had more time. Those features are...
+
+1. **Stories**
+    - This is the only feature from our original design we were unable to implement.
+    - We were hoping for a way to share photos of events and friends to a story bar (similar to
+      **Instagram** and **Snapchat**).
+    - Because of time restrictions, we had to scrap this idea.
+    - Adding this feature in the future could significantly enhance user engagement by promoting event sharing
+      and fostering a sense of community.
+2. **Messaging**
+    - One feature that could improve our site is a way to message your Friends or other users on Doin. This may
+      increase attendance at events, allow you to connect with more Friends, and share fun memories after the events.
+    - We did not implement this feature because we didn’t have sufficient time to complete it.
+    - Including messaging functionality could improve user retention and create a more connected social experience.
+3. **Cloud storage for images**
+    - Another possible change is storing images in a cloud system, like **AWS**, instead of in the relational database.
+      This would have reduced the size of the database and improved scalability and performance for handling images.
+    - We did not implement this feature because of the monetary resources required for it.
+4. **Two-Factor Authentication (2FA)**
+   - A final feature we would have liked to add is Two-Factor Authentication. This would greatly improve
+       security on our app, enhancing protection for sensitive data and building user trust.
+   - Because of the additional resources it requires, we decided to focus on the other aspects of the program.
 
 ## Technologies Used
 

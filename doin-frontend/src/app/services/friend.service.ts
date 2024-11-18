@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
-import { FriendshipDto } from '../dtos/friendship.dto';
-import { ApiService } from './api.service';
+import {Injectable} from '@angular/core';
+import {catchError, Observable, of} from 'rxjs';
+import {FriendshipDto} from '../dtos/friendship.dto';
+import {ApiService} from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FriendService {
 
-  private baseUrl = 'friends'; 
+  private baseUrl = 'friends';
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {
+  }
 
   getFriendsOfFriends(): Observable<FriendshipDto[]> {
     return this.apiService.get(`${this.baseUrl}`);

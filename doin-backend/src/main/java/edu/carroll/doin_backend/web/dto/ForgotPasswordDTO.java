@@ -16,10 +16,10 @@ public class ForgotPasswordDTO {
     /**
      * Constructs a ForgotPasswordDTO with the provided details.
      *
-     * @param username the username of the user requesting password recovery.
-     * @param securityQuestionValue the value of the security question for the user.
+     * @param username               the username of the user requesting password recovery.
+     * @param securityQuestionValue  the value of the security question for the user.
      * @param securityQuestionAnswer the answer to the security question.
-     * @param password the new password that the user wishes to set.
+     * @param password               the new password that the user wishes to set.
      */
     public ForgotPasswordDTO(String username, String securityQuestionValue, String securityQuestionAnswer, String password) {
         this.username = username;

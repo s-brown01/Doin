@@ -21,7 +21,7 @@ public interface ImageService {
      * @param file the {@link MultipartFile} representing the image to be saved.
      *             It should not be empty, and its size should be validated before saving.
      * @return the {@link Image} object representing the saved image entity.
-     * @throws IOException if an I/O error occurs while reading the file data or saving the image.
+     * @throws IOException              if an I/O error occurs while reading the file data or saving the image.
      * @throws IllegalArgumentException if the provided file is empty.
      */
     Image save(MultipartFile file) throws IOException;

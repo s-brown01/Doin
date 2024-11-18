@@ -3,7 +3,6 @@ package edu.carroll.doin_backend.web.service;
 import edu.carroll.doin_backend.web.dto.ForgotPasswordDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import edu.carroll.doin_backend.web.dto.UserDTO;
-import edu.carroll.doin_backend.web.dto.TokenDTO;
 import edu.carroll.doin_backend.web.dto.ValidateResult;
 import org.springframework.web.multipart.MultipartFile;
 

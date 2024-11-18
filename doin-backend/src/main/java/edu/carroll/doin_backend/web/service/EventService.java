@@ -25,9 +25,9 @@ public interface EventService {
     /**
      * Retrieves a paginated list of events created by a specific user, including events visible to the requester.
      *
-     * @param userId the unique identifier of the user whose events are being retrieved.
+     * @param userId    the unique identifier of the user whose events are being retrieved.
      * @param reqUserId the unique identifier of the requesting user.
-     * @param pageable the pagination information.
+     * @param pageable  the pagination information.
      * @return a {@link Page} of {@link EventDTO} objects representing the user's events.
      */
     Page<EventDTO> getUserEvents(Integer userId, Integer reqUserId, Pageable pageable);
@@ -35,7 +35,7 @@ public interface EventService {
     /**
      * Retrieves a paginated list of all events visible to the given user.
      *
-     * @param userId the unique identifier of the requesting user.
+     * @param userId   the unique identifier of the requesting user.
      * @param pageable the pagination information.
      * @return a {@link Page} of {@link EventDTO} objects representing all events visible to the user.
      */
@@ -53,7 +53,7 @@ public interface EventService {
      * Retrieves an event by its unique identifier and user context.
      *
      * @param eventId the unique identifier of the event.
-     * @param userId the unique identifier of the requesting user.
+     * @param userId  the unique identifier of the requesting user.
      * @return the {@link EventDTO} object representing the retrieved event.
      * @throws IllegalArgumentException if the event ID or user ID is invalid.
      */
@@ -81,8 +81,8 @@ public interface EventService {
      * Adds an image to an event.
      *
      * @param eventId the unique identifier of the event.
-     * @param userId the unique identifier of the user adding the image.
-     * @param file the {@link MultipartFile} representing the image file.
+     * @param userId  the unique identifier of the user adding the image.
+     * @param file    the {@link MultipartFile} representing the image file.
      * @return {@code true} if the image was successfully added; {@code false} otherwise.
      * @throws IllegalArgumentException if the event ID or user ID is invalid, or if the file is null.
      */

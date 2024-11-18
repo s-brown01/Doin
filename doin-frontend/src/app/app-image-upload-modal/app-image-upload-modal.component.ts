@@ -1,12 +1,12 @@
-import { HttpEventType } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
-import { finalize } from 'rxjs';
-import { UserService } from '../services/user.service';
+import {HttpEventType} from '@angular/common/http';
+import {Component, Input} from '@angular/core';
+import {finalize} from 'rxjs';
+import {UserService} from '../services/user.service';
 
 @Component({
   selector: 'app-image-upload-modal',
   templateUrl: './app-image-upload-modal.component.html',
-  styleUrl:  './app-image-upload-modal.component.css'
+  styleUrl: './app-image-upload-modal.component.css'
 })
 export class ImageUploadModalComponent {
   isModalOpen = false;
@@ -18,7 +18,8 @@ export class ImageUploadModalComponent {
   uploadMessage = '';
   uploadSuccess = false;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {
+  }
 
   openModal(): void {
     this.isModalOpen = true;
@@ -68,13 +69,13 @@ export class ImageUploadModalComponent {
       this.uploadSuccess = false;
       return;
     }
-  
+
     const formData = new FormData();
     formData.append('file', this.selectedFile);
-  
+
     this.uploading = true;
     this.uploadMessage = '';
-  
+
     // Call the UserService to upload the file
     this.userService.uploadProfileImage(formData).pipe(
       finalize(() => {

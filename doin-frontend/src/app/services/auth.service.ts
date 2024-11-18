@@ -1,20 +1,20 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, switchMap, throwError } from 'rxjs';
-import { ApiService } from './api.service';
-import { jwtDecode } from 'jwt-decode';
-import { UserDTO } from '../dtos/user.dto';
-import { UserService } from './user.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, catchError, map, Observable, switchMap, throwError} from 'rxjs';
+import {ApiService} from './api.service';
+import {jwtDecode} from 'jwt-decode';
+import {UserDTO} from '../dtos/user.dto';
+import {UserService} from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  public currentUser: Observable<UserDTO | null>;
   private token: string | null = null;
   private currentUserSubject: BehaviorSubject<UserDTO>;
-  public currentUser: Observable<UserDTO | null>;
 
-  constructor(private apiService: ApiService, private userService: UserService){
+  constructor(private apiService: ApiService, private userService: UserService) {
     const savedUser = localStorage.getItem('currentUser');
     this.currentUserSubject = new BehaviorSubject<UserDTO>(savedUser ? JSON.parse(savedUser) : null);
     this.currentUser = this.currentUserSubject.asObservable();
@@ -40,7 +40,7 @@ export class AuthService {
       }),
       catchError(error => {
         // seeing if it is an unauthorized error
-        if (error.status === 401){
+        if (error.status === 401) {
           console.log("Invalid username or password");
           return throwError(() => error);
         }
@@ -50,12 +50,13 @@ export class AuthService {
     );
   }
 
-  register(registerData: {username: string,
-                          password: string,
-                          confirmPassword: string,
-                          securityQuestion: string,
-                          securityAnswer: string
-                        }): Observable<any> {
+  register(registerData: {
+    username: string,
+    password: string,
+    confirmPassword: string,
+    securityQuestion: string,
+    securityAnswer: string
+  }): Observable<any> {
     return this.apiService.post('register', registerData).pipe(
       map((response: any) => {
         return response;

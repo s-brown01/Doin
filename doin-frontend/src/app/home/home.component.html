@@ -2,7 +2,7 @@
   <app-story-bar class="add-post"></app-story-bar>
   <div #contentWrapper class="content-wrapper">
     <div *ngFor="let event of events" class="post">
-      <app-event class="event-comp" [event]="event"></app-event>
+      <app-event [event]="event" class="event-comp"></app-event>
     </div>
     <div *ngIf="loading" class="loading-spinner">
       Loading...
@@ -10,9 +10,9 @@
     <div *ngIf="!hasMoreEvents" class="no-more-events">
       No more events to load
     </div>
-    <button 
-      class="back-to-top-button"
+    <button
       (click)="scrollToTop()"
+      class="back-to-top-button"
     >
       Scroll ⬆️
     </button>

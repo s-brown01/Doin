@@ -1,10 +1,7 @@
 import {Component} from '@angular/core';
-import {FriendshipDto, FriendshipStatus} from "../dtos/friendship.dto";
+import {FriendshipDto} from "../dtos/friendship.dto";
 import {FriendService} from "../services/friend.service";
-import {ImageDTO} from "../dtos/image.dto";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 import {AuthService} from "../services/auth.service";
-import {of} from "rxjs";
 
 @Component({
   selector: 'app-friends',
@@ -23,30 +20,30 @@ export class FriendsComponent {
   constructor(private friendService: FriendService, private authService: AuthService) {
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.getFriendRequests();
   }
 
-  findUser(){
-    if (!this.searchInput){
+  findUser() {
+    if (!this.searchInput) {
       this.searchErrorMessage = "Please a username something to search";
       this.searchResults = [];
       return;
     }
     this.searchErrorMessage = null;
     this.friendService.getUserByUsername(this.searchInput).subscribe(data => {
-      this.searchResults = data;
-      this.getFriendRequests();
-      if (this.searchResults.length == 0){
-        this.searchErrorMessage = "No users found with username:   '" + this.searchInput + "'";
-      } else {
-        this.searchErrorMessage = null;
-      }
-    },
+        this.searchResults = data;
+        this.getFriendRequests();
+        if (this.searchResults.length == 0) {
+          this.searchErrorMessage = "No users found with username:   '" + this.searchInput + "'";
+        } else {
+          this.searchErrorMessage = null;
+        }
+      },
       error => {
-      console.error("Error in searching: " + error);
-      this.searchErrorMessage = error.message;
-    })
+        console.error("Error in searching: " + error);
+        this.searchErrorMessage = error.message;
+      })
   }
 
   getFriendRequests() {
@@ -54,7 +51,7 @@ export class FriendsComponent {
     this.friendService.getFriendRequests().subscribe(
       data => {
         this.friendRequests = data;
-        if (this.friendRequests.length == 0){
+        if (this.friendRequests.length == 0) {
           this.friendRequestErrorMessage = "No incoming friend requests!";
         } else {
           this.friendRequestErrorMessage = null;

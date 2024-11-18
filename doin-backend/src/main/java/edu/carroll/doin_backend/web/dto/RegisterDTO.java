@@ -17,10 +17,10 @@ public class RegisterDTO {
      * Constructs a RegisterDTO with the provided username, password,
      * security question, and security answer.
      *
-     * @param username the username to be registered.
-     * @param password the password to be registered.
+     * @param username         the username to be registered.
+     * @param password         the password to be registered.
      * @param securityQuestion the security question selected during registration.
-     * @param securityAnswer the answer to the security question.
+     * @param securityAnswer   the answer to the security question.
      */
     public RegisterDTO(String username, String password, String securityQuestion, String securityAnswer) {
         this.username = username;

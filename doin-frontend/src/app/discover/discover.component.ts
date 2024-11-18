@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { EventService } from "../services/event.service";
-import { EventDTO } from "../dtos/event.dto";
+import {Component} from '@angular/core';
+import {EventService} from "../services/event.service";
+import {EventDTO} from "../dtos/event.dto";
 import {FriendService} from "../services/friend.service";
-import {FriendshipDto, FriendshipStatus} from "../dtos/friendship.dto";
+import {FriendshipDto} from "../dtos/friendship.dto";
 
 @Component({
   selector: 'app-discover',
@@ -19,7 +19,8 @@ export class DiscoverComponent {
   mayKnowErrorMessage: string | null = null;
 
 
-  constructor(private eventService: EventService, private friendService: FriendService) {}
+  constructor(private eventService: EventService, private friendService: FriendService) {
+  }
 
   ngOnInit(): void {
     this.loadEvents();
@@ -40,7 +41,7 @@ export class DiscoverComponent {
       })
   }
 
-  trackByEventID(index: number, event: any){
+  trackByEventID(index: number, event: any) {
     return event.id;
   }
 

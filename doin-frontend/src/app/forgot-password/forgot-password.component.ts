@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {AuthService} from "../services/auth.service";
 
@@ -8,8 +8,6 @@ import {AuthService} from "../services/auth.service";
   styleUrl: './forgot-password.component.css'
 })
 export class ForgotPasswordComponent {
-  constructor(private router: Router, private authService: AuthService) { }
-
   resetData = {
     username: '',
     securityQuestionValue: '',
@@ -19,8 +17,11 @@ export class ForgotPasswordComponent {
   }
   errorMessage: string | null = null;
 
+  constructor(private router: Router, private authService: AuthService) {
+  }
+
   // what happens when the user clicks submit on HTML...
-  onResetPassword(){
+  onResetPassword() {
     // checking no data is null
     if (!this.resetData.username ||
       !this.resetData.securityQuestionValue ||
@@ -31,7 +32,7 @@ export class ForgotPasswordComponent {
       return;
     }
     // checking password and confirm password match
-    if (this.resetData.password !== this.resetData.confirmPassword){
+    if (this.resetData.password !== this.resetData.confirmPassword) {
       this.errorMessage = "Password and Confirm Password need to match";
       return;
     }

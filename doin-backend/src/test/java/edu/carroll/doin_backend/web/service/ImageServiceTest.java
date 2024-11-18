@@ -1,6 +1,5 @@
 package edu.carroll.doin_backend.web.service;
 
-import edu.carroll.doin_backend.web.exception.ResourceNotFoundException;
 import edu.carroll.doin_backend.web.model.Image;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

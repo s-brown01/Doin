@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import {Component} from '@angular/core';
+import {Router} from '@angular/router';
+import {AuthService} from '../services/auth.service';
 
 
 @Component({
@@ -9,7 +9,6 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  constructor(private router: Router, private authService: AuthService) { }
   registerData = {
     username: '',
     password: '',
@@ -21,7 +20,8 @@ export class RegisterComponent {
   invalidPasswordLength: boolean = false;
   invalidPasswordMatch: boolean = false;
 
-
+  constructor(private router: Router, private authService: AuthService) {
+  }
 
   onRegister() {
     if (!this.registerData.username ||
@@ -60,7 +60,7 @@ export class RegisterComponent {
         },
         (error) => {
           console.log(error);
-          if (error.status === 400){
+          if (error.status === 400) {
             this.errorMessage = "Username is already taken";
             return;
           }

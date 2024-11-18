@@ -2,6 +2,7 @@ package edu.carroll.doin_backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest // This will load the main application context for tests

@@ -1,14 +1,14 @@
 <div class="event">
-    <div class="post-body">
-        <div class="content">
-          <a [routerLink]="['/event', this.event?.id]" class="event-link">
-            <p class="title">
-              <span class="icon">🍽️</span> {{ getShortDescription() }}
-            </p>
-          </a>
-          <div class="location">📍{{ event?.location }}</div>
-          <div class="time">🕒 {{ this.event?.time | date : "short" }}</div>
-        </div>
-      </div>
+  <div class="post-body">
+    <div class="content">
+      <a [routerLink]="['/event', this.event?.id]" class="event-link">
+        <p class="title">
+          <span class="icon">🍽️</span> {{ getShortDescription() }}
+        </p>
+      </a>
+      <div class="location">📍{{ event?.location }}</div>
+      <div class="time">🕒 {{ this.event?.time | date : "short" }}</div>
+    </div>
+  </div>
 </div>
 

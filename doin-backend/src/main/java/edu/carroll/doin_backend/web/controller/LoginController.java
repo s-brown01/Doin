@@ -32,7 +32,7 @@ public class LoginController {
      * Constructor for a new LoginController
      *
      * @param tokenService the service responsible for token validations.
-     * @param userService the service responsible for user and login operations
+     * @param userService  the service responsible for user and login operations
      */
     public LoginController(TokenService tokenService, UserService userService) {
         this.tokenService = tokenService;
@@ -41,41 +41,41 @@ public class LoginController {
 
     /**
      * Handles login requests by validating user credentials and generating a JWT-Token
-     *      upon successful authentication. Logs the process at various steps, including
-     *      attempts, successes, and errors.
+     * upon successful authentication. Logs the process at various steps, including
+     * attempts, successes, and errors.
      *
      * @param login A {@link LoginDTO} object containing the user's login information
-     *                  (username and password).
+     *              (username and password).
      * @return A {@link ResponseEntity} containing a {@link TokenDTO} with the generated
-     *              JWT token if login is successful, or a 401 Unauthorized status if
-     *              login fails or an error occurs.
+     * JWT token if login is successful, or a 401 Unauthorized status if
+     * login fails or an error occurs.
      */
-  @PostMapping("/login")
-  public ResponseEntity<TokenDTO> loginAttempt(@RequestBody LoginDTO login) {
-    log.info("LoginController: user {} attempting login", login.getUsername());
-    boolean isValidUser = false;
-    try {
-        isValidUser = userService.validateCredentials(login.getUsername(), login.getPassword());
-    } catch (Exception e) {
-        log.error("LoginController: user {} login errored {}", login.getUsername(), e.getStackTrace());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+    @PostMapping("/login")
+    public ResponseEntity<TokenDTO> loginAttempt(@RequestBody LoginDTO login) {
+        log.info("LoginController: user {} attempting login", login.getUsername());
+        boolean isValidUser = false;
+        try {
+            isValidUser = userService.validateCredentials(login.getUsername(), login.getPassword());
+        } catch (Exception e) {
+            log.error("LoginController: user {} login errored {}", login.getUsername(), e.getStackTrace());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        // if the user is validated by our loginService...
+        if (isValidUser) {
+            log.info("LoginController: user {} successfully logged in, generating JWT-Tokens", login.getUsername());
+            // generate new token and store it in DTO
+            UserDTO user = userService.findUser(null, login.getUsername());
+            final String token = tokenService.generateToken(user.getUsername(), user.getId());
+            final TokenDTO tokenDTO = new TokenDTO(token);
+            // Return the DTO
+            return ResponseEntity.ok(tokenDTO);
+            // if NOT valid...
+        } else {
+            log.info("LoginController: user {} failed to log in", login.getUsername());
+            // return that the username or password is invalid, no more specific than that to not reveal info
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
-    // if the user is validated by our loginService...
-    if (isValidUser) {
-        log.info("LoginController: user {} successfully logged in, generating JWT-Tokens", login.getUsername());
-        // generate new token and store it in DTO
-        UserDTO user = userService.findUser( null, login.getUsername());
-        final String token = tokenService.generateToken(user.getUsername(), user.getId());
-        final TokenDTO tokenDTO = new TokenDTO(token);
-        // Return the DTO
-        return ResponseEntity.ok(tokenDTO);
-    // if NOT valid...
-    } else {
-        log.info("LoginController: user {} failed to log in", login.getUsername());
-        // return that the username or password is invalid, no more specific than that to not reveal info
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-    }
-  }
 
     /**
      * Handles user registration requests by creating a new user based on the provided registration details.
@@ -84,7 +84,7 @@ public class LoginController {
      * @param register A {@link RegisterDTO} object containing the new user's registration information
      *                 (e.g., username, password, email).
      * @return A {@link ResponseEntity} containing a success message if registration is successful, or a
-     *         406 Not Acceptable status with an error message if registration fails (e.g., invalid username or password).
+     * 406 Not Acceptable status with an error message if registration fails (e.g., invalid username or password).
      */
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterDTO register) {
@@ -109,8 +109,8 @@ public class LoginController {
      * @param forgotPasswordDTO A {@link ForgotPasswordDTO} object containing the user's username
      *                          and answers to security questions.
      * @return A {@link ResponseEntity} containing a success message if password reset is successful,
-     *         a 406 Not Acceptable status if security question validation fails, or a 401 Unauthorized
-     *         status if password reset fails after successful security question validation.
+     * a 406 Not Acceptable status if security question validation fails, or a 401 Unauthorized
+     * status if password reset fails after successful security question validation.
      */
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {

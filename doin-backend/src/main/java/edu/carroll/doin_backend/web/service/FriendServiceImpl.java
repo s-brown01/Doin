@@ -200,7 +200,7 @@ public class FriendServiceImpl implements FriendService {
      * It also sets the statuses of all friendships to the status between the current user and the found friends
      *
      * @param userUsername the username of the current user
-     * @param otherID the ID of the User whose friends to get
+     * @param otherID      the ID of the User whose friends to get
      * @return A {@link Set} of {@link FriendshipDTO} objects representing the other user's friends
      */
     @Override

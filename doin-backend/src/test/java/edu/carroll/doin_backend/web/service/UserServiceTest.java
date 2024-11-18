@@ -1,13 +1,14 @@
 package edu.carroll.doin_backend.web.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import edu.carroll.doin_backend.web.dto.RegisterDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import edu.carroll.doin_backend.web.dto.RegisterDTO;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -92,7 +93,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void validateCredentials_Null(){
+    public void validateCredentials_Null() {
         userService.createNewUser(user1Data);
         assertFalse(userService.validateCredentials(null, null), "'null' credentials should return false");
         assertFalse(userService.validateCredentials(null, password), "'null' username should return false");

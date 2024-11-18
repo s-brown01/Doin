@@ -13,6 +13,7 @@ import java.util.List;
  * Provides methods for querying, checking existence, and retrieving specific details of security questions
  * used for user authentication and password recovery.
  * </p>
+ *
  * @see SecurityQuestion
  */
 public interface SecurityQuestionRepository extends JpaRepository<SecurityQuestion, Integer> {
