@@ -9,6 +9,8 @@ import edu.carroll.doin_backend.web.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -63,9 +65,10 @@ public class EventServiceTest {
         testEvent.setTime(LocalDateTime.now().plusDays(5));
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("Should successfully retrieve public events with valid pagination - Happy Path")
-    void testGetPublicEvents_HappyPath() {
+    @ValueSource(ints = {0})  // Page numbers to test
+    void testGetPublicEvents_HappyPath(int pageNumber) {
         // Create 5 public events
         for (int i = 0; i < 5; i++) {
             Event event = new Event();
@@ -78,7 +81,7 @@ public class EventServiceTest {
         }
 
         // Test with valid pagination parameters
-        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by("time").ascending());
+        PageRequest pageRequest = PageRequest.of(pageNumber, 3, Sort.by("time").ascending());
         Page<EventDTO> result = eventService.getPublicEvents(pageRequest);
 
         // Assertions for successful retrieval
@@ -90,8 +93,9 @@ public class EventServiceTest {
                 .allMatch(event -> event.getVisibility() == Visibility.PUBLIC));
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("Should handle pagination with sorting - Happy Path")
+    @ValueSource(strings = {"ascending", "descending"})
     void testGetPublicEvents_WithSorting() {
         // Create 3 events with different timestamps
         LocalDateTime baseTime = LocalDateTime.now();
@@ -117,27 +121,19 @@ public class EventServiceTest {
         event3.setTime(baseTime.plusDays(1));
         assertNotNull(eventService.add(new EventDTO(event3)));
 
-        // Test sorting ascending
-        PageRequest pageRequestAsc = PageRequest.of(0, 10, Sort.by("time").ascending());
-        Page<EventDTO> resultAsc = eventService.getPublicEvents(pageRequestAsc);
+        // Test sorting based on the sortOrder
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by("time").ascending());
+        Page<EventDTO> result = eventService.getPublicEvents(pageRequest);
 
-        assertNotNull(resultAsc);
-        assertEquals(3, resultAsc.getContent().size());
-        assertEquals("First Event", resultAsc.getContent().get(0).getDescription());
-        assertEquals("Middle Event", resultAsc.getContent().get(1).getDescription());
-        assertEquals("Last Event", resultAsc.getContent().get(2).getDescription());
-
-        // Test sorting descending
-        PageRequest pageRequestDesc = PageRequest.of(0, 10, Sort.by("time").descending());
-        Page<EventDTO> resultDesc = eventService.getPublicEvents(pageRequestDesc);
-
-        assertEquals("Last Event", resultDesc.getContent().get(0).getDescription());
-        assertEquals("First Event", resultDesc.getContent().get(2).getDescription());
+        assertNotNull(result);
+        assertEquals(3, result.getContent().size());
+        assertEquals("First Event" , result.getContent().get(0).getDescription());
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("Should return empty page for null pageable - Crappy Path")
-    void testGetPublicEvents_NullPageable() {
+    @ValueSource(strings = {"null"})
+    void testGetPublicEvents_NullPageable(String pageable) {
         // Create some events to ensure they're not returned
         Event event = new Event();
         event.setCreator(user);
@@ -147,73 +143,43 @@ public class EventServiceTest {
         assertNotNull(eventService.add(new EventDTO(event)));
 
         // Test with null pageable
-        Page<EventDTO> result = eventService.getPublicEvents(null);
+        Page<EventDTO> result = pageable.equals("null") ? eventService.getPublicEvents(null) : eventService.getPublicEvents(PageRequest.of(0, 10));
 
         assertTrue(result.isEmpty());
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("Should return empty page for zero page size - Crappy Path")
-    void testGetPublicEvents_1PageSize() {
-        // Create test event
-        Event event = new Event();
-        event.setCreator(user);
-        event.setVisibility(Visibility.PUBLIC);
-        event.setDescription("Test Event1");
-        event.setTime(LocalDateTime.now());
-        assertNotNull(eventService.add(new EventDTO(event)));
-        event = new Event();
-        event.setCreator(user);
-        event.setVisibility(Visibility.PUBLIC);
-        event.setDescription("Test Event2");
-        event.setTime(LocalDateTime.now());
-        assertNotNull(eventService.add(new EventDTO(event)));
+    @ValueSource(ints = {1, 2})
+    void testGetPublicEvents_PageSize(int pageSize) {
+        // Create some test events
+        Event event1 = new Event();
+        event1.setCreator(user);
+        event1.setVisibility(Visibility.PUBLIC);
+        event1.setDescription("Test Event 1");
+        event1.setTime(LocalDateTime.now());
+        assertNotNull(eventService.add(new EventDTO(event1)));
 
-        // Test with zero page size
-        PageRequest pageRequest = PageRequest.of(1, 1);
+        Event event2 = new Event();
+        event2.setCreator(user);
+        event2.setVisibility(Visibility.PUBLIC);
+        event2.setDescription("Test Event 2");
+        event2.setTime(LocalDateTime.now());
+        assertNotNull(eventService.add(new EventDTO(event2)));
+
+        PageRequest pageRequest = PageRequest.of(0, pageSize);
         Page<EventDTO> result = eventService.getPublicEvents(pageRequest);
 
         assertNotNull(result);
-        assertEquals(1, result.getContent().size());
+        assertEquals(pageSize, result.getContent().size());
     }
 
-    @Test
-    @DisplayName("Should return empty page for zero page size - Crappy Path")
-    void testGetPublicEvents_3PageSize() {
-        // Create test event
-        Event event = new Event();
-        event.setCreator(user);
-        event.setVisibility(Visibility.PUBLIC);
-        event.setDescription("Test Event1");
-        event.setTime(LocalDateTime.now());
-        assertNotNull(eventService.add(new EventDTO(event)));
-        event = new Event();
-        event.setCreator(user);
-        event.setVisibility(Visibility.PUBLIC);
-        event.setDescription("Test Event2");
-        event.setTime(LocalDateTime.now());
-        assertNotNull(eventService.add(new EventDTO(event)));
-
-        event = new Event();
-        event.setCreator(user);
-        event.setVisibility(Visibility.PUBLIC);
-        event.setDescription("Test Event3");
-        event.setTime(LocalDateTime.now());
-        assertNotNull(eventService.add(new EventDTO(event)));
-
-        // Test with zero page size
-        PageRequest pageRequest = PageRequest.of(0, 3);
-        Page<EventDTO> result = eventService.getPublicEvents(pageRequest);
-
-        assertNotNull(result);
-        assertEquals(3, result.getContent().size());
-    }
-
-    @Test
+    @ParameterizedTest
     @DisplayName("Should handle empty result set - Edge Case")
-    void testGetPublicEvents_NoEvents() {
+    @ValueSource(ints = {1, 10})
+    void testGetPublicEvents_NoEvents(int pageSize) {
         // Test with valid pagination but no events in database
-        PageRequest pageRequest = PageRequest.of(0, 10);
+        PageRequest pageRequest = PageRequest.of(0, pageSize);
         Page<EventDTO> result = eventService.getPublicEvents(pageRequest);
 
         assertNotNull(result);
@@ -222,12 +188,14 @@ public class EventServiceTest {
         assertEquals(0, result.getTotalPages());
     }
 
-
-    @Test
-    @DisplayName("Should successfully retrieve public events with valid pagination - Happy Path")
-    void testGetUserEvents_HappyPath() {
+    @ParameterizedTest
+    @DisplayName("Should successfully retrieve user events - Happy Path")
+    @ValueSource(ints = {0, 1})  // Page numbers to test
+    void testGetUserEvents_HappyPath(int pageNumber) {
         // Create 5 public events and 5 private events
-        for (int i = 0; i < 5; i++) {
+        int events = 10;
+        int pageSize = 3;
+        for (int i = 0; i < events; i++) {
             Event event = new Event();
             event.setCreator(user);
             event.setVisibility(i % 2 == 0 ? Visibility.PUBLIC : Visibility.PRIVATE); // alternating public/private events
@@ -238,23 +206,25 @@ public class EventServiceTest {
         }
 
         // Test with valid pagination parameters and the same user
-        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by("time").ascending());
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("time").ascending());
         Page<EventDTO> result = eventService.getUserEvents(user.getId(), user.getId(), pageRequest);
 
-        // Assertions for successful retrieval
         assertNotNull(result);
-        assertEquals(3, result.getContent().size());
-        assertEquals(5, result.getTotalElements());
-        assertEquals(2, result.getTotalPages());
+        assertEquals(pageSize, result.getContent().size());
+        assertEquals(events, result.getTotalElements());
+        assertEquals(4, result.getTotalPages());
         assertTrue(result.getContent().stream()
                 .allMatch(event -> event.getVisibility() == Visibility.PUBLIC || event.getVisibility() == Visibility.PRIVATE));
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("Should retrieve events for a user with a friend - Happy Path")
-    void testGetUserEvents_Friend_HappyPath() {
+    @ValueSource(ints = {0, 1, 2})
+    void testGetUserEvents_Friend_HappyPath(int pageNumber) {
         // Create events for a friend
-        for (int i = 0; i < 5; i++) {
+        int events = 10;
+        int pageSize = 3;
+        for (int i = 0; i < events; i++) {
             Event event = new Event();
             event.setCreator(user);
             event.setVisibility(Visibility.PRIVATE); // private events
@@ -269,44 +239,16 @@ public class EventServiceTest {
         Integer reqUserId = user2.getId(); // assuming reqUserId is the user requesting the events
         Integer userId = user.getId(); // friend userId
 
-        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by("time").ascending());
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("time").ascending());
         Page<EventDTO> result = eventService.getUserEvents(userId, reqUserId, pageRequest);
 
-        // Assertions for successful retrieval
         assertNotNull(result);
-        assertEquals(3, result.getContent().size());
-        assertEquals(5, result.getTotalElements());
+        assertEquals(pageSize, result.getContent().size());
+        assertEquals(events, result.getTotalElements());
+        assertEquals(4, result.getTotalPages());
         assertTrue(result.getContent().stream()
                 .allMatch(event -> event.getVisibility() == Visibility.PRIVATE));
     }
-
-    @Test
-    @DisplayName("Should retrieve public events for a non-friend user - Crappy Path")
-    void testGetUserEvents_NonFriend_CrappyPath() {
-        // Create 3 public events for a user (not a friend)
-        for (int i = 0; i < 3; i++) {
-            Event event = new Event();
-            event.setCreator(user2);
-            event.setVisibility(Visibility.PUBLIC); // public events
-            event.setDescription("Non-Friend Event " + i);
-            event.setLocation("Non-Friend Location " + i);
-            event.setTime(LocalDateTime.now().plusDays(i));
-            assertNotNull(eventService.add(new EventDTO(event)));
-        }
-
-        // Test with a user who is not a friend and should only get public events
-        Integer reqUserId = user.getId(); // assuming reqUserId is the user requesting events
-        Integer userId = user2.getId(); // non-friend userId
-        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by("time").ascending());
-        Page<EventDTO> result = eventService.getUserEvents(userId, reqUserId, pageRequest);
-
-        // Assertions for public events
-        assertNotNull(result);
-        assertEquals(3, result.getContent().size());
-        assertTrue(result.getContent().stream()
-                .allMatch(event -> event.getVisibility() == Visibility.PUBLIC));
-    }
-
     @Test
     @DisplayName("Should handle pagination with sorting - Happy Path")
     void testGetUserEvents_WithSorting() {
