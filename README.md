@@ -268,14 +268,14 @@ HTML and in the database in order for the app to function correctly.
 There are 2 ways to create the table:
 
 - **Option 1: Automatically generate the tables with Gradle**  
-  Start Gradle (See [Starting the Backend](#starting-the-backend)). All tables (including the `security_questions` 
+  Start Gradle (See [Starting the Backend](#starting-the-backend)). All tables (including the `security_questions` and `event_types` 
   table) will be automatically generated. The questions will *not* be automatically added into the database.
-  - The easiest way to insert the data is using following **Insert the 3 Security Questions** below. 
+  - The easiest way to insert the data is using following **Insert the 3 Security Questions and Event Types** below. 
 
-- **Option 2: Manually create the SecurityQuestion table and insert the data**  
+- **Option 2: Manually create the SecurityQuestion and EventType table and insert the data**  
   If you choose to create the table manually, use the following SQL commands:
 
-    1. **Create the `security_questions` table:**
+    1. **Create the `security_questions` table(optional):**
 
         ```mysql
         CREATE TABLE security_questions (
@@ -284,13 +284,30 @@ There are 2 ways to create the table:
         );
         ```
 
-    2. **Insert the 3 Security Questions:**
+    2. **Insert the 3 Security Questions(required):**
 
         ```mysql
         INSERT INTO security_questions (question) VALUES ('pet');
         INSERT INTO security_questions (question) VALUES ('school');
         INSERT INTO security_questions (question) VALUES ('city');
         ```
+    3. **Create the `event_types` table(optional):**
+
+        ```mysql
+        CREATE TABLE event_types (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL
+        );
+        ```
+
+    4. **Insert the 3 Event Types(required):**
+
+        ```mysql
+        INSERT INTO event_types (name) VALUES ('lunch');
+        INSERT INTO event_types (name) VALUES ('party');
+        INSERT INTO event_types (name) VALUES ('meeting');
+        ```
+        
 
   To run the SQL commands:
 
