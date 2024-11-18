@@ -1,11 +1,39 @@
 <div *ngIf="!isBlankLayout()" class="wrapper">
   <app-error-notification></app-error-notification>
-  <app-menu-bar></app-menu-bar>
-  <div class="middle-wrapper">
-      <router-outlet></router-outlet>
+
+  <div class="menu-bar desktop-menu">
+    <h1><a href="/home">doin</a></h1>
+    <ul class="menu-items">
+      <li><a href="/home">🏠 Home</a></li>
+      <li><a href="/discover">🔍 Discover</a></li>
+      <li><a href="/friends">👥 Friends</a></li>
+    </ul>
   </div>
+
+  <div class="middle-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+
   <div class="right-bar">
     <app-notifications-bar></app-notifications-bar>
   </div>
 </div>
+
+<div *ngIf="!isBlankLayout() && isMobile" class="mobile-menu">
+  <ul>
+    <li><a href="/home" title="Home">🏠</a></li>
+    <li><a href="/discover" title="Discover">🔍</a></li>
+    <li><a href="/friends" title="Friends">👥</a></li>
+    <li>
+      <button (click)="toggleNotifications()" title="Notifications">
+        👤
+      </button>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="showNotifications && isMobile" class="mobile-notifications-panel">
+  <app-notifications-bar></app-notifications-bar>
+</div>
+
 <router-outlet *ngIf="isBlankLayout()"></router-outlet>

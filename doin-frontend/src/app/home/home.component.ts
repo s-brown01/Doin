@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, OnDestroy, ViewChildren, ViewChild } from '@angular/core';
 import { EventService } from '../services/event.service';
 import { EventDTO } from '../dtos/event.dto';
 import { fromEvent, Subscription } from 'rxjs';
@@ -11,9 +11,7 @@ import { filter } from 'rxjs/operators';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('contentWrapper') contentWrapper!: ElementRef;
-  
+export class HomeComponent implements AfterViewInit {  
   hasMoreEvents: boolean = true;
   events: EventDTO[] = [];
   currentPage = 0;
@@ -21,7 +19,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   loading = false;
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
-  private middleWrapper: HTMLElement | null = null;
+
 
   constructor(
     private eventService: EventService,
@@ -48,43 +46,33 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       this.scrollSubscription.unsubscribe();
     }
 
-    this.middleWrapper = document.querySelector('.middle-wrapper');
+    const middleWrapper = document.querySelector('.middle-wrapper');
     
-    if (this.middleWrapper) {
-      
-      this.scrollSubscription = fromEvent(this.middleWrapper, 'scroll')
+    if (middleWrapper) {
+      this.scrollSubscription = fromEvent(middleWrapper, 'scroll')
         .pipe(
           debounceTime(150),
           distinctUntilChanged()
         )
         .subscribe(() => {
           const threshold = 300;
-          const { scrollTop, scrollHeight, clientHeight } = this.middleWrapper as HTMLElement;
+          const { scrollTop, scrollHeight, clientHeight } = middleWrapper as HTMLElement;
           const remainingScroll = scrollHeight - (scrollTop + clientHeight);
           
           if (remainingScroll < threshold && !this.loading && this.hasMoreEvents) {
             this.loadEvents();
           }
         });
-    } else {
     }
   }
 
   scrollToTop() {
-    if (this.middleWrapper) {
-      this.middleWrapper.scrollTo({
+    const middleWrapper = document.querySelector('.middle-wrapper');
+    if (middleWrapper) {
+      middleWrapper.scrollTo({
         top: 0,
         behavior: 'smooth'
       });
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.scrollSubscription) {
-      this.scrollSubscription.unsubscribe();
-    }
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
     }
   }
 
