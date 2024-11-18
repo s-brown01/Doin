@@ -7,7 +7,6 @@ import { NotificationsBarComponent } from './notifications-bar/notifications-bar
 import { StoryBarComponent } from './story-bar/story-bar.component';
 import { AuthService } from './services/auth.service';
 import { ApiService } from './services/api.service';
-import { ImageService } from './services/image.service';
 import { EventService } from './services/event.service';
 import { AuthInterceptor } from './utils/AuthInterceptor';
 import { RouterModule } from '@angular/router';
@@ -29,10 +28,12 @@ import { AppRoutingModule } from './app.routes';
 import { UserPageComponent } from './user-page/user-page.component';
 import { ImageUploadModalComponent } from './app-image-upload-modal/app-image-upload-modal.component';
 import { EventMiniComponent } from './event-mini/event-mini.component';
+import { ErrorNotificationComponent } from './app-error-notification/app-error-notification.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    ErrorNotificationComponent,
     DiscoverComponent,
     EventComponent,
     EventPageComponent,
@@ -51,7 +52,7 @@ import { EventMiniComponent } from './event-mini/event-mini.component';
     StoryBarComponent,
     UserPageComponent,
     ImageUploadModalComponent,
-    EventMiniComponent  ],
+    EventMiniComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -63,7 +64,6 @@ import { EventMiniComponent } from './event-mini/event-mini.component';
   providers: [
     AuthService,
     ApiService,
-    ImageService,
     EventService,
     AuthInterceptor,
     {

@@ -1,6 +1,7 @@
-import { HttpClient, HttpEventType } from '@angular/common/http';
+import { HttpEventType } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { finalize } from 'rxjs';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-image-upload-modal',
@@ -17,7 +18,7 @@ export class ImageUploadModalComponent {
   uploadMessage = '';
   uploadSuccess = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private userService: UserService) {}
 
   openModal(): void {
     this.isModalOpen = true;
@@ -67,17 +68,15 @@ export class ImageUploadModalComponent {
       this.uploadSuccess = false;
       return;
     }
-
+  
     const formData = new FormData();
     formData.append('file', this.selectedFile);
-
+  
     this.uploading = true;
     this.uploadMessage = '';
-
-    this.http.put('http://localhost:8080/api/users/update-profile-img', formData, {
-      reportProgress: true,
-      observe: 'events'
-    }).pipe(
+  
+    // Call the UserService to upload the file
+    this.userService.uploadProfileImage(formData).pipe(
       finalize(() => {
         this.uploading = false;
       })
