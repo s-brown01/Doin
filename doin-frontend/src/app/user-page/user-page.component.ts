@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import { UserDTO } from '../dtos/user.dto';
-import { UserService } from '../services/user.service';
-import { ActivatedRoute } from '@angular/router';
-import { EventDTO } from '../dtos/event.dto';
-import { EventService } from '../services/event.service';
-import { AuthService } from '../services/auth.service';
-import { FriendshipDto } from '../dtos/friendship.dto';
-import { FriendService } from '../services/friend.service';
+import {Component} from '@angular/core';
+import {UserDTO} from '../dtos/user.dto';
+import {UserService} from '../services/user.service';
+import {ActivatedRoute} from '@angular/router';
+import {EventDTO} from '../dtos/event.dto';
+import {EventService} from '../services/event.service';
+import {AuthService} from '../services/auth.service';
+import {FriendshipDto} from '../dtos/friendship.dto';
+import {FriendService} from '../services/friend.service';
 
 @Component({
   selector: 'app-user-page',
@@ -15,7 +15,7 @@ import { FriendService } from '../services/friend.service';
 })
 export class UserPageComponent {
   curUser: UserDTO | null = null;
-  user: UserDTO | null = null; 
+  user: UserDTO | null = null;
   events: EventDTO[] = [];
   friends: FriendshipDto[] = [];
   buttonTitle: string = 'Chanage Profile Pic'
@@ -26,11 +26,11 @@ export class UserPageComponent {
   currentPage = 0;
   pageSize = 6;
 
-  constructor(private userService: UserService, private route: ActivatedRoute, 
-    private eventService: EventService, private authService: AuthService, 
-    private friendService: FriendService) {
+  constructor(private userService: UserService, private route: ActivatedRoute,
+              private eventService: EventService, private authService: AuthService,
+              private friendService: FriendService) {
   }
-  
+
   ngOnInit(): void {
     this.authService.currentUser.subscribe((usr: UserDTO | null) => {
       this.curUser = usr;
@@ -61,16 +61,17 @@ export class UserPageComponent {
       })
   }
 
-  loadEvents(){
+  loadEvents() {
     this.eventService.getUserEvents(this.userId, this.currentPage, this.pageSize).subscribe((data: EventDTO[]) => {
       if (data.length > 0) {
-        this.events.push(...data); 
+        this.events.push(...data);
         this.currentPage++;
       } else {
-        this.hasMoreEvents = false;  
-      }    });
+        this.hasMoreEvents = false;
+      }
+    });
   }
-  
+
   onLoadMore(): void {
     this.loadEvents();
   }

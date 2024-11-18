@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { EventDTO } from '../dtos/event.dto';
-import { ApiService } from './api.service';
+import {Injectable} from '@angular/core';
+import {map, Observable} from 'rxjs';
+import {EventDTO} from '../dtos/event.dto';
+import {ApiService} from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,8 @@ export class EventService {
 
   private baseUrl = 'events';  // Base URL is now simplified
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {
+  }
 
   // Use ApiService to handle HTTP GET requests
   getEvents(page: number, size: number): Observable<EventDTO[]> {

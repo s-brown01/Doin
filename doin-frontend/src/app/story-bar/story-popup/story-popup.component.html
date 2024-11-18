@@ -1,10 +1,11 @@
-<div class="story-popup" *ngIf="isVisible">
+<div *ngIf="isVisible" class="story-popup">
   <div class="story-content">
-    <span class="close-btn" (click)="closePopup()">&times;</span>
+    <span (click)="closePopup()" class="close-btn">&times;</span>
     <div class="layout">
       <div class="prev-btn">&lt;</div>
       <div class="media">
-        <img src="https://helenamt.sfo3.digitaloceanspaces.com/2022/06/Couple-1400x600.jpg" alt="User Story" class="story-image">
+        <img alt="User Story" class="story-image"
+             src="https://helenamt.sfo3.digitaloceanspaces.com/2022/06/Couple-1400x600.jpg">
         <div class="story-user">
           <img [src]="userAvatarUrl" alt="User" class="user-avatar">
           <p class="user-name">{{ userName }}</p>

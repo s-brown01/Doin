@@ -38,7 +38,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     /**
      * Constructs a new instance of {@link JwtTokenFilter}.
      *
-     * @param jwtTokenUtil   the service for handling JWT operations
+     * @param jwtTokenUtil    the service for handling JWT operations
      * @param loginRepository the repository for accessing user login data
      */
     public JwtTokenFilter(JwtTokenService jwtTokenUtil,

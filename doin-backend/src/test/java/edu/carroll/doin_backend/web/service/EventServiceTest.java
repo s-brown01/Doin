@@ -67,7 +67,8 @@ public class EventServiceTest {
 
     @ParameterizedTest
     @DisplayName("Should successfully retrieve public events with valid pagination - Happy Path")
-    @ValueSource(ints = {0})  // Page numbers to test
+    @ValueSource(ints = {0})
+        // Page numbers to test
     void testGetPublicEvents_HappyPath(int pageNumber) {
         // Create 5 public events
         for (int i = 0; i < 5; i++) {
@@ -127,7 +128,7 @@ public class EventServiceTest {
 
         assertNotNull(result);
         assertEquals(3, result.getContent().size());
-        assertEquals("First Event" , result.getContent().get(0).getDescription());
+        assertEquals("First Event", result.getContent().get(0).getDescription());
     }
 
     @ParameterizedTest
@@ -190,7 +191,8 @@ public class EventServiceTest {
 
     @ParameterizedTest
     @DisplayName("Should successfully retrieve user events - Happy Path")
-    @ValueSource(ints = {0, 1})  // Page numbers to test
+    @ValueSource(ints = {0, 1})
+        // Page numbers to test
     void testGetUserEvents_HappyPath(int pageNumber) {
         // Create 5 public events and 5 private events
         int events = 10;
@@ -249,6 +251,7 @@ public class EventServiceTest {
         assertTrue(result.getContent().stream()
                 .allMatch(event -> event.getVisibility() == Visibility.PRIVATE));
     }
+
     @Test
     @DisplayName("Should handle pagination with sorting - Happy Path")
     void testGetUserEvents_WithSorting() {
@@ -766,6 +769,7 @@ public class EventServiceTest {
         assertEquals(testEvent.getLocation(), savedEvent.getLocation());
         assertEquals(testEvent.getVisibility(), savedEvent.getVisibility());
     }
+
     @Test
     @DisplayName("Should handle null values in event creation")
     void testAddEvent_NullValues() {

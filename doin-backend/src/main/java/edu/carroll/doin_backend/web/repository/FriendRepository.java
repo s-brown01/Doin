@@ -29,6 +29,7 @@ public interface FriendRepository extends JpaRepository<Friendship, Integer> {
      * @return a {@link Set} of {@link Friendship} objects that match the criteria
      */
     Set<Friendship> findByFriendAndStatus(User user, FriendshipStatus status);
+
     /**
      * Retrieves all friendships where the specified user is the user and the friendship status matches the given status.
      * <p>
@@ -57,6 +58,7 @@ public interface FriendRepository extends JpaRepository<Friendship, Integer> {
      * @return true if a friendship exists between the specified users, false otherwise
      */
     boolean existsFriendshipByUserAndFriend(User user, User friend);
+
     /**
      * Retrieves the friendship object for the specified user and friend.
      * <p>

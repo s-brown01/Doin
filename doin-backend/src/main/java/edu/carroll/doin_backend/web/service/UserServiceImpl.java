@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
             log.info("createNewUser: Invalid password with username {}", registerDTO.getUsername());
             return false;
         }
-        if (!isValidSecurityQuestionAnswer(registerDTO.getSecurityAnswer())){
+        if (!isValidSecurityQuestionAnswer(registerDTO.getSecurityAnswer())) {
             log.info("createNewUser: Invalid security question answer {}", registerDTO.getSecurityAnswer());
             return false;
         }
@@ -224,8 +224,8 @@ public class UserServiceImpl implements UserService {
     /**
      * Updates the user's profile picture by saving the uploaded file and associating it with the user.
      *
-     * @param userId   the ID of the user whose profile picture is to be updated.
-     * @param file     the profile picture file to be uploaded.
+     * @param userId the ID of the user whose profile picture is to be updated.
+     * @param file   the profile picture file to be uploaded.
      * @return true if the profile picture was successfully updated, false otherwise.
      */
     @Override

@@ -1,11 +1,10 @@
 package edu.carroll.doin_backend.web.controller;
 
 import edu.carroll.doin_backend.web.dto.EventDTO;
-import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.dto.RegisterDTO;
+import edu.carroll.doin_backend.web.dto.UserDTO;
 import edu.carroll.doin_backend.web.enums.Visibility;
 import edu.carroll.doin_backend.web.security.TokenService;
-import edu.carroll.doin_backend.web.service.EventService;
 import edu.carroll.doin_backend.web.service.SecurityQuestionService;
 import edu.carroll.doin_backend.web.service.UserService;
 import org.junit.jupiter.api.BeforeEach;

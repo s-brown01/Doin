@@ -5,6 +5,7 @@
   justify-content: center;
   flex-direction: column;
 }
+
 .profile-wrapper {
   display: flex;
   align-items: center;
@@ -29,21 +30,23 @@ img.profile-img {
   border-radius: 50%;
 }
 
-.profile-img-wrapper{
+.profile-img-wrapper {
   width: 50px;
   height: 50px;
-  object-fit: cover; 
+  object-fit: cover;
 }
 
 .events {
   max-width: 600px;
   max-height: 80vh; /* Adjust this value as needed */
-  overflow-y: auto;  /* Enables vertical scrolling */
+  overflow-y: auto; /* Enables vertical scrolling */
   padding-right: 15px; /* To avoid scrollbar overlap with content */
 }
-.upcoming-events{
+
+.upcoming-events {
   margin: 20px auto;
 }
+
 h2 {
   font-family: Arial, sans-serif;
   text-align: center;

@@ -1,5 +1,4 @@
-import { UserDTO } from "./user.dto";
-import { ImageDTO } from "./image.dto";
+import {ImageDTO} from "./image.dto";
 
 export enum FriendshipStatus {
   PENDING = 'PENDING',
@@ -37,5 +36,6 @@ export class FriendshipDto {
         console.warn("Unknown FrienshipStatus: ${status}")
         return FriendshipStatus.NOTADDED;
     }
-  }}
+  }
+}
 

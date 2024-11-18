@@ -212,7 +212,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    public void getFriendsOfFriends_Null(){
+    public void getFriendsOfFriends_Null() {
         Set<FriendshipDTO> invalidSearchResults = friendService.getFriendsOfFriends(null);
         assertEquals(0, invalidSearchResults.size(), "'null' should have no friends of friends");
     }
@@ -412,7 +412,7 @@ public class FriendServiceTest {
     }
 
     @Test
-    public void getFriends_Null(){
+    public void getFriends_Null() {
         final Set<FriendshipDTO> nullFriends = friendService.getFriends(null);
         assertTrue(nullFriends.isEmpty(), "'Null' friend should return no friends");
 
@@ -464,8 +464,7 @@ public class FriendServiceTest {
                         assertEquals(friend.getStatus(), FriendshipStatus.IS_SELF, "User1 status with themselves should be IS_SELF");
                 case username3 ->
                         assertEquals(friend.getStatus(), FriendshipStatus.NOTADDED, "User1 and User3 should be NOT ADDED friends");
-                default ->
-                    fail("Should only contain user1 and user3");
+                default -> fail("Should only contain user1 and user3");
             }
         }
     }

@@ -51,6 +51,7 @@ public class JwtTokenService implements TokenService {
 
     /**
      * A constructor to make a JwtTokenService
+     *
      * @param loginRepository the repository containing all Users for the site
      */
     public JwtTokenService(LoginRepository loginRepository) {
@@ -90,7 +91,7 @@ public class JwtTokenService implements TokenService {
     /**
      * Validates a specific token, checking the token and the username
      *
-     * @param token    - the JWT Token to check and compare against the username
+     * @param token - the JWT Token to check and compare against the username
      * @return true if the username matches the JWTToken's stored data and the token is not expired.
      */
     @Override

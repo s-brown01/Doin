@@ -69,8 +69,7 @@ public class ImageServiceImpl implements ImageService {
         // Return image if found, otherwise log error and return null
         if (imgOpt.isPresent()) {
             return imgOpt.get();
-        }
-        else {
+        } else {
             logger.error("Image with ID {} not found", id);
             return null;
         }

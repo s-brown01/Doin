@@ -1,201 +1,202 @@
 .lunch-container {
-    margin-top: 100px;
-    height: 50vh;
-    font-family: Arial, sans-serif;
-    max-width: 400px;
-    margin: auto;
+  margin-top: 100px;
+  height: 50vh;
+  font-family: Arial, sans-serif;
+  max-width: 400px;
+  margin: auto;
 
-  }
-  
-  .header {
-    text-align: center;
-  }
-  
-  .user-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 20px;
-    gap: 10px;
-  }
-  
-  .user-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-  
-  .post-details {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  
-  .location, .time {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .image img {
-    width: 100%;
-    border-radius: 10px;
-  }
-  
-  .attendees {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); /* Responsive columns */
-    grid-gap: 0px; /* Uniform gap for both rows and columns */
-    width: 100%; /* Ensure it takes up the full width */
-    margin: 10px 0; /* Optional: spacing from other elements */
+}
+
+.header {
+  text-align: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.user-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.post-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.location, .time {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.image img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.attendees {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); /* Responsive columns */
+  grid-gap: 0px; /* Uniform gap for both rows and columns */
+  width: 100%; /* Ensure it takes up the full width */
+  margin: 10px 0; /* Optional: spacing from other elements */
 }
 
 .attendee {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    background-color: #f1f1f1; /* Optional: background color for box */
-    border-radius: 10px; /* Optional: rounded corners */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: add shadow for a box effect */
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background-color: #f1f1f1; /* Optional: background color for box */
+  border-radius: 10px; /* Optional: rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: add shadow for a box effect */
+  text-align: center;
 }
 
-  
-  .attendee-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .attendee-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-  
-  .send-request-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .send-request-btn:hover {
-    background-color: #45a049;
-  }
 
-  .profile-img{
-    width: 60px;
-    height: 60px;
-  }
+.attendee-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  .username-link{
-    text-decoration: none;
-  }
+.attendee-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
 
-  .friend-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-  }
-  
-  .avatar {
-    width: 40px;
-    height: 40px;
-    background-color: #ddd;
-    border-radius: 50%;
-    margin-top: 10px;
-  }
+.send-request-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  
-  .attendee{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  .images-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Adjust column size as needed */
-    grid-gap: 10px; /* Spacing between images */
-    margin-top: 20px;
-  }
-  
-  .event-image {
-    width: 100%;
-    position: relative;
-    overflow: hidden; /* Hide overflow to crop images */
-    border-radius: 8px; /* Rounded corners */
-    padding-top: 100%; /* Maintain square aspect ratio */
-  }
-  
-  .event-image app-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Crop the image while maintaining its aspect ratio */
-    border-radius: 8px; /* Match the rounded corners */
-  }
+.send-request-btn:hover {
+  background-color: #45a049;
+}
 
-  .image-upload {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10px;
-  }
-  
-  .upload-button {
-    width: 90px; /* Match the size of the images */
-    height: 90px; /* Match the size of the images */
-    border: 2px dashed #ccc; /* Dashed border for a subtle design */
-    border-radius: 8px; /* Rounded corners */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-  }
-  
-  .upload-button:hover {
-    border-color: #888; /* Darker border on hover */
-  }
-  
-  .upload-icon {
-    font-size: 24px; /* Size of the plus icon */
-    color: #666; /* Icon color */
-  }
-  
-  input[type="file"] {
-    display: none; /* Hide the default file input */
-  }
+.profile-img {
+  width: 60px;
+  height: 60px;
+}
+
+.username-link {
+  text-decoration: none;
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #ddd;
+  border-radius: 50%;
+  margin-top: 10px;
+}
 
 
-  .join-button {
-    background-color: #48bb78;
-    color: #ffffff;
-    padding: 8px 24px;
-    border: none;
-    border-radius: 9999px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin: 20px;
-  }
-  
-  .join-button:hover {
-    background-color: #38a169;
-  }
+.attendee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
 
-  .desc-wrapper{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.images-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Adjust column size as needed */
+  grid-gap: 10px; /* Spacing between images */
+  margin-top: 20px;
+}
+
+.event-image {
+  width: 100%;
+  position: relative;
+  overflow: hidden; /* Hide overflow to crop images */
+  border-radius: 8px; /* Rounded corners */
+  padding-top: 100%; /* Maintain square aspect ratio */
+}
+
+.event-image app-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Crop the image while maintaining its aspect ratio */
+  border-radius: 8px; /* Match the rounded corners */
+}
+
+.image-upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.upload-button {
+  width: 90px; /* Match the size of the images */
+  height: 90px; /* Match the size of the images */
+  border: 2px dashed #ccc; /* Dashed border for a subtle design */
+  border-radius: 8px; /* Rounded corners */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.upload-button:hover {
+  border-color: #888; /* Darker border on hover */
+}
+
+.upload-icon {
+  font-size: 24px; /* Size of the plus icon */
+  color: #666; /* Icon color */
+}
+
+input[type="file"] {
+  display: none; /* Hide the default file input */
+}
+
+
+.join-button {
+  background-color: #48bb78;
+  color: #ffffff;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 20px;
+}
+
+.join-button:hover {
+  background-color: #38a169;
+}
+
+.desc-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

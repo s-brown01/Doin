@@ -1,8 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {FriendshipDto, FriendshipStatus} from "../../dtos/friendship.dto";
 import {FriendService} from "../../services/friend.service";
-import {response} from "express";
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -11,11 +10,12 @@ import { Router } from '@angular/router';
   styleUrl: './friend-list.component.css'
 })
 export class FriendListComponent {
-  constructor(private friendService: FriendService, private router: Router) {
-  }
-
   @Input() friend!: FriendshipDto;  // Marking as input so parent can pass it4
   @Input() response: string | null = null;
+  protected readonly FriendshipStatus = FriendshipStatus;
+
+  constructor(private friendService: FriendService, private router: Router) {
+  }
 
   removeFriend() {
     console.log("Removing friend: " + this.friend.username);
@@ -66,12 +66,11 @@ export class FriendListComponent {
     )
 
   }
+
   goToProfile(userId: number): void {
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
       this.router.navigate(['/user', this.friend?.id]);
     });
-    
-  }
 
-  protected readonly FriendshipStatus = FriendshipStatus;
+  }
 }

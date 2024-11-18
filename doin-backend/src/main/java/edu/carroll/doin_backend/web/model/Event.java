@@ -283,7 +283,7 @@ public class Event {
      *
      * @param image an {@link Image} object to add to the event
      */
-    public void addImage(Image image){
+    public void addImage(Image image) {
         this.images.add(image);
     }
 

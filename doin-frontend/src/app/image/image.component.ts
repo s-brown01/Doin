@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ImageDTO } from '../dtos/image.dto';
+import {Component, Input, OnInit} from '@angular/core';
+import {ImageDTO} from '../dtos/image.dto';
 
 
 @Component({
@@ -16,13 +16,12 @@ export class ImageComponent implements OnInit {
 
   ngOnInit(): void {
 
-      if(this.image?.data){
-        this.imageData = 'data:image/jpeg;base64,' + this.image?.data;
-      }
-      else{
-        this.imageData = this.defaultImg;
-      }
-  
-    
+    if (this.image?.data) {
+      this.imageData = 'data:image/jpeg;base64,' + this.image?.data;
+    } else {
+      this.imageData = this.defaultImg;
+    }
+
+
   }
 }

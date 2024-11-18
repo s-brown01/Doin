@@ -2,34 +2,36 @@
   <div class="header">
     <div class="header-user">
       <div class="poster-avatar">
-        <app-image class="profile-img" [borderRadius]="'50%'" [image]="event.creator.profilePicture"></app-image>
+        <app-image [borderRadius]="'50%'" [image]="event.creator.profilePicture" class="profile-img"></app-image>
       </div>
       <a [routerLink]="['/user', event.creator.id]" class="username-link">
-        <span class="username">{{event.creator.username}}</span>
+        <span class="username">{{ event.creator.username }}</span>
       </a>
-      <span class="time">{{time}}</span>
+      <span class="time">{{ time }}</span>
     </div>
     <!-- <span class="more-button">•••</span> -->
   </div>
   <div class="post-body">
     <div class="content">
       <a [routerLink]="['/event', event.id]" class="event-link">
-        <h2 class="title"><span class="icon">✨</span> Going on a {{getShortDescription()}}</h2>
+        <h2 class="title"><span class="icon">✨</span> Going on a {{ getShortDescription() }}</h2>
       </a>
-      <div class="location">📍{{event.location}}</div>
+      <div class="location">📍{{ event.location }}</div>
       <div>🕒 {{ event.time | date: 'short' }}</div>
     </div>
     <div class="footer">
-      <button *ngIf="!isPast && !isGoing" class="join-button" (click)="join()">Join</button>
-      <button disabled *ngIf="isGoing" class="join-button-grey" (click)="join()">Joined</button>
-      <button disabled *ngIf="isPast && !isGoing" class="join-button-grey" (click)="join()">Finished</button>
+      <button (click)="join()" *ngIf="!isPast && !isGoing" class="join-button">Join</button>
+      <button (click)="join()" *ngIf="isGoing" class="join-button-grey" disabled>Joined</button>
+      <button (click)="join()" *ngIf="isPast && !isGoing" class="join-button-grey" disabled>Finished</button>
 
-      <div *ngIf="result">{{result}}</div>
+      <div *ngIf="result">{{ result }}</div>
       <div class="avatars">
         <div *ngFor="let joiner of event.joiners" class="avatar">
           <app-image [borderRadius]="'50%'" [image]="joiner.profilePicture"></app-image>
         </div>
-        <div *ngIf="event.joiners.length > 3" class="more"><a [routerLink]="['/event', event.id]" class="event-link">+{{event.joiners.length - 3}}</a></div>
+        <div *ngIf="event.joiners.length > 3" class="more"><a [routerLink]="['/event', event.id]"
+                                                              class="event-link">+{{ event.joiners.length - 3 }}</a>
+        </div>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { ApiService } from '../services/api.service';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import {Component} from '@angular/core';
+import {ApiService} from '../services/api.service';
+import {Router} from '@angular/router';
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,10 +17,11 @@ export class LoginComponent {
     password: ''
   };
 
-  constructor(private router: Router, private apiService : ApiService, private authService: AuthService) { }
+  constructor(private router: Router, private apiService: ApiService, private authService: AuthService) {
+  }
 
   onLogin() {
-    const { username, password } = this.loginData;
+    const {username, password} = this.loginData;
     if (username && password) {
       this.authService.login(this.loginData).subscribe(
         (response) => {

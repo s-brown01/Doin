@@ -1,22 +1,22 @@
 /* error-page.component.css */
 .error-container {
-    text-align: center;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 80%;
-    max-width: 600px;
-  }
-  
-  h1 {
-    color: #e74c3c; /* Red color for error */
-  }
-  
-  h2 {
-    color: #333;
-  }
-  
-  p {
-    color: #555;
-  }
+  text-align: center;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 80%;
+  max-width: 600px;
+}
+
+h1 {
+  color: #e74c3c; /* Red color for error */
+}
+
+h2 {
+  color: #333;
+}
+
+p {
+  color: #555;
+}

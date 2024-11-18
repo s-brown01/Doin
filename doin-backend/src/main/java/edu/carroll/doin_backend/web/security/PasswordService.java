@@ -9,20 +9,20 @@ package edu.carroll.doin_backend.web.security;
  */
 public interface PasswordService {
 
-  /**
-   * Hashes the given raw password.
-   *
-   * @param rawPassword the raw password to hash
-   * @return the hashed password
-   */
-  String hashPassword(String rawPassword);
+    /**
+     * Hashes the given raw password.
+     *
+     * @param rawPassword the raw password to hash
+     * @return the hashed password
+     */
+    String hashPassword(String rawPassword);
 
-  /**
-   * Validates the given raw password against a hashed password.
-   *
-   * @param rawPassword  the raw password to validate
-   * @param hashedPassword the hashed password to compare against
-   * @return true if the raw password matches the hashed password; false otherwise
-   */
-  boolean validatePassword(String rawPassword, String hashedPassword);
+    /**
+     * Validates the given raw password against a hashed password.
+     *
+     * @param rawPassword    the raw password to validate
+     * @param hashedPassword the hashed password to compare against
+     * @return true if the raw password matches the hashed password; false otherwise
+     */
+    boolean validatePassword(String rawPassword, String hashedPassword);
 }

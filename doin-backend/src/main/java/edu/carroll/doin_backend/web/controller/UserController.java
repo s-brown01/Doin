@@ -38,7 +38,7 @@ public class UserController {
      * @param id       the unique identifier of the user (optional).
      * @param username the username of the user (optional).
      * @return a {@link ResponseEntity} containing the {@link UserDTO} if found,
-     *         or a 404 Not Found response if the user does not exist.
+     * or a 404 Not Found response if the user does not exist.
      */
     @GetMapping()
     public ResponseEntity<UserDTO> getUser(@RequestParam(required = false) Integer id,
@@ -60,7 +60,7 @@ public class UserController {
      * @param file       the {@link MultipartFile} representing the new profile image.
      * @param authHeader the authorization header containing the JWT token.
      * @return {@code true} if the profile image was successfully updated;
-     *         {@code false} otherwise.
+     * {@code false} otherwise.
      * @throws IllegalArgumentException if the file is null or the user ID cannot be extracted from the token.
      */
     @PutMapping("/update-profile-img")

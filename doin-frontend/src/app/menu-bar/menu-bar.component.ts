@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; // Import HttpClient
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-menu-bar',
