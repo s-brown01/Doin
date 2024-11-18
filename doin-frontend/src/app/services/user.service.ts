@@ -1,30 +1,37 @@
 import { Injectable } from '@angular/core';
-import { catchError, Observable, tap, throwError } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { catchError, Observable, throwError, tap } from 'rxjs';
 import { ApiService } from './api.service';
 import { UserDTO } from '../dtos/user.dto';
+
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private baseUrl = 'http://localhost:8080/api';
-  constructor(private http: HttpClient, private apiService : ApiService) { }
+  private baseUrl = 'users';
+
+  constructor(private apiService: ApiService) { }
 
   getUserById(id: number): Observable<UserDTO> {
-    let params: any = {};
-    params.id = id;
-    return this.http.get<UserDTO>(`${this.baseUrl}/users`, {params});  }
+    const params = { id: id.toString() }; // Ensure id is passed as a string
+    return this.apiService.get(`${this.baseUrl}`, undefined, params); // Pass params as the 3rd argument
+  }
+  
+  getUserByName(username: string): Observable<UserDTO> {
+    const params = { username: username };
+    return this.apiService.get(`${this.baseUrl}`, undefined, params).pipe(
+      tap((response) => console.log('Response:', response)),
+      catchError((error) => {
+        console.error('Error fetching user:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 
-    getUserByName(username: string): Observable<UserDTO> {
-        let params: any = {};
-        params.username = username;
-      
-        return this.http.get<UserDTO>(`${this.baseUrl}/users`, { params }).pipe(
-          tap((response) => console.log('Response:', response)),
-          catchError((error) => {
-            return throwError(error);
-          })
-        );
-    }
+  uploadProfileImage(formData: FormData): Observable<any> {
+    return this.apiService.put(`${this.baseUrl}/update-profile-img`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
 }

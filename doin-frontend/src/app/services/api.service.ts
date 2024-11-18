@@ -29,15 +29,19 @@ export class ApiService {
     );
   }
 
-  get(endpoint: string, headers?: HttpHeaders): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${endpoint}`, { headers });
+  get(endpoint: string, headers?: HttpHeaders, params?: any): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${endpoint}`, { headers, params });
   }
 
-  put(endpoint: string, data: any, headers?: HttpHeaders): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${endpoint}`, data, { headers });
+  put(endpoint: string, body: any, options: any = {}): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${endpoint}`, body, options);
   }
 
   delete(endpoint: string, headers?: HttpHeaders): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${endpoint}`, { headers });
+  }
+
+  postFormData(endpoint: string, data: FormData, headers?: HttpHeaders): Observable<any> {
+    return this.http.post(`${this.baseUrl}/${endpoint}`, data, { headers });
   }
 }

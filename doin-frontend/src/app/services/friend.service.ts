@@ -1,28 +1,27 @@
 import { Injectable } from '@angular/core';
-import {catchError, Observable, of} from 'rxjs'
-import {FriendshipDto} from "../dtos/friendship.dto";
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { catchError, Observable, of } from 'rxjs';
+import { FriendshipDto } from '../dtos/friendship.dto';
 import { ApiService } from './api.service';
-import {AuthService} from "./auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FriendService {
 
-  private baseUrl = 'http://localhost:8080/api';
-  constructor(private http: HttpClient, private apiService : ApiService) { }
+  private baseUrl = 'friends'; 
+
+  constructor(private apiService: ApiService) { }
 
   getFriendsOfFriends(): Observable<FriendshipDto[]> {
-    return this.http.get<FriendshipDto[]>(this.baseUrl + "/friends");
+    return this.apiService.get(`${this.baseUrl}`);
   }
 
   getFriends(userId: number): Observable<FriendshipDto[]> {
-    return this.http.get<FriendshipDto[]>(this.baseUrl + `/friends/get-friends/${userId}`);
+    return this.apiService.get(`${this.baseUrl}/get-friends/${userId}`);
   }
 
   getUserByUsername(otherUsername: string): Observable<FriendshipDto[]> {
-    return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/${otherUsername}`).pipe(
+    return this.apiService.get(`${this.baseUrl}/${otherUsername}`).pipe(
       catchError(error => {
         console.error("Error getting username " + otherUsername + ": " + error.message);
         return of([]);
@@ -31,25 +30,23 @@ export class FriendService {
   }
 
   getFriendRequests(): Observable<FriendshipDto[]> {
-    return this.http.get<FriendshipDto[]>(`${this.baseUrl}/friends/friend-requests`).pipe(
+    return this.apiService.get(`${this.baseUrl}/friend-requests`).pipe(
       catchError(error => {
         console.error("Error when getting friend requests: " + error.message);
         return of([]);
       })
-    )
+    );
   }
 
-  addFriend(friend : FriendshipDto): Observable<any>{
-    return this.apiService.post(`friends/add/${friend.username}`, friend );
+  addFriend(friend: FriendshipDto): Observable<any> {
+    return this.apiService.post(`friends/add/${friend.username}`, friend);
   }
 
-  confirmFriend(friend : FriendshipDto): Observable<any> {
-    // const headers = this.getHeaders();
-    // return this.apiService.post(`confirm/${friend.username}`, friend, headers);
-    return this.addFriend(friend);
+  confirmFriend(friend: FriendshipDto): Observable<any> {
+    return this.addFriend(friend);  // Assuming confirmFriend is similar to adding a friend
   }
 
-  removeFriend(friend : FriendshipDto): Observable<any> {
+  removeFriend(friend: FriendshipDto): Observable<any> {
     return this.apiService.delete(`friends/remove/${friend.username}`);
   }
 }
