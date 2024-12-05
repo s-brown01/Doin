@@ -1,6 +1,42 @@
 # Doin
 
-Welcome to Doin! This is a social media app made to help people connect with new friends and go on events together!
+Welcome to ***Doin*** – Your go-to app for connecting and creating memories.
+
+In a world where easy virtual interactions overshadow in-person connections, it's becoming increasingly difficult to 
+create meaningful relationships and shared in-person experiences. This is where ***Doin*** steps in. A reimagining of how we come 
+together - offering a simple and engaging platform designed to bring people together for real-life events. Whether you're planning a casual meet-up or 
+a grand celebration, ***Doin*** makes it effortless to connect, share, and create lasting memories with others.
+
+## Project Description
+
+***Doin*** is a social media app designed to help people make new friends, create connections, and enjoy shared
+events. Our goal is simple: make it easier for people to come together, plan activities, and build lasting memories.
+
+With Doin, users can:
+- **Create and Join Events**: Whether it’s a casual lunch, a meeting, or a party, Doin makes it easy to organize and
+  participate in events.
+- **Share Photos**: Relive your favorite moments by posting photos from past events and sharing your experiences with friends.
+- **Stay Connected**: Build your community by finding new friends and connecting over shared interests and activities.
+
+Our vision was to create a platform that combines the fun of social media with the practicality of event planning,
+fostering genuine connections in both digital and real-world spaces.
+
+Why ***Doin***? In today’s fast-paced digital landscape, building connections in-person and doing in-person activities
+often take a backseat. ***Doin*** seeks to reverse this trend by offering a platform that blends technology with the
+human need for physical interaction. From casual lunches to grand parties, ***Doin*** ensures that planning and sharing
+these moments is both effortless and enjoyable.
+
+### How We Built It
+
+To bring Doin to life, we used a blend of robust backend and frontend technologies:
+- **Backend**: Java 21 with Spring Boot, MySQL for data storage, and JWT for secure authentication.
+- **Frontend**: Angular for a dynamic user experience, supported by Node.js and npm for efficient development workflows.
+- **Development Tools**: Gradle for building the project, and SLF4J with Logback for logging and debugging.
+
+Doin is built with scalability, security, and user-friendliness in mind. We want this app to not only work seamlessly
+today but also evolve with new features as our community grows.
+
+Join us on Doin and let’s make connecting with friends and creating memories easier than ever!
 
 ## Table of Contents
 - [Project Description](#project-description)
@@ -8,8 +44,6 @@ Welcome to Doin! This is a social media app made to help people connect with new
         - [Backend](#backend)
         - [Frontend](#frontend)
         - [Dev Tools](#dev-tools)
-    - [Challenges](#challenges)
-    - [Future Features](#future-features)
 - [Installation Instructions](#installation-instructions)
     - [Prerequisites](#prerequisites)
     - [Installation Steps](#installation-steps)
@@ -32,80 +66,15 @@ Welcome to Doin! This is a social media app made to help people connect with new
     - [In Browser](#in-browser)
 - [Tests](#tests)
 - [How to Contribute](#how-to-contribute)
+    - [Challenges](#challenges)
+    - [Future Features](#future-features)
 - [License](#license)
 
-
-## Project Description
-Our goal when creating this site was to help users connect with friends and go on 
-outdoor activities together. It allows users to create, join, and post photos to past events. 
-
-Doin is a social media platform designed for event sharing and social interaction.
-Users can create events, join friends, and share experiences in real-time,
-fostering community engagement and collaboration.
-
-Our program was created using Java 21, Gradle, Angular, JPA, JWT, SLF4J, Logback, and MySQL.
-
-
-## Challenges
-
-While building this site, we faced a few challenges, some of which required significant troubleshooting. The four biggest issues were:
-
-1. Tests
-   - Initially, our **H2 database** was not configuring correctly, causing errors when inserting data into entities.
-   - To resolve this, we created a new service specifically for handling security questions. This solution required 
-     extensive trial-and-error and in-depth research, but ultimately allowed us to resolve the issue.
-2. Learning Angular
-   - Understanding **Angular** for frontend development posed a learning curve. While not a major blocker, it took time
-     to master its features and tools.
-   - Resources like the [official Angular tutorials](https://angular.dev/tutorials) were instrumental in helping us
-     efficiently learn and implement Angular's core functionalities.
-3. Storing Images
-   - Managing image storage and retrieval proved challenging due to the large data size of image files.
-   - Relational databases are not ideal for handling binary data. We explored alternative solutions, including external
-     storage services, but opted to keep image data within the database for simplicity in this version of the application.
-4. JWT Tokens
-   1. Finding the Correct Version
-      - Researching and implementing the correct version of **JWT (JSON Web Tokens)** for authentication required
-        significant effort.
-      - After comparing multiple libraries and approaches, we selected **Auth0**'s implementation for its robust 
-        documentation and compatibility. Learn more about their JWTs on
-        <a href = "https://auth0.com/docs/secure/tokens/json-web-tokens"> Auth0's site</a>.
-   2. Invalidating Tokens
-      - One issue we encountered was token invalidation. When a user logs out, the token is removed from session 
-        storage, requiring re-authentication upon re-login. However, if a user manually copies their token and 
-        inserts it into cookies, the token remains valid until it expires.
-      - A potential solution is to store all valid tokens in a database. However, this approach would make the 
-        application **stateful** instead of **stateless**, as it requires maintaining prior information.
-      - Since maintaining a stateless architecture was a priority and resolving this was beyond the scope of the
-        project, we opted not to address it in this iteration.
-
-## Future Features
-
-We were able to implement almost every feature we wanted, but there are a few more we would have added if we
-had more time. Those features are...
-
-1. **Stories**
-    - This is the only feature from our original design we were unable to implement.
-    - We were hoping for a way to share photos of events and friends to a story bar (similar to
-      **Instagram** and **Snapchat**).
-    - Because of time restrictions, we had to scrap this idea.
-    - Adding this feature in the future could significantly enhance user engagement by promoting event sharing
-      and fostering a sense of community.
-2. **Messaging**
-    - One feature that could improve our site is a way to message your Friends or other users on Doin. This may
-      increase attendance at events, allow you to connect with more Friends, and share fun memories after the events.
-    - We did not implement this feature because we didn’t have sufficient time to complete it.
-    - Including messaging functionality could improve user retention and create a more connected social experience.
-3. **Cloud storage for images**
-    - Another possible change is storing images in a cloud system, like **AWS**, instead of in the relational database.
-      This would have reduced the size of the database and improved scalability and performance for handling images.
-    - We did not implement this feature because of the monetary resources required for it.
-4. **Two-Factor Authentication (2FA)**
-   - A final feature we would have liked to add is Two-Factor Authentication. This would greatly improve
-       security on our app, enhancing protection for sensitive data and building user trust.
-   - Because of the additional resources it requires, we decided to focus on the other aspects of the program.
-
 ## Technologies Used
+
+Here is the full list of all technologies we used in each section of our project. We also included the specific versions 
+used. For most tools, our app should work with different versions unless specified otherwise. For ease, we would 
+recommend using the versions below.
 
 ### Backend
 - **Java**: Primary programming language for backend logic
@@ -123,7 +92,8 @@ had more time. Those features are...
 
 ### Frontend
 - **Angular**: Framework for building a dynamic web frontend
-  - Angular CLI: 18.2.2
+  - Angular CLI: 17.0.3
+    - We have found that versions 18, 19, and 20 do not work with our project.
 - **Node.js** 
   - Node: 20.10.0
 - **NPM**
@@ -261,84 +231,45 @@ Follow these steps to start MySQL, create a database, and configure a new user f
 We used 3 different security questions to give the user a way to reset their password and verify their identity. Their
 values are "pet", "school", and "city". These 3 values need to be added to the database and the frontend's register 
 HTML page (`doin-frontend\src\app\register\register.component.html`). The values must match exactly on both the 
-HTML and in the database in order for the app to function correctly.
+HTML and in the database in order for the app to function correctly. 
+
+We used 3 different event types to give users more diversity and verbosity with the types of events that they can 
+create and share. Those types are "party", "meeting", and "lunch". Like the security questions, these values need to 
+be added to the database and frontend. However, for the event types, they are stored in the typescript page for creating
+the `add-post-popup` component . The path to which is
+(`doin-frontend/src/app/story-bar/add-post-popup/add-post-popup.component.ts`). 
 
 **IMPORTANT:** Before inserting data into the tables, the tables must first be created.
 
 There are 2 ways to create the table:
 
 - **Option 1: Automatically generate the tables with Gradle**  
-  Start Gradle (See [Starting the Backend](#starting-the-backend)). All tables (including the `security_questions` and `event_types` 
+  Start Gradle (See [Starting the Backend](#starting-the-backend)). All entities (including the `security_questions` and `event_types` 
   table) will be automatically generated. The questions will *not* be automatically added into the database.
   - The easiest way to insert the data is using following **Insert the 3 Security Questions and Event Types** below. 
 
-- **Option 2: Manually create the SecurityQuestion and EventType table and insert the data**  
-  If you choose to create the table manually, use the following SQL commands:
+- **Option 2: Manually create the SecurityQuestion and EventType entities and insert the data**  
+  If you choose to create the entity manually, follow the `Create entities` section in the code below.
+    
 
-    1. **Create the `security_questions` table(optional):**
+After the tables have been created, either through Gradle or the SQL commands, you need to insert the data into the 
+tables. This is a <u>**required**</u> step to run the application correctly. Please follow the `Inserting Data` 
+section in the code below.
 
-        ```mysql
-        CREATE TABLE security_questions (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            question VARCHAR(255) NOT NULL
-        );
-        ```
+**Reminder**: While setting up MySQL, make sure that the database credentials in 
+`doin-backend/src/main/resources/application.properties` match those you set up in MySQL. This is essential for any 
+data to be entered into the database.
 
-    2. **Insert the 3 Security Questions(required):**
+Here are the commands that you will need to enter the Security Questions and Event Types. Again, creating the 
+tables is necessary, but can either be done with Gradle or the commands below.
 
-        ```mysql
-        INSERT INTO security_questions (question) VALUES ('pet');
-        INSERT INTO security_questions (question) VALUES ('school');
-        INSERT INTO security_questions (question) VALUES ('city');
-        ```
-    3. **Create the `event_types` table(optional):**
-
-        ```mysql
-        CREATE TABLE event_types (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL
-        );
-        ```
-
-    4. **Insert the 3 Event Types(required):**
-
-        ```mysql
-        INSERT INTO event_types (name) VALUES ('lunch');
-        INSERT INTO event_types (name) VALUES ('party');
-        INSERT INTO event_types (name) VALUES ('meeting');
-        ```
-        
-
-  To run the SQL commands:
-
-    1. Open your terminal or command prompt.
-    2. Log into MySQL:
-       ```bash
-       mysql -u doinapp -p
-       ```
-       Enter your password when prompted (`pass`).
-    3. Select the `doin_db` database:
-       ```mysql
-       USE doin_db;
-       ```
-    4. Run the SQL commands one by one. You can copy-paste the commands into the terminal.
-
-After executing these commands, the `security_questions` table will have the three required questions, and 
-the application will work correctly for user registration and password recovery.
-
-To change or add security questions: edit the insert statements and edit the HTML page.
-
-**Reminder**: After setting up MySQL, make sure that the database credentials in `doin-backend/src/main/resources/application.properties` match those you set up in MySQL.
-
-
-### Summary of Commands
-Use this quick reference for setup:
 ```bash
 # Start MySQL
 mysql -u root -p
 
 # Inside the MySQL shell
 CREATE DATABASE doin_db;
+# Make sure that the username and password match the application.properties
 CREATE USER 'doinapp'@'localhost' IDENTIFIED BY 'pass';
 GRANT ALL PRIVILEGES ON doin_db.* TO 'doinapp'@'localhost';
 FLUSH PRIVILEGES;
@@ -348,17 +279,37 @@ EXIT;
 mysql -u doinapp -p
 USE doin_db;
 
+# Create entities ONLY if not auto-created by Gradle
 # OPTIONAL: to create the security_question table
 CREATE TABLE security_questions (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            question VARCHAR(255) NOT NULL
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question VARCHAR(255) NOT NULL
+);
+  
+# OPTIONAL: to create the event_types table
+CREATE TABLE event_types (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
 );
   
 # Inserting the data
+# REQUIRED: inserting security questions
 INSERT INTO security_questions (question) VALUES ('pet');
 INSERT INTO security_questions (question) VALUES ('school');
 INSERT INTO security_questions (question) VALUES ('city');
-````
+
+# REQUIRED: inserting event types
+INSERT INTO event_types (name) VALUES ('lunch');
+INSERT INTO event_types (name) VALUES ('party');
+INSERT INTO event_types (name) VALUES ('meeting');
+```
+After executing these commands, the `security_questions` table will have the three required questions and the
+`event_types` will have the 3 required questions. Now, the application will work correctly for registration/password-resetting
+and creating events.
+
+To change or add *security questions* or *event types*: edit the insert statements and edit the HTML pages for registration,
+forgot-password and creating events.
+
 
 ### Angular Setup
 
@@ -376,10 +327,11 @@ Angular requires **Node.js** and **npm** (Node Package Manager) for dependency m
 
   
 #### 2. Install Angular CLI
-Angular CLI (Command Line Interface) helps you create and manage Angular applications. To install Angular CLI
-globally on your machine, run:
+Angular CLI (Command Line Interface) helps you create and manage Angular applications. To install Angular CLI 17.0.3
+globally on your machine, run the code below. Again, our project was designed to work with 17.0.3, so other versions 
+of Angular may not work as intended.
 ```bash
-npm install -g @angular/cli
+npm install -g @angular/cli@17.0.3
 ```
 
 #### 3. Verify Angular CLI Installation
@@ -437,8 +389,70 @@ npm install
 In your favorite browser, open http://localhost:4200 to see Doin! From there, enjoy the app!
 - If the app doesn't load, make sure the frontend and backend are be running!
 
-# How To Contribute
-You are welcome to contribute! Please submit a pull request and credit our project!
+# Other
+
+To all you other developers, you are welcome to contribute! For any ideas to implement checkout the 
+[Future Features](#future-features) section below, or feel free to come up with and add your own idea. Please submit a pull request and 
+credit our project!
+
+## Future Features
+
+We were able to implement almost every feature we wanted, but there are a few more we would have added if we
+had more time. Those features are...
+
+1. **Stories**
+    - This is the only feature from our original design we were unable to implement.
+    - We were hoping for a way to share photos of events and friends to a story bar (similar to
+      **Instagram** and **Snapchat**).
+    - Because of time restrictions, we had to scrap this idea.
+    - Adding this feature in the future could significantly enhance user engagement by promoting event sharing
+      and fostering a sense of community.
+2. **Messaging**
+    - One feature that could improve our site is a way to message your Friends or other users on Doin. This could
+      increase attendance at events, allow you to connect with more Friends, and share fun memories after the events.
+    - We did not implement this feature because we didn’t have sufficient time to complete it.
+    - Including messaging functionality could improve user retention and create a more connected social experience.
+3. **Cloud storage for images**
+    - Another possible change is storing images in a cloud system, like **AWS**, instead of in the relational database.
+      This would have reduced the size of the database and improved scalability and performance for handling images.
+    - We did not implement this feature because of the monetary resources required for it.
+4. **Two-Factor Authentication (2FA)**
+    - A final feature we would have liked to add is Two-Factor Authentication. This would greatly improve
+      security on our app, enhancing protection for sensitive data and building user trust.
+    - Because of the additional resources it requires, we decided to focus on the other aspects of the program.
+
+## Challenges
+
+While building this site, we faced a few challenges, some of which required significant troubleshooting. The four biggest issues were:
+
+1. Tests
+    - Initially, our **H2 database** was not configuring correctly, causing errors when inserting data into entities.
+    - To resolve this, we created a new service specifically for handling security questions. This solution required
+      extensive trial-and-error and in-depth research, but ultimately allowed us to resolve the issue.
+2. Learning Angular
+    - Understanding **Angular** for frontend development posed a learning curve. While not a major blocker, it took time
+      to master its features and tools.
+    - Resources like the [official Angular tutorials](https://angular.dev/tutorials) were instrumental in helping us
+      efficiently learn and implement Angular's core functionalities.
+3. Storing Images
+    - Managing image storage and retrieval proved challenging due to the large data size of image files.
+    - Relational databases are not ideal for handling binary data. We explored alternative solutions, including external
+      storage services, but opted to keep image data within the database for simplicity in this version of the application.
+4. JWT Tokens
+    1. Finding the Correct Version
+        - Researching and implementing the appropriate **JWT (JSON Web Tokens)**  version for
+          authentication was challenging.
+        - After comparing multiple libraries and approaches, we selected **Auth0**'s implementation for its robust
+          documentation and compatibility. Learn more about their JWTs on
+          <a href = "https://auth0.com/docs/secure/tokens/json-web-tokens"> Auth0's site</a>.
+    2. Invalidating Tokens
+        - One issue we encountered was token invalidation. When a user logs out, the token is removed from session
+          storage, requiring re-authentication upon re-login. However, if a user manually copies their token and
+          inserts it into cookies, the token remains valid until it expires.
+        - A potential solution is to store all valid tokens in a database. However, this approach would make the
+          application **stateful** instead of **stateless**, as it requires maintaining prior information.
+        - Since maintaining a stateless architecture was a priority and resolving this was beyond the scope of the
+          project, we opted not to address it in this iteration.
 
 # Tests
 We tested our program using JUnit. To run these tests, simply follow the [Starting the Backend](#starting-the-backend) 
