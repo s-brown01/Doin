@@ -8,7 +8,7 @@ together - offering a simple and engaging platform designed to bring people toge
 a grand celebration, ***Doin*** makes it effortless to connect, share, and create lasting memories with others.
 
 ## Project Description
-
+![](https://github.com/s-brown01/Doin/blob/main/docs/doin-demo.gif)
 ***Doin*** is a social media app designed to help people make new friends, create connections, and enjoy shared
 events. Our goal is simple: make it easier for people to come together, plan activities, and build lasting memories.
 
