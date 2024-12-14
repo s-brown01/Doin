@@ -10,6 +10,7 @@ import edu.carroll.doin_backend.web.model.User;
 import edu.carroll.doin_backend.web.repository.LoginRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -36,9 +37,10 @@ public class JwtTokenService implements TokenService {
      */
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour in milliseconds
     /**
-     * A super secret security key to encode the JWT-Tokens with
+     * A super secret security key to encode the JWT-Tokens with, from the application properties
      */
-    private static final String SECRET_KEY = "Super-Secret-Key";
+    @Value("${jwt.secret.key}")
+    private String SECRET_KEY;
     /**
      * The issuer of the tokens (in this case the issuer is doin)
      */
